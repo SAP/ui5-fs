@@ -5,7 +5,7 @@
 > Part of the [UI5 Build and Development Tooling](https://github.com/SAP/ui5-tooling)
 
 [![Travis CI Build Status](https://travis-ci.org/SAP/ui5-fs.svg?branch=master)](https://travis-ci.org/SAP/ui5-fs)
-[![npm Package Version](https://img.shields.io/npm/v/@ui5/fs.svg)](https://www.npmjs.com/package/@ui5/fs)
+[![npm Package Version](https://img.shields.io/npm/v/@ui5/fs.svg)](https://www.npmjs.com/package/@ui5/fs) [![Greenkeeper badge](https://badges.greenkeeper.io/SAP/ui5-fs.svg)](https://greenkeeper.io/)
 
 **This is a Pre-Alpha release!**  
 **The UI5 Build and Development Tooling described here is not intended for productive use yet. Breaking changes are to be expected.**
