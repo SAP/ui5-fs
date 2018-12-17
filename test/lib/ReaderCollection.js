@@ -38,7 +38,7 @@ test("ReaderCollection: _byGlob", (t) => {
 		});
 });
 
-test("ReaderCollection: _byPath", (t) => {
+test("ReaderCollection: _byPath with reader finding a resource", (t) => {
 	t.plan(5);
 
 	const resource = new Resource({
@@ -70,7 +70,7 @@ test("ReaderCollection: _byPath", (t) => {
 		});
 });
 
-test("ReaderCollection: _byPath", (t) => {
+test("ReaderCollection: _byPath with two readers both finding no resource", (t) => {
 	t.plan(3);
 
 	const abstractReaderOne = {
@@ -97,7 +97,7 @@ test("ReaderCollection: _byPath", (t) => {
 		});
 });
 
-test("ReaderCollection: _byPath with empty readers", (t) => {
+test("ReaderCollection: _byPath with empty readers array", (t) => {
 	t.plan(1);
 
 	const trace = {
