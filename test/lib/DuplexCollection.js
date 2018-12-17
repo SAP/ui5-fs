@@ -91,12 +91,12 @@ test("DuplexCollection: _byGlob", (t) => {
 		.then(function(resources) {
 			t.true(Array.isArray(resources), "Found resources are returned as an array");
 			t.true(resources.length === 1, "Resource found");
-			resource.getString().then(function(content) {
-				t.deepEqual(content, "content", "Resource has expected content");
-			});
 			t.deepEqual(resource.getPath(), "my/path", "Resource has expected path");
 			t.true(comboSpy.calledWithExactly("anyPattern", {someOption: true}, trace),
 				"Delegated globbing task correctly to readers");
+			return resource.getString().then(function(content) {
+				t.deepEqual(content, "content", "Resource has expected content");
+			});
 		});
 });
 
@@ -219,7 +219,7 @@ test("DuplexCollection: _byPath with two readers both finding no resource", (t) 
 				"Delegated globbing task correctly to reader one");
 			t.true(abstractReaderTwo._byPath.calledWithExactly("anyVirtualPath", {someOption: true}, trace),
 				"Delegated globbing task correctly to reader two");
-			t.falsy(resource, null, "No resource found");
+			t.falsy(resource, "No resource found");
 		});
 });
 
