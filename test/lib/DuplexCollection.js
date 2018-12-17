@@ -35,8 +35,8 @@ test("DuplexCollection: constructor with setting default name of an empty string
 	t.deepEqual(duplexCollection._combo._readers, [{}, {}], "reader and writer assigned to readers");
 });
 
-test("DuplexCollection: _byGlob", (t) => {
-	t.plan(2);
+test("DuplexCollection: _byGlob w/o finding a resource", (t) => {
+	t.plan(3);
 
 	const abstractReader = {
 		_byGlob: sinon.stub().returns(Promise.resolve([]))
@@ -57,6 +57,44 @@ test("DuplexCollection: _byGlob", (t) => {
 	return duplexCollection._byGlob("anyPattern", {someOption: true}, trace)
 		.then(function(resources) {
 			t.true(Array.isArray(resources), "Found resources are returned as an array");
+			t.true(resources.length === 0, "No resources found");
+			t.true(comboSpy.calledWithExactly("anyPattern", {someOption: true}, trace),
+				"Delegated globbing task correctly to readers");
+		});
+});
+
+test("DuplexCollection: _byGlob", (t) => {
+	t.plan(5);
+
+	const resource = new Resource({
+		path: "my/path",
+		buffer: new Buffer("content")
+	});
+
+	const abstractReader = {
+		_byGlob: sinon.stub().returns(Promise.resolve([resource]))
+	};
+
+	const duplexCollection = new DuplexCollection({
+		name: "myCollection",
+		reader: abstractReader,
+		writer: abstractReader
+	});
+
+	const trace = {
+		collection: sinon.spy()
+	};
+
+	const comboSpy = sinon.spy(duplexCollection._combo, "_byGlob");
+
+	return duplexCollection._byGlob("anyPattern", {someOption: true}, trace)
+		.then(function(resources) {
+			t.true(Array.isArray(resources), "Found resources are returned as an array");
+			t.true(resources.length === 1, "Resource found");
+			resource.getString().then(function(content) {
+				t.deepEqual(content, "content", "Resource has expected content");
+			});
+			t.deepEqual(resource.getPath(), "my/path", "Resource has expected path");
 			t.true(comboSpy.calledWithExactly("anyPattern", {someOption: true}, trace),
 				"Delegated globbing task correctly to readers");
 		});

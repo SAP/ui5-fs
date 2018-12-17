@@ -15,8 +15,8 @@ test("ReaderCollection: constructor", (t) => {
 	t.deepEqual(readerCollection._readers, [{}, {}, {}], "correct readers assigned");
 });
 
-test("ReaderCollection: _byGlob", (t) => {
-	t.plan(3);
+test("ReaderCollection: _byGlob w/o finding a resource", (t) => {
+	t.plan(4);
 
 	const abstractReader = {
 		_byGlob: sinon.stub().returns(Promise.resolve([]))
@@ -32,6 +32,40 @@ test("ReaderCollection: _byGlob", (t) => {
 	return readerCollection._byGlob("anyPattern", {someOption: true}, trace)
 		.then(function(resources) {
 			t.true(Array.isArray(resources), "Found resources are returned as an array");
+			t.true(resources.length === 0, "No resources found");
+			t.true(abstractReader._byGlob.calledWithExactly("anyPattern", {someOption: true}, trace),
+				"Delegated globbing task correctly to readers");
+			t.true(trace.collection.called, "Trace.collection called");
+		});
+});
+
+test("ReaderCollection: _byGlob with finding a resource", (t) => {
+	t.plan(6);
+
+	const resource = new Resource({
+		path: "my/path",
+		buffer: new Buffer("content")
+	});
+
+	const abstractReader = {
+		_byGlob: sinon.stub().returns(Promise.resolve([resource]))
+	};
+	const trace = {
+		collection: sinon.spy()
+	};
+	const readerCollection = new ReaderCollection({
+		name: "myReader",
+		readers: [abstractReader]
+	});
+
+	return readerCollection._byGlob("anyPattern", {someOption: true}, trace)
+		.then(function(resources) {
+			t.true(Array.isArray(resources), "Found resources are returned as an array");
+			t.true(resources.length === 1, "Resource found");
+			resource.getString().then(function(content) {
+				t.deepEqual(content, "content", "Resource has expected content");
+			});
+			t.deepEqual(resource.getPath(), "my/path", "Resource has expected path");
 			t.true(abstractReader._byGlob.calledWithExactly("anyPattern", {someOption: true}, trace),
 				"Delegated globbing task correctly to readers");
 			t.true(trace.collection.called, "Trace.collection called");
@@ -42,7 +76,7 @@ test("ReaderCollection: _byPath with reader finding a resource", (t) => {
 	t.plan(5);
 
 	const resource = new Resource({
-		path: "path",
+		path: "my/path",
 		buffer: new Buffer("content")
 	});
 	const pushCollectionSpy = sinon.spy(resource, "pushCollection");
@@ -66,7 +100,7 @@ test("ReaderCollection: _byPath with reader finding a resource", (t) => {
 			resource.getString().then(function(content) {
 				t.deepEqual(content, "content", "Resource has expected content");
 			});
-			t.deepEqual(resource.getPath(), "path", "Resource has expected path");
+			t.deepEqual(resource.getPath(), "my/path", "Resource has expected path");
 		});
 });
 
