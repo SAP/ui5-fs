@@ -20,6 +20,21 @@ test("DuplexCollection: constructor", (t) => {
 	t.deepEqual(duplexCollection._combo._readers, [{}, {}], "reader and writer assigned to readers");
 });
 
+test("DuplexCollection: constructor with setting default name of an empty string", (t) => {
+	t.plan(5);
+
+	const duplexCollection = new DuplexCollection({
+		reader: {},
+		writer: {}
+	});
+
+	t.deepEqual(duplexCollection._reader, {}, "reader assigned");
+	t.deepEqual(duplexCollection._writer, {}, "writer assigned");
+	t.true(duplexCollection._combo instanceof ReaderCollectionPrioritized, "prioritized reader collection created");
+	t.deepEqual(duplexCollection._combo._name, "", "name assigned");
+	t.deepEqual(duplexCollection._combo._readers, [{}, {}], "reader and writer assigned to readers");
+});
+
 test("DuplexCollection: _byGlob", (t) => {
 	t.plan(2);
 
@@ -44,6 +59,60 @@ test("DuplexCollection: _byGlob", (t) => {
 			t.true(Array.isArray(resources), "Found resources are returned as an array");
 			t.true(comboSpy.calledWithExactly("anyPattern", {someOption: true}, trace),
 				"Delegated globbing task correctly to readers");
+		});
+});
+
+test("DuplexCollection: _byGlobSource w/o found resources", (t) => {
+	t.plan(3);
+
+	const abstractReader = {
+		byGlob: sinon.stub().returns(Promise.resolve([]))
+	};
+
+	const duplexCollection = new DuplexCollection({
+		name: "myCollection",
+		reader: abstractReader,
+		writer: abstractReader
+	});
+
+	return duplexCollection.byGlobSource("anyPattern", {someOption: true})
+		.then(function(resources) {
+			t.true(Array.isArray(resources), "Found resources are returned as an array");
+			t.true(resources.length === 0, "No resources found");
+			t.true(abstractReader.byGlob.calledWithExactly("anyPattern", {someOption: true}),
+				"Delegated globbing task correctly to readers");
+		});
+});
+
+test("DuplexCollection: _byGlobSource with default options and a reader finding a resource", (t) => {
+	t.plan(3);
+
+	const resource = new Resource({
+		path: "my/path",
+		buffer: new Buffer("content")
+	});
+
+	const abstractReader = {
+		byGlob: sinon.stub().returns(Promise.resolve([resource]))
+	};
+
+	const abstractWriter = {
+		byPath: sinon.stub().returns(Promise.resolve())
+	};
+
+	const duplexCollection = new DuplexCollection({
+		name: "myCollection",
+		reader: abstractReader,
+		writer: abstractWriter
+	});
+
+	return duplexCollection.byGlobSource("anyPattern")
+		.then(function(resources) {
+			t.true(Array.isArray(resources), "Found resources are returned as an array");
+			t.true(abstractReader.byGlob.calledWithExactly("anyPattern", {}),
+				"Delegated globbing task correctly to readers");
+			t.true(abstractWriter.byPath.calledWithExactly("my/path"),
+				"byPath called on writer");
 		});
 });
 
