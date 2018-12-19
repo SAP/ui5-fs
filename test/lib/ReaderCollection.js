@@ -4,8 +4,6 @@ const ReaderCollection = require("../../lib/ReaderCollection");
 const Resource = require("../../lib/Resource");
 
 test("ReaderCollection: constructor", (t) => {
-	t.plan(2);
-
 	const readerCollection = new ReaderCollection({
 		name: "myReader",
 		readers: [{}, {}, {}]
@@ -46,7 +44,6 @@ test("ReaderCollection: _byGlob with finding a resource", (t) => {
 		path: "my/path",
 		buffer: new Buffer("content")
 	});
-
 	const abstractReader = {
 		_byGlob: sinon.stub().returns(Promise.resolve([resource]))
 	};
@@ -62,13 +59,13 @@ test("ReaderCollection: _byGlob with finding a resource", (t) => {
 		.then(function(resources) {
 			t.true(Array.isArray(resources), "Found resources are returned as an array");
 			t.true(resources.length === 1, "Resource found");
-			resource.getString().then(function(content) {
-				t.deepEqual(content, "content", "Resource has expected content");
-			});
-			t.deepEqual(resource.getPath(), "my/path", "Resource has expected path");
 			t.true(abstractReader._byGlob.calledWithExactly("anyPattern", {someOption: true}, trace),
 				"Delegated globbing task correctly to readers");
 			t.true(trace.collection.called, "Trace.collection called");
+			t.deepEqual(resources[0].getPath(), "my/path", "Resource has expected path");
+			return resources[0].getString().then(function(content) {
+				t.deepEqual(content, "content", "Resource has expected content");
+			});
 		});
 });
 
@@ -97,15 +94,15 @@ test("ReaderCollection: _byPath with reader finding a resource", (t) => {
 				"Delegated globbing task correctly to readers");
 			t.true(trace.collection.called, "Trace.collection called");
 			t.true(pushCollectionSpy.called, "pushCollection called on resource");
-			resource.getString().then(function(content) {
+			t.deepEqual(resource.getPath(), "my/path", "Resource has expected path");
+			return resource.getString().then(function(content) {
 				t.deepEqual(content, "content", "Resource has expected content");
 			});
-			t.deepEqual(resource.getPath(), "my/path", "Resource has expected path");
 		});
 });
 
 test("ReaderCollection: _byPath with two readers both finding no resource", (t) => {
-	t.plan(3);
+	t.plan(4);
 
 	const abstractReaderOne = {
 		_byPath: sinon.stub().returns(Promise.resolve())
@@ -123,6 +120,7 @@ test("ReaderCollection: _byPath with two readers both finding no resource", (t) 
 
 	return readerCollection._byPath("anyVirtualPath", {someOption: true}, trace)
 		.then(function(resource) {
+			t.falsy(resource, "No resource found");
 			t.true(abstractReaderOne._byPath.calledWithExactly("anyVirtualPath", {someOption: true}, trace),
 				"Delegated globbing task correctly to reader one");
 			t.true(abstractReaderTwo._byPath.calledWithExactly("anyVirtualPath", {someOption: true}, trace),

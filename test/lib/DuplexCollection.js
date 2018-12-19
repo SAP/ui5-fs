@@ -5,8 +5,6 @@ const ReaderCollectionPrioritized = require("../../lib/ReaderCollectionPrioritiz
 const Resource = require("../../lib/Resource");
 
 test("DuplexCollection: constructor", (t) => {
-	t.plan(5);
-
 	const duplexCollection = new DuplexCollection({
 		name: "myCollection",
 		reader: {},
@@ -21,8 +19,6 @@ test("DuplexCollection: constructor", (t) => {
 });
 
 test("DuplexCollection: constructor with setting default name of an empty string", (t) => {
-	t.plan(5);
-
 	const duplexCollection = new DuplexCollection({
 		reader: {},
 		writer: {}
@@ -41,17 +37,14 @@ test("DuplexCollection: _byGlob w/o finding a resource", (t) => {
 	const abstractReader = {
 		_byGlob: sinon.stub().returns(Promise.resolve([]))
 	};
-
 	const duplexCollection = new DuplexCollection({
 		name: "myCollection",
 		reader: abstractReader,
 		writer: abstractReader
 	});
-
 	const trace = {
 		collection: sinon.spy()
 	};
-
 	const comboSpy = sinon.spy(duplexCollection._combo, "_byGlob");
 
 	return duplexCollection._byGlob("anyPattern", {someOption: true}, trace)
@@ -70,21 +63,17 @@ test("DuplexCollection: _byGlob", (t) => {
 		path: "my/path",
 		buffer: new Buffer("content")
 	});
-
 	const abstractReader = {
 		_byGlob: sinon.stub().returns(Promise.resolve([resource]))
 	};
-
 	const duplexCollection = new DuplexCollection({
 		name: "myCollection",
 		reader: abstractReader,
 		writer: abstractReader
 	});
-
 	const trace = {
 		collection: sinon.spy()
 	};
-
 	const comboSpy = sinon.spy(duplexCollection._combo, "_byGlob");
 
 	return duplexCollection._byGlob("anyPattern", {someOption: true}, trace)
@@ -106,7 +95,6 @@ test("DuplexCollection: _byGlobSource w/o found resources", (t) => {
 	const abstractReader = {
 		byGlob: sinon.stub().returns(Promise.resolve([]))
 	};
-
 	const duplexCollection = new DuplexCollection({
 		name: "myCollection",
 		reader: abstractReader,
@@ -129,15 +117,12 @@ test("DuplexCollection: _byGlobSource with default options and a reader finding 
 		path: "my/path",
 		buffer: new Buffer("content")
 	});
-
 	const abstractReader = {
 		byGlob: sinon.stub().returns(Promise.resolve([resource]))
 	};
-
 	const abstractWriter = {
 		byPath: sinon.stub().returns(Promise.resolve())
 	};
-
 	const duplexCollection = new DuplexCollection({
 		name: "myCollection",
 		reader: abstractReader,
@@ -161,23 +146,18 @@ test("DuplexCollection: _byPath with reader finding a resource", (t) => {
 		path: "path",
 		buffer: new Buffer("content")
 	});
-
 	const pushCollectionSpy = sinon.spy(resource, "pushCollection");
-
 	const abstractReader = {
 		_byPath: sinon.stub().returns(Promise.resolve(resource))
 	};
-
 	const trace = {
 		collection: sinon.spy()
 	};
-
 	const duplexCollection = new DuplexCollection({
 		name: "myCollection",
 		reader: abstractReader,
 		writer: abstractReader
 	});
-
 	const comboSpy = sinon.spy(duplexCollection._combo, "_byPath");
 
 	return duplexCollection._byPath("anyVirtualPath", {someOption: true}, trace)
@@ -185,10 +165,10 @@ test("DuplexCollection: _byPath with reader finding a resource", (t) => {
 			t.true(comboSpy.calledWithExactly("anyVirtualPath", {someOption: true}, trace),
 				"Delegated globbing task correctly to readers");
 			t.true(pushCollectionSpy.called, "pushCollection called on resource");
-			resource.getString().then(function(content) {
+			t.deepEqual(resource.getPath(), "path", "Resource has expected path");
+			return resource.getString().then(function(content) {
 				t.deepEqual(content, "content", "Resource has expected content");
 			});
-			t.deepEqual(resource.getPath(), "path", "Resource has expected path");
 		});
 });
 
@@ -198,15 +178,12 @@ test("DuplexCollection: _byPath with two readers both finding no resource", (t) 
 	const abstractReaderOne = {
 		_byPath: sinon.stub().returns(Promise.resolve())
 	};
-
 	const abstractReaderTwo = {
 		_byPath: sinon.stub().returns(Promise.resolve())
 	};
-
 	const trace = {
 		collection: sinon.stub()
 	};
-
 	const duplexCollection = new DuplexCollection({
 		name: "myCollection",
 		reader: abstractReaderOne,
@@ -223,14 +200,13 @@ test("DuplexCollection: _byPath with two readers both finding no resource", (t) 
 		});
 });
 
-test("DuplexCollection: _write successful write operation", (t) => {
+test("DuplexCollection: _write successful", (t) => {
 	t.plan(1);
 
 	const resource = new Resource({
 		path: "my/path",
 		buffer: new Buffer("content")
 	});
-
 	const duplexCollection = new DuplexCollection({
 		name: "myCollection",
 		writer: {

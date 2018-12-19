@@ -11,7 +11,6 @@ test("traceSummary", async (t) => {
 
 	// Measure always constant time
 	const hrtimeStub = sinon.stub(process, "hrtime").returns([3, 426604599]);
-
 	const traceSummary = require("../../../lib/tracing/traceSummary");
 
 	const expectedReport = "==========================\n[=> TRACE SUMMARY:\n" +

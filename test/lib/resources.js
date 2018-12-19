@@ -239,9 +239,9 @@ test("Virtual RL: GLOB virtual directory w/o virtual base path prefix", (t) => {
 });
 
 test("createCollectionsForTree", (t) => {
-	t.plan(5);
 	// Creates resource reader collections for a given tree
 	const resourceReaders = ui5Fs.resourceFactory.createCollectionsForTree(applicationBTree);
+
 	t.pass("Resource Readers created");
 
 	// Check whether resulting object contains both,

@@ -3,8 +3,6 @@ const Stream = require("stream");
 const Resource = require("../../lib/Resource");
 
 test("Resource: constructor with missing path parameter", (t) => {
-	t.plan(2);
-
 	const error = t.throws(() => {
 		new Resource({});
 	}, Error);
@@ -13,8 +11,6 @@ test("Resource: constructor with missing path parameter", (t) => {
 });
 
 test("Resource: constructor with duplicated content parameter", (t) => {
-	t.plan(2);
-
 	const error = t.throws(() => {
 		new Resource({
 			path: "my/path",
@@ -63,8 +59,6 @@ test("Resource: getStream", async (t) => {
 });
 
 test("Resource: getStream throwing an error", (t) => {
-	t.plan(2);
-
 	const resource = new Resource({
 		path: "my/path/to/resource"
 	});
@@ -96,7 +90,6 @@ test("Resource: setStream", (t) => {
 	const resource = new Resource({
 		path: "my/path/to/resource",
 	});
-
 	const stream = new Stream.Readable();
 	stream._read = function() {};
 	stream.push("I am a ");
@@ -133,7 +126,6 @@ test("Resource: clone resource with stream", (t) => {
 	const resource = new Resource({
 		path: "my/path/to/resource"
 	});
-
 	const stream = new Stream.Readable();
 	stream._read = function() {};
 	stream.push("Content");
