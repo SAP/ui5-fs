@@ -246,8 +246,8 @@ test("createCollectionsForTree", (t) => {
 
 	// Check whether resulting object contains both,
 	// resource readers for the application source itself and for its dependencies.
-	t.truthy(resourceReaders.hasOwnProperty("source"), "Contains readers for the application code");
-	t.truthy(resourceReaders.hasOwnProperty("dependencies"), "Contains readers for the application's dependencies");
+	t.true(resourceReaders.hasOwnProperty("source"), "Contains readers for the application code");
+	t.true(resourceReaders.hasOwnProperty("dependencies"), "Contains readers for the application's dependencies");
 
 	t.true(resourceReaders.source._readers.length === 1, "One reader for the application code");
 	t.true(resourceReaders.dependencies._readers.length === 8, "Eight readers for the application's dependencies");
