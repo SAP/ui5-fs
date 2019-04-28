@@ -95,7 +95,7 @@
 	"dependencies": {
 		"@ui5/logger": "^1.0.1",
 		"clone": "^2.1.0",
-		"dir-glob": "2.0.0",
+		"dir-glob": "2.2.2",
 		"globby": "^7.1.1",
 		"graceful-fs": "^4.1.15",
 		"make-dir": "^2.1.0",
@@ -123,6 +123,6 @@
 		"tap-nyan": "^1.1.0"
 	},
 	"resolutions": {
-		"dir-glob": "2.0.0"
+		"dir-glob": "2.2.2"
 	}
 }
