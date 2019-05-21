@@ -111,6 +111,17 @@ test("glob with multiple patterns", (t) => {
 		});
 });
 
+test("glob with multiple patterns with exclude", (t) => {
+	t.plan(2);
+	return t.context.readerWriter.filesystem.byGlob([
+		"/**/*.yaml", "/test-resources/**/i18n_de.properties", "!/resources/application.b/**"])
+		.then((resources) => {
+			const expectedResources = [
+				"/test-resources/application.a/ui5.yaml"
+			];
+			matchGlobResult(t, resources, expectedResources);
+		});
+});
 
 test("glob only a specific filetype (yaml)", (t) => {
 	t.plan(2);

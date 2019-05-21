@@ -82,3 +82,26 @@ test("glob virtual directory w/ virtual base path prefix and nodir: true", async
 	const resources = await readerWriter.byGlob("/app/*", {nodir: true});
 	t.deepEqual(resources.length, 0, "Found no resources");
 });
+
+test("glob library with static excludes", async (t) => {
+	const excludes = [
+		"/resources/**/some.js",
+		"/test-resources/**"
+	];
+	const srcReaderWriter = resourceFactory.createAdapter({
+		fsBasePath: "./test/fixtures/library.l/src",
+		virBasePath: "/resources/",
+		excludes
+	});
+
+	const testReaderWriter = resourceFactory.createAdapter({
+		fsBasePath: "./test/fixtures/library.l/test",
+		virBasePath: "/test-resources/",
+		excludes
+	});
+
+	const srcResources = await srcReaderWriter.byGlob("/**/*", {nodir: true});
+	const testResources = await testReaderWriter.byGlob("/**/*", {nodir: true});
+	t.deepEqual(srcResources.length, 1, "Found one src resource");
+	t.deepEqual(testResources.length, 0, "Found no test resources");
+});
