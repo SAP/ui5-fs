@@ -112,15 +112,20 @@ test("glob with multiple patterns", (t) => {
 });
 
 test("glob with multiple patterns with exclude", (t) => {
-	t.plan(2);
+	t.plan(4);
 	return new FsAdapter({
 		fsBasePath: "./test/fixtures/glob",
 		virBasePath: "/test-resources/",
-		excludes: ["!/test-resources/application.b/**"]
+		excludes: [
+			"/test-resources/application.b/**",
+			"!/test-resources/application.b/**/manifest.json"
+		]
 	}).byGlob(["/**/*.yaml", "/test-resources/**/i18n_de.properties"])
 		.then((resources) => {
 			const expectedResources = [
-				"/test-resources/application.a/ui5.yaml"
+				"/test-resources/application.a/ui5.yaml",
+				"/test-resources/application.b/webapp/manifest.json",
+				"/test-resources/application.b/webapp/embedded/manifest.json"
 			];
 			matchGlobResult(t, resources, expectedResources);
 		});
