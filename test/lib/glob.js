@@ -113,8 +113,11 @@ test("glob with multiple patterns", (t) => {
 
 test("glob with multiple patterns with exclude", (t) => {
 	t.plan(2);
-	return t.context.readerWriter.filesystem.byGlob([
-		"/**/*.yaml", "/test-resources/**/i18n_de.properties", "!/resources/application.b/**"])
+	return new FsAdapter({
+		fsBasePath: "./test/fixtures/glob",
+		virBasePath: "/test-resources/",
+		excludes: ["!/test-resources/application.b/**"]
+	}).byGlob(["/**/*.yaml", "/test-resources/**/i18n_de.properties"])
 		.then((resources) => {
 			const expectedResources = [
 				"/test-resources/application.a/ui5.yaml"
