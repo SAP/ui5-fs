@@ -83,30 +83,18 @@ test("glob virtual directory w/ virtual base path prefix and nodir: true", async
 	t.deepEqual(resources.length, 0, "Found no resources");
 });
 
-test("glob library with static excludes", async (t) => {
-	const excludes = [
-		"/resources/**/some.js",
-		"/test-resources/**"
-	];
-	const srcReaderWriter = resourceFactory.createAdapter({
-		fsBasePath: "./test/fixtures/library.l/src",
-		virBasePath: "/resources/",
-		excludes
+test("glob resources from application.a with directory exclude", async (t) => {
+	const readerWriter = resourceFactory.createAdapter({
+		fsBasePath: "./test/fixtures/application.a/webapp",
+		virBasePath: "/app/"
 	});
 
-	const testReaderWriter = resourceFactory.createAdapter({
-		fsBasePath: "./test/fixtures/library.l/test",
-		virBasePath: "/test-resources/",
-		excludes
+	await readerWriter.byGlob("/!(pony,unicorn)/**").then(function(resources) {
+		t.deepEqual(resources.length, 2, "Found exactly two resource");
 	});
-
-	const srcResources = await srcReaderWriter.byGlob("/**/*", {nodir: true});
-	const testResources = await testReaderWriter.byGlob("/**/*", {nodir: true});
-	t.deepEqual(srcResources.length, 1, "Found one src resource");
-	t.deepEqual(testResources.length, 0, "Found no test resources");
 });
 
-test("byPath virtual directory w/ virtual base path prefix and nodir: true", async (t) => {
+test("byPath virtual directory", async (t) => {
 	const readerWriter = resourceFactory.createAdapter({
 		fsBasePath: "./test/fixtures/application.a/webapp",
 		virBasePath: "/resources/app/"
@@ -116,7 +104,119 @@ test("byPath virtual directory w/ virtual base path prefix and nodir: true", asy
 	t.truthy(resource, "Found one resource");
 });
 
-test("byPath: exclude everything in sub-directory", async (t) => {
+function getPathFromResource(resource) {
+	return resource.getPath();
+}
+
+test("static excludes: glob library src and test", async (t) => {
+	const excludes = [
+		"/resources/**/some.js",
+
+		// double negation has no effect over following "/test-resources/**" exclude
+		"!/test-resources/library/l/Test2.html",
+
+		"/test-resources/**",
+	];
+	const srcReader = resourceFactory.createAdapter({
+		fsBasePath: "./test/fixtures/library.l/src",
+		virBasePath: "/resources/",
+		excludes
+	});
+
+	const testReader = resourceFactory.createAdapter({
+		fsBasePath: "./test/fixtures/library.l/test",
+		virBasePath: "/test-resources/",
+		excludes
+	});
+
+	const srcResources = await srcReader.byGlob("/**/*", {nodir: true});
+	const testResources = await testReader.byGlob("/**/*", {nodir: true});
+
+	t.deepEqual(srcResources.length, 1, "Found one src resource");
+	t.deepEqual(srcResources.map(getPathFromResource), [
+		"/resources/library/l/.library"
+	], "Found expected src resources");
+
+	t.deepEqual(testResources.length, 0, "Found no test resources");
+});
+
+test.only("static excludes: glob library src and test with double negation", async (t) => {
+	const excludes = [
+		"/resources/**/some.js",
+		"/test-resources/**",
+
+		// double negation has effect over preceding "/test-resources/**" exclude
+		"!/test-resources/library/l/Test2.html",
+	];
+	const srcReader = resourceFactory.createAdapter({
+		fsBasePath: "./test/fixtures/library.l/src",
+		virBasePath: "/resources/",
+		excludes
+	});
+
+	const testReader = resourceFactory.createAdapter({
+		fsBasePath: "./test/fixtures/library.l/test",
+		virBasePath: "/test-resources/",
+		excludes
+	});
+
+	const srcResources = await srcReader.byGlob("/**/*", {nodir: true});
+	const testResources = await testReader.byGlob("/**/*", {nodir: true});
+
+	t.deepEqual(srcResources.length, 1, "Found one src resource");
+	t.deepEqual(srcResources.map(getPathFromResource), [
+		"/resources/library/l/.library"
+	], "Found expected src resources");
+
+	t.deepEqual(testResources.length, 1, "Found one test resource");
+	t.deepEqual(testResources.map(getPathFromResource), [
+		"/test-resources/library/l/Test2.html"
+	], "Found expected test resources");
+});
+
+test("static excludes: glob with virtual root exclude", async (t) => {
+	const srcReader = resourceFactory.createAdapter({
+		fsBasePath: "./test/fixtures/library.l/src",
+		virBasePath: "/resources/",
+		excludes: [
+			"/**"
+		]
+	});
+
+	const resources = await srcReader.byGlob("/**/*", {nodir: true});
+
+	t.deepEqual(resources.length, 0, "Found no resources");
+});
+
+test("static excludes: glob with negated directory exclude, excluding resources", async (t) => {
+	const srcReader = resourceFactory.createAdapter({
+		fsBasePath: "./test/fixtures/library.l/src",
+		virBasePath: "/resources/",
+		excludes: [
+			"/!({pony,unicorn})/**"
+		]
+	});
+
+	const resources = await srcReader.byGlob("/**/*", {nodir: true});
+
+	t.deepEqual(resources.length, 0, "Found no resources");
+});
+
+test("static excludes: glob with negated directory exclude, not excluding resources", async (t) => {
+	const srcReader = resourceFactory.createAdapter({
+		fsBasePath: "./test/fixtures/library.l/src",
+		virBasePath: "/resources/",
+		excludes: [
+			"/!(resources)/**"
+		]
+	});
+
+	const resources = await srcReader.byGlob("/**/*", {nodir: true});
+
+	t.deepEqual(resources.length, 2, "Found two resources");
+});
+
+test("static excludes: byPath exclude everything in sub-directory", async (t) => {
 	const readerWriter = resourceFactory.createAdapter({
 		fsBasePath: "./test/fixtures/application.a/webapp",
 		virBasePath: "/resources/app/",
@@ -127,7 +227,7 @@ test("byPath: exclude everything in sub-directory", async (t) => {
 	t.falsy(resource, "Found no resource");
 });
 
-test("byPath: exclude with negation", async (t) => {
+test("static excludes: byPath exclude with negation", async (t) => {
 	const readerWriter = resourceFactory.createAdapter({
 		fsBasePath: "./test/fixtures/application.a/webapp",
 		virBasePath: "/resources/app/",
@@ -141,13 +241,39 @@ test("byPath: exclude with negation", async (t) => {
 	t.truthy(resource, "Found one resource");
 });
 
-test("byPath: exclude with unused negation", async (t) => {
+test("static excludes: byPath exclude with unused negation", async (t) => {
 	const readerWriter = resourceFactory.createAdapter({
 		fsBasePath: "./test/fixtures/application.a/webapp",
 		virBasePath: "/resources/app/",
 		excludes: [
 			"!/resources/app/index.html",
 			"/resources/app/**"
+		]
+	});
+
+	const resource = await readerWriter.byPath("/resources/app/index.html", {nodir: true});
+	t.truthy(resource, "Found one resource");
+});
+
+test("static excludes: byPath exclude with negated directory pattern, excluding resources", async (t) => {
+	const readerWriter = resourceFactory.createAdapter({
+		fsBasePath: "./test/fixtures/application.a/webapp",
+		virBasePath: "/resources/app/",
+		excludes: [
+			"/!({pony,unicorn})/**"
+		]
+	});
+
+	const resource = await readerWriter.byPath("/resources/app/index.html", {nodir: true});
+	t.falsy(resource, "Found no resource");
+});
+
+test("static excludes: byPath exclude with negated directory pattern, not excluding resources", async (t) => {
+	const readerWriter = resourceFactory.createAdapter({
+		fsBasePath: "./test/fixtures/application.a/webapp",
+		virBasePath: "/resources/app/",
+		excludes: [
+			"/!(resources)/**"
 		]
 	});
 
@@ -176,60 +302,74 @@ test("byPath: exclude with unused negation", async (t) => {
 	t.truthy(i18ni18n, "Found i18n in i18n directory resource");
 });
 
-test("generic exclude test", async (t) => {
-	const micromatch = require("micromatch");
+test("static excludes: glob library src and test with double negation (nodir: false)", async (t) => {
+	const excludes = [
+		"/resources/**/some.js",
+		"/test-resources/**",
 
-	const excludePatterns = [
-		"!/resources/app/fileA",
-		"/resources/app/**",
+		// double negation has effect over preceding "/test-resources/**" exclude
+		"!/test-resources/library/l/Test2.html",
 	];
+	const srcReader = resourceFactory.createAdapter({
+		fsBasePath: "./test/fixtures/library.l/src",
+		virBasePath: "/resources/",
+		excludes
+	});
 
-	const fileAPath = "/resources/app/fileA";
-	const fileBPath = "/resources/app/fileB";
+	const testReader = resourceFactory.createAdapter({
+		fsBasePath: "./test/fixtures/library.l/test",
+		virBasePath: "/test-resources/",
+		excludes
+	});
 
-	let matches = micromatch(fileAPath, excludePatterns);
-	t.deepEqual(matches.length, 0, "File A is excluded");
+	const srcResources = await srcReader.byGlob("/**/*", {nodir: false});
+	const testResources = await testReader.byGlob("/**/*", {nodir: false});
 
-	matches = micromatch(fileBPath, excludePatterns);
-	t.deepEqual(matches.length, 1, "File B is included");
+	t.deepEqual(srcResources.length, 3, "Found one src resource and two directories");
+
+	t.deepEqual(testResources.length, 1, "Found one test resource");
+	t.deepEqual(testResources.map(getPathFromResource), [
+		"/test-resources/library/l/Test2.html"
+	], "Found expected test resources");
 });
 
-test("generic exclude test 2", async (t) => {
-	const micromatch = require("micromatch");
+test("static excludes: glob with virtual root exclude (nodir: false)", async (t) => {
+	const srcReader = resourceFactory.createAdapter({
+		fsBasePath: "./test/fixtures/library.l/src",
+		virBasePath: "/resources/",
+		excludes: [
+			"/**"
+		]
+	});
 
-	const excludePatterns = [
-		"/resources/app/**",
-		"!/resources/app/fileA",
-	];
+	const resources = await srcReader.byGlob("/**/*", {nodir: false});
 
-	const fileAPath = "/resources/app/fileA";
-	const fileBPath = "/resources/app/fileB";
+	t.deepEqual(resources.length, 0, "Found no resources");
+});
+test("static excludes: glob with negated directory exclude, excluding resources (nodir: false)", async (t) => {
+	const srcReader = resourceFactory.createAdapter({
+		fsBasePath: "./test/fixtures/library.l/src",
+		virBasePath: "/resources/",
+		excludes: [
+			"/!({pony,unicorn})/**"
+		]
+	});
 
-	let matches = micromatch(fileAPath, excludePatterns);
-	t.deepEqual(matches.length, 0, "File A is excluded");
+	const resources = await srcReader.byGlob("/**/*", {nodir: false});
 
-	matches = micromatch(fileBPath, excludePatterns);
-	t.deepEqual(matches.length, 1, "File B is included");
+	t.deepEqual(resources.length, 0, "Found no resources");
 });
 
+test("static excludes: glob with negated directory exclude, not excluding resources (nodir: false)", async (t) => {
+	const srcReader = resourceFactory.createAdapter({
+		fsBasePath: "./test/fixtures/library.l/src",
+		virBasePath: "/resources/",
+		excludes: [
+			"/!(resources)/**"
+		]
+	});
 
-test("generic exclude test 3", async (t) => {
-	const micromatch = require("micromatch");
+	const resources = await srcReader.byGlob("/**/*", {nodir: false});
 
-	const excludePatterns = [
-		"!/resources/app/i18n/**",
-		"/resources/app/**",
-		"!/resources/app/manifest.json"
-	];
-
-	const paths = [
-		"/resources/app/manifest.json",
-		"/resources/app/i18n.properties",
-		"/resources/app/i18n/i18n.properties"
-	];
-
-	const matches = micromatch(paths, excludePatterns);
-	t.deepEqual(matches, [
-		"/resources/app/i18n.properties"
-	], "Top level i18n.properties file is excluded");
+	t.deepEqual(resources.length, 4, "Found two resources and two directories");
 });
