@@ -46,7 +46,7 @@ test("Get resource from application.a (/index.html) and write it to /dest/ using
 		}));
 });
 
-test("createCollectionsForTree", (t) => {
+test("createCollectionsForTree: high level test", (t) => {
 	// Creates resource reader collections for a given tree
 	const resourceReaders = ui5Fs.resourceFactory.createCollectionsForTree(applicationBTree);
 
@@ -112,6 +112,40 @@ test.serial("createCollectionsForTree with excludes", (t) => {
 		"Fifth createAdapter call: Correct base path supplied");
 	t.deepEqual(fifthCall.excludes, ["/duck-path/*"],
 		"Fifth createAdapter call: Correct exclude patterns supplied");
+});
+
+test.serial("createFsAdapterForVirtualBasePath", (t) => {
+	const createAdapterSpy = sinon.spy(ui5Fs.resourceFactory, "createAdapter");
+
+	const fsAdapter = ui5Fs.resourceFactory.createFsAdapterForVirtualBasePath({
+		project: applicationBTreeWithExcludes,
+		virBasePath: "/",
+		useNamespace: true,
+		getProjectExcludes: () => {
+			return [
+				"{/sub-directory-1/,/sub-directory-2/}**",
+				"/pony-path/**",
+				"!/duck*path/**",
+				"!**.json"
+			];
+		}
+	});
+
+	t.deepEqual(createAdapterSpy.callCount, 1, "createAdapter got called one time");
+	const firstCall = createAdapterSpy.getCall(0).args[0];
+	t.deepEqual(firstCall.fsBasePath, path.join(applicationBPath, "webapp"),
+		"First createAdapter call: Correct base path supplied");
+	t.deepEqual(firstCall.excludes, [
+		"/resources/id1/sub-directory-1/**",
+		"/resources/id1/sub-directory-2/**",
+		"/resources/id1/pony-path/**",
+		"!/resources/id1/duck*path/**",
+		"!/resources/id1/**.json"
+	],
+	"First createAdapter call: Correct exclude patterns supplied");
+
+	t.deepEqual(fsAdapter._fsBasePath, path.join(applicationBPath, "webapp"), "Returned an FS adapter");
+	// t.deepEqual(fsAdapter);
 });
 
 /* Test data */
