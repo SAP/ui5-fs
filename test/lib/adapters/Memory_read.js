@@ -275,7 +275,7 @@ test("static excludes: glob library src and test", async (t) => {
 	t.deepEqual(testResources.length, 0, "Found no test resources");
 });
 
-test.only("static excludes: glob library src and test with double negation", async (t) => {
+test("static excludes: glob library src and test with double negation", async (t) => {
 	const excludes = [
 		"/resources/**/some.js",
 		"/test-resources/**",
@@ -308,6 +308,31 @@ test.only("static excludes: glob library src and test with double negation", asy
 	t.deepEqual(srcResources.map(getPathFromResource), [
 		"/resources/library/l/.library"
 	], "Found expected src resources");
+
+	t.deepEqual(testResources.length, 1, "Found one test resource");
+	t.deepEqual(testResources.map(getPathFromResource), [
+		"/test-resources/library/l/Test2.html"
+	], "Found expected test resources");
+});
+
+test("static excludes: glob library test with double negation", async (t) => {
+	const excludes = [
+		"/test-resources/**",
+
+		// double negation has effect over preceding "/test-resources/**" exclude
+		"!/test-resources/library/l/Test2.html",
+	];
+
+	const testReader = resourceFactory.createAdapter({
+		virBasePath: "/test-resources/",
+		excludes
+	});
+	await fillFromFs(testReader, {
+		fsBasePath: "./test/fixtures/library.l/test",
+		virBasePath: "/test-resources/"
+	});
+
+	const testResources = await testReader.byGlob("/**/*", {nodir: true});
 
 	t.deepEqual(testResources.length, 1, "Found one test resource");
 	t.deepEqual(testResources.map(getPathFromResource), [
@@ -411,7 +436,7 @@ test("static excludes: byPath exclude with unused negation", async (t) => {
 	});
 
 	const resource = await readerWriter.byPath("/resources/app/index.html", {nodir: true});
-	t.truthy(resource, "Found one resource");
+	t.falsy(resource, "Resource is excluded");
 });
 
 test("static excludes: byPath exclude with negated directory pattern, excluding resources", async (t) => {
@@ -466,8 +491,8 @@ test("byPath: exclude with unused negation", async (t) => {
 		readerWriter.byPath("/resources/app/i18n/i18n.properties", {nodir: true})
 	]);
 	t.truthy(manifest, "Found manifest.json resource");
-	t.falsy(i18n, "Found i18n resource");
-	t.truthy(i18ni18n, "Found i18n in i18n directory resource");
+	t.falsy(i18n, "i18n resource is excluded");
+	t.falsy(i18ni18n, "i18n in i18n directory resource is excluded");
 });
 
 test("static excludes: glob library src and test with double negation (nodir: false)", async (t) => {
