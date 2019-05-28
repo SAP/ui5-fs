@@ -8,6 +8,7 @@ metadata:
     * (c) Copyright 2009-xxx SAP SE or an SAP affiliate company.
     * Licensed under the Apache License, Version 2.0 - see LICENSE.txt.
 builder:
-	excludes:
-		- /resources/**/some.js
-		- /test-resources/**
+  resources:
+    excludes:
+      - /resources/**/some.js
+      - /test-resources/**
