@@ -53,6 +53,19 @@ test("glob virtual directory w/o virtual base path prefix", async (t) => {
 	t.deepEqual(resources.length, 1, "Found exactly one resource");
 });
 
+test("glob virtual directory w/o virtual base path prefix and multiple patterns", async (t) => {
+	const readerWriter = resourceFactory.createAdapter({
+		fsBasePath: "./test/fixtures/application.a/webapp",
+		virBasePath: "/app/"
+	});
+
+	const resources = await readerWriter.byGlob([
+		"/*",
+		"/*"
+	], {nodir: false});
+	t.deepEqual(resources.length, 1, "Found exactly one resource");
+});
+
 test("glob virtual directory w/ virtual base path prefix", async (t) => {
 	const readerWriter = resourceFactory.createAdapter({
 		fsBasePath: "./test/fixtures/application.a/webapp",
@@ -70,6 +83,19 @@ test("glob virtual directory w/o virtual base path prefix and nodir: true", asyn
 	});
 
 	const resources = await readerWriter.byGlob("/*", {nodir: true});
+	t.deepEqual(resources.length, 0, "Found no resources");
+});
+
+test("glob virtual directory w/o virtual base path prefix and nodir: true and multiple patterns", async (t) => {
+	const readerWriter = resourceFactory.createAdapter({
+		fsBasePath: "./test/fixtures/application.a/webapp",
+		virBasePath: "/app/"
+	});
+
+	const resources = await readerWriter.byGlob([
+		"/*",
+		"/*"
+	], {nodir: true});
 	t.deepEqual(resources.length, 0, "Found no resources");
 });
 
