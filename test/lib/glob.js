@@ -209,7 +209,11 @@ test("glob with multiple patterns with static exclude", (t) => {
 		});
 });
 
-/* Generic Micromatch tests for understanding GLOB exclude behavior*/
+/*
+	Generic Micromatch tests for understanding glob exclude behavior.
+	Not active since they only test external code and our adapter-tests should
+	already test for any incompatible changes.
+*/
 // test("micromatch exclude test", async (t) => {
 // 	const micromatch = require("micromatch");
 

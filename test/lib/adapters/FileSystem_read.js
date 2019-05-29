@@ -246,7 +246,7 @@ test("static excludes: byPath exclude everything in sub-directory", async (t) =>
 	});
 
 	const resource = await readerWriter.byPath("/resources/app/index.html", {nodir: true});
-	t.falsy(resource, "Found no resource");
+	t.deepEqual(resource, null, "Found no resource");
 });
 
 test("static excludes: byPath exclude with negation", async (t) => {
@@ -274,7 +274,7 @@ test("static excludes: byPath exclude with unused negation", async (t) => {
 	});
 
 	const resource = await readerWriter.byPath("/resources/app/index.html", {nodir: true});
-	t.falsy(resource, "Resource is excluded");
+	t.deepEqual(resource, null, "Resource is excluded");
 });
 
 test("static excludes: byPath exclude with negated directory pattern, excluding resources", async (t) => {
@@ -287,7 +287,7 @@ test("static excludes: byPath exclude with negated directory pattern, excluding 
 	});
 
 	const resource = await readerWriter.byPath("/resources/app/index.html", {nodir: true});
-	t.falsy(resource, "Found no resource");
+	t.deepEqual(resource, null, "Found no resource");
 });
 
 test("static excludes: byPath exclude with negated directory pattern, not excluding resources", async (t) => {
@@ -320,8 +320,8 @@ test("byPath: exclude with unused negation", async (t) => {
 		readerWriter.byPath("/resources/app/i18n/i18n.properties", {nodir: true})
 	]);
 	t.truthy(manifest, "Found manifest.json resource");
-	t.falsy(i18n, "i18n resource is excluded");
-	t.falsy(i18ni18n, "i18n in i18n directory resource is excluded");
+	t.deepEqual(i18n, null, "i18n resource is excluded");
+	t.deepEqual(i18ni18n, null, "i18n in i18n directory resource is excluded");
 });
 
 test("static excludes: glob library src and test with double negation (nodir: false)", async (t) => {
