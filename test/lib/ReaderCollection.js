@@ -69,6 +69,86 @@ test("ReaderCollection: _byGlob with finding a resource", (t) => {
 		});
 });
 
+test("ReaderCollection: _byGlob with duplicate resources", async (t) => {
+	const resource1 = new Resource({
+		path: "my/path",
+		buffer: Buffer.from("content")
+	});
+
+	const resource2 = new Resource({
+		path: "my/path",
+		buffer: Buffer.from("content")
+	});
+	const abstractReader1 = {
+		_byGlob: sinon.stub().returns(Promise.resolve([resource1]))
+	};
+	const abstractReader2 = {
+		_byGlob: sinon.stub().returns(Promise.resolve([resource2]))
+	};
+	const trace = {
+		collection: sinon.spy()
+	};
+	const readerCollection = new ReaderCollection({
+		name: "myReader",
+		readers: [abstractReader1, abstractReader2]
+	});
+
+	const res = await readerCollection._byGlob("anyPattern", {nodir: true}, trace);
+	t.deepEqual(res.length, 2, "Two resources found");
+	t.deepEqual(res[0].getPath(), "my/path", "Resource 1 has expected path");
+	t.deepEqual(res[1].getPath(), "my/path", "Resource 2 has expected path (same as 1)");
+});
+
+test("ReaderCollection: _byGlob with duplicate directories", async (t) => {
+	const fnTrue = () => true;
+	const fnFalse = () => false;
+	const dirStatInfo = {
+		isFile: fnFalse,
+		isDirectory: fnTrue,
+		isBlockDevice: fnFalse,
+		isCharacterDevice: fnFalse,
+		isSymbolicLink: fnFalse,
+		isFIFO: fnFalse,
+		isSocket: fnFalse,
+		atimeMs: new Date().getTime(),
+		mtimeMs: new Date().getTime(),
+		ctimeMs: new Date().getTime(),
+		birthtimeMs: new Date().getTime(),
+		atime: new Date(),
+		mtime: new Date(),
+		ctime: new Date(),
+		birthtime: new Date()
+	};
+
+	const resource1 = new Resource({
+		path: "my/dir",
+		statInfo: dirStatInfo
+	});
+
+	const resource2 = new Resource({
+		path: "my/dir",
+		statInfo: dirStatInfo
+	});
+	const abstractReader1 = {
+		_byGlob: sinon.stub().returns(Promise.resolve([resource1]))
+	};
+	const abstractReader2 = {
+		_byGlob: sinon.stub().returns(Promise.resolve([resource2]))
+	};
+	const trace = {
+		collection: sinon.spy()
+	};
+	const readerCollection = new ReaderCollection({
+		name: "myReader",
+		readers: [abstractReader1, abstractReader2]
+	});
+
+	const res = await readerCollection._byGlob("anyPattern", {nodir: true}, trace);
+	t.deepEqual(res.length, 2, "Two resources found");
+	t.deepEqual(res[0].getPath(), "my/dir", "Resource 1 has expected path");
+	t.deepEqual(res[1].getPath(), "my/dir", "Resource 2 has expected path (same as 1)");
+});
+
 test("ReaderCollection: _byPath with reader finding a resource", (t) => {
 	t.plan(5);
 
