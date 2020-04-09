@@ -118,7 +118,7 @@
 		"docdash": "^1.2.0",
 		"eslint": "^5.16.0",
 		"eslint-config-google": "^0.14.0",
-		"eslint-plugin-jsdoc": "^4.8.4",
+		"eslint-plugin-jsdoc": "^21.0.0",
 		"jsdoc": "^3.6.3",
 		"nyc": "^15.0.1",
 		"open-cli": "^6.0.1",
