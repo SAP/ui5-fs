@@ -4,10 +4,10 @@ const fs = require("fs");
 const path = require("path");
 const Resource = require("../../lib/Resource");
 
-function createBasicResource() {
-	const fsPath = path.join("test", "fixtures", "application.a", "webapp", "index.html");
+function createBasicResource(fileName = "index.html") {
+	const fsPath = path.join("test", "fixtures", "application.a", "webapp", fileName);
 	const resource = new Resource({
-		path: "/app/index.html",
+		path: "/app/" + fileName,
 		createStream: function() {
 			return fs.createReadStream(fsPath);
 		},
@@ -17,6 +17,18 @@ function createBasicResource() {
 	});
 	return resource;
 }
+
+const readStream = (readableStream) => {
+	return new Promise((resolve) => {
+		let streamedResult = "";
+		readableStream.on("data", (chunk) => {
+			streamedResult += chunk;
+		});
+		readableStream.on("end", () => {
+			resolve(streamedResult);
+		});
+	});
+};
 
 test("Resource: constructor with missing path parameter", (t) => {
 	t.throws(() => {
@@ -62,17 +74,21 @@ test("Resource: getStream", async (t) => {
 		buffer: Buffer.from("Content")
 	});
 
-	return new Promise(function(resolve, reject) {
-		let streamedResult = "";
-		const readableStream = resource.getStream();
-		readableStream.on("data", (chunk) => {
-			streamedResult += chunk;
-		});
-		readableStream.on("end", () => {
-			resolve(streamedResult);
-		});
-	}).then((result) => {
+	return readStream(resource.getStream()).then((result) => {
 		t.is(result, "Content", "Stream has been read correctly");
+	});
+});
+
+test("Resource: getStream for empty string", async (t) => {
+	t.plan(1);
+
+	const resource = new Resource({
+		path: "my/path/to/resource",
+		string: ""
+	});
+
+	return readStream(resource.getStream()).then((result) => {
+		t.is(result, "", "Stream has been read correctly for empty string");
 	});
 });
 
@@ -158,6 +174,12 @@ test("Resource: clone resource with stream", (t) => {
 			t.is(value, "Content", "Cloned resource has correct content string");
 		});
 	});
+});
+
+test("getStream for empty file: correctly retrieved", async (t) => {
+	const resource = createBasicResource("empty.js");
+	const string = await readStream(resource.getStream());
+	t.is(string, "", "empty content");
 });
 
 test("getStream with createStream callback content: Subsequent content requests should throw error due " +
