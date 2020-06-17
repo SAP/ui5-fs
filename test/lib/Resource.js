@@ -18,14 +18,23 @@ function createBasicResource(fileName = "index.html") {
 	return resource;
 }
 
+/**
+ * Reads a readable stream and resolves with its content
+ *
+ * @param {stream.Readable} readableStream readable stream
+ * @returns {Promise<string>} resolves with the read string
+ */
 const readStream = (readableStream) => {
-	return new Promise((resolve) => {
+	return new Promise((resolve, reject) => {
 		let streamedResult = "";
 		readableStream.on("data", (chunk) => {
 			streamedResult += chunk;
 		});
 		readableStream.on("end", () => {
 			resolve(streamedResult);
+		});
+		readableStream.on("error", (err) => {
+			reject(err);
 		});
 	});
 };
@@ -178,8 +187,8 @@ test("Resource: clone resource with stream", (t) => {
 
 test("getStream for empty file: correctly retrieved", async (t) => {
 	const resource = createBasicResource("empty.js");
-	const string = await readStream(resource.getStream());
-	t.is(string, "", "empty content");
+	const result = await readStream(resource.getStream());
+	t.is(result, "", "empty content");
 });
 
 test("getStream with createStream callback content: Subsequent content requests should throw error due " +
