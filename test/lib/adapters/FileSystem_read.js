@@ -94,7 +94,7 @@ test("glob resources from application.a with directory exclude", async (t) => {
 	});
 
 	await readerWriter.byGlob("/!(pony,unicorn)/**").then(function(resources) {
-		t.deepEqual(resources.length, 3, "Found exactly two resource");
+		t.deepEqual(resources.length, 3, "Found exactly three resource");
 	});
 });
 
