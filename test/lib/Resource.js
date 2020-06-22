@@ -185,12 +185,6 @@ test("Resource: clone resource with stream", (t) => {
 	});
 });
 
-test("getStream for empty file: correctly retrieved", async (t) => {
-	const resource = createBasicResource("empty.js");
-	const result = await readStream(resource.getStream());
-	t.is(result, "", "empty content");
-});
-
 test("getStream with createStream callback content: Subsequent content requests should throw error due " +
 		"to drained content", async (t) => {
 	const resource = createBasicResource();
