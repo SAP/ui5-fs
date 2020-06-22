@@ -4,10 +4,10 @@ const fs = require("fs");
 const path = require("path");
 const Resource = require("../../lib/Resource");
 
-function createBasicResource(fileName = "index.html") {
-	const fsPath = path.join("test", "fixtures", "application.a", "webapp", fileName);
+function createBasicResource() {
+	const fsPath = path.join("test", "fixtures", "application.a", "webapp", "index.html");
 	const resource = new Resource({
-		path: "/app/" + fileName,
+		path: "/app/index.html",
 		createStream: function() {
 			return fs.createReadStream(fsPath);
 		},
