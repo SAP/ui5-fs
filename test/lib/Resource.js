@@ -101,6 +101,20 @@ test("Resource: getStream for empty string", async (t) => {
 	});
 });
 
+test("Resource: getStream for empty string instance", async (t) => {
+	t.plan(1);
+
+	const resource = new Resource({
+		path: "my/path/to/resource",
+		// eslint-disable-next-line no-new-wrappers
+		string: new String("")
+	});
+
+	return readStream(resource.getStream()).then((result) => {
+		t.is(result, "", "Stream has been read correctly for empty string");
+	});
+});
+
 test("Resource: getStream throwing an error", (t) => {
 	const resource = new Resource({
 		path: "my/path/to/resource"
