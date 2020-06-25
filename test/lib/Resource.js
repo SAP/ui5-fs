@@ -142,6 +142,58 @@ test("Resource: setString", (t) => {
 	});
 });
 
+test("Resource: size modification", async (t) => {
+	const resource = new Resource({
+		path: "my/path/to/resource"
+	});
+	t.falsy(resource.getStatInfo().size, "initial size is not defined");
+
+	// string
+	resource.setString("Content");
+
+	t.is(resource.getStatInfo().size, 7, "size after manually setting the string");
+	t.is(new Resource({
+		path: "my/path/to/resource",
+		string: "Content"
+	}).getStatInfo().size, 7, "size when passing string to constructor");
+
+
+	// buffer
+	resource.setBuffer(Buffer.from("Super"));
+
+	t.is(resource.getStatInfo().size, 5, "size after manually setting the string");
+
+	const clonedResource1 = await resource.clone();
+	t.is(clonedResource1.getStatInfo().size, 5, "size after cloning the resource");
+
+
+	// buffer with alloc
+	const buf = Buffer.alloc(1234);
+	buf.write("some string", 0, "utf8");
+	resource.setBuffer(buf);
+
+	t.is(resource.getStatInfo().size, 1234, "buffer with alloc after setting the buffer");
+	t.is(new Resource({
+		path: "my/path/to/resource",
+		buffer: buf
+	}).getStatInfo().size, 1234, "buffer with alloc when passing buffer to constructor");
+
+	const clonedResource2 = await resource.clone();
+	t.is(clonedResource2.getStatInfo().size, 1234, "buffer with alloc atfer clone");
+});
+
+test("Resource: _setSize", (t) => {
+	t.plan(1);
+
+	const resource = new Resource({
+		path: "my/path/to/resource"
+	});
+
+	resource._setSize(1337);
+
+	t.is(resource.getStatInfo().size, 1337);
+});
+
 test("Resource: setStream", (t) => {
 	t.plan(1);
 
