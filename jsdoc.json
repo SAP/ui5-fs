@@ -7,7 +7,9 @@
         "includePattern": ".+\\.js$",
         "excludePattern": "(node_modules(\\\\|/))"
     },
-    "plugins": [],
+    "plugins": [
+		"./jsdoc-plugin-ignore-ts-import"
+	],
     "opts": {
         "template": "node_modules/docdash/",
         "encoding": "utf8",
@@ -56,5 +58,5 @@
                 "id": "github_link"
             }
         }
-    }
+	}
 }
