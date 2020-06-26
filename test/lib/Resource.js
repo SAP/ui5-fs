@@ -2,6 +2,8 @@ const test = require("ava");
 const Stream = require("stream");
 const fs = require("fs");
 const path = require("path");
+const {promisify} = require("util");
+const stat = promisify(fs.stat);
 const Resource = require("../../lib/Resource");
 
 function createBasicResource() {
@@ -318,4 +320,15 @@ test("getBuffer from Stream content: Subsequent content requests should not thro
 	// Race condition in _getBufferFromStream used to cause p2
 	// to throw "Content stream of Resource /app/index.html is flagged as drained."
 	await t.notThrowsAsync(p2);
+});
+
+test("integration stat - resource size", async (t) => {
+	const fsPath = path.join("test", "fixtures", "application.a", "webapp", "index.html");
+	const statInfo = await stat(fsPath);
+
+	const resource = new Resource({path: fsPath, statInfo});
+	t.is(resource.getStatInfo().size, 91);
+
+	resource.setString("myvalue");
+	t.is(resource.getStatInfo().size, 7);
 });
