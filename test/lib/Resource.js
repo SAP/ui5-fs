@@ -326,7 +326,17 @@ test("integration stat - resource size", async (t) => {
 	const fsPath = path.join("test", "fixtures", "application.a", "webapp", "index.html");
 	const statInfo = await stat(fsPath);
 
-	const resource = new Resource({path: fsPath, statInfo});
+	const resource = new Resource({
+		path: fsPath,
+		statInfo,
+		createStream: () => {
+			return fs.createReadStream(fsPath);
+		}
+	});
+	t.is(resource.getStatInfo().size, 91);
+
+	// Setting the same content again should end up with the same size
+	resource.setString(await resource.getString());
 	t.is(resource.getStatInfo().size, 91);
 
 	resource.setString("myvalue");
