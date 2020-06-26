@@ -1,5 +1,5 @@
 /*
- * Removes JSDoc comments with TypeScript import() declarations
+ * Removes JSDoc comments with TypeScript import() declarations (used in index.js)
  */
 
 const IMPORT_PATTERN = /{(?:typeof )?import\(["'][^"']*["']\)[ .|}><,)=#\n]/;
