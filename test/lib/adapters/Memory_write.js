@@ -13,6 +13,7 @@ test("glob resources from application.a w/ virtual base path prefix", async (t) 
 		.then(() => dest.byGlob("/app/*.html"))
 		.then((resources) => {
 			t.deepEqual(resources.length, 1, "Found exactly one resource");
+			t.not(resources[0], res, "Not the same resource instance");
 		});
 });
 
@@ -44,6 +45,9 @@ test("Write resource w/ virtual base path", async (t) => {
 	t.deepEqual(readerWriter._virFiles, {
 		"test.html": res
 	}, "Adapter added resource with correct path");
+
+
+	t.not(readerWriter._virFiles["test.html"], res, "Not the same resource instance");
 
 	t.deepEqual(Object.keys(readerWriter._virDirs), [], "Adapter added correct virtual directories");
 });
