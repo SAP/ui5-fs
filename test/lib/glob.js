@@ -32,7 +32,7 @@ function matchGlobResult(t, resources, expectedResources) {
 test("glob all", (t) => {
 	return t.context.readerWriter.filesystem.byGlob("/**/*.*")
 		.then((resources) => {
-			t.deepEqual(resources.length, 16, "Found all resources");
+			t.is(resources.length, 16, "Found all resources");
 		});
 });
 
@@ -48,7 +48,7 @@ test("glob all with virtual base path fully matching", (t) => {
 	t.plan(1);
 	return t.context.readerWriter.filesystem.byGlob("/test-resources/**/*.*")
 		.then((resources) => {
-			t.deepEqual(resources.length, 16, "Found all resources");
+			t.is(resources.length, 16, "Found all resources");
 		});
 });
 
@@ -60,7 +60,7 @@ test("glob with virtual base path partially matching", (t) => {
 	});
 	return adapter.byGlob("/test-resources/**/*.*")
 		.then((resources) => {
-			t.deepEqual(resources.length, 4, "Found all resources");
+			t.is(resources.length, 4, "Found all resources");
 		});
 });
 
@@ -116,7 +116,7 @@ test("glob only a specific filetype (yaml)", (t) => {
 	return t.context.readerWriter.filesystem.byGlob("/**/*.yaml")
 		.then((resources) => {
 			resources.forEach((res) => {
-				t.deepEqual(res._name, "ui5.yaml");
+				t.is(res._name, "ui5.yaml");
 			});
 		});
 });
@@ -141,7 +141,7 @@ test("glob only a specific filetype (json) with exclude pattern", (t) => {
 		"!/**/*package.json"
 	]).then((resources) => {
 		resources.forEach((res) => {
-			t.deepEqual(res._name, "manifest.json");
+			t.is(res._name, "manifest.json");
 		});
 	});
 });
@@ -163,8 +163,8 @@ test("glob (normalized) root directory (=> fs root)", (t) => {
 		"/*/",
 	], {nodir: false}).then((resources) => {
 		resources.forEach((res) => {
-			t.deepEqual(res._name, "test-resources");
-			t.deepEqual(res.getStatInfo().isDirectory(), true);
+			t.is(res._name, "test-resources");
+			t.is(res.getStatInfo().isDirectory(), true);
 		});
 	});
 });
@@ -183,8 +183,8 @@ test("glob subdirectory", (t) => {
 		"/test-resources/app*a",
 	], {nodir: false}).then((resources) => {
 		resources.forEach((res) => {
-			t.deepEqual(res._name, "application.a");
-			t.deepEqual(res.getStatInfo().isDirectory(), true);
+			t.is(res._name, "application.a");
+			t.is(res.getStatInfo().isDirectory(), true);
 		});
 	});
 });

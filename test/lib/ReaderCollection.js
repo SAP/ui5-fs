@@ -9,7 +9,7 @@ test("ReaderCollection: constructor", (t) => {
 		readers: [{}, {}, {}]
 	});
 
-	t.deepEqual(readerCollection._name, "myReader", "correct name assigned");
+	t.is(readerCollection._name, "myReader", "correct name assigned");
 	t.deepEqual(readerCollection._readers, [{}, {}, {}], "correct readers assigned");
 });
 
@@ -62,9 +62,9 @@ test("ReaderCollection: _byGlob with finding a resource", (t) => {
 			t.true(abstractReader._byGlob.calledWithExactly("anyPattern", {someOption: true}, trace),
 				"Delegated globbing task correctly to readers");
 			t.true(trace.collection.called, "Trace.collection called");
-			t.deepEqual(resources[0].getPath(), "my/path", "Resource has expected path");
+			t.is(resources[0].getPath(), "my/path", "Resource has expected path");
 			return resources[0].getString().then(function(content) {
-				t.deepEqual(content, "content", "Resource has expected content");
+				t.is(content, "content", "Resource has expected content");
 			});
 		});
 });
@@ -94,9 +94,9 @@ test("ReaderCollection: _byPath with reader finding a resource", (t) => {
 				"Delegated globbing task correctly to readers");
 			t.true(trace.collection.called, "Trace.collection called");
 			t.true(pushCollectionSpy.called, "pushCollection called on resource");
-			t.deepEqual(resource.getPath(), "my/path", "Resource has expected path");
+			t.is(resource.getPath(), "my/path", "Resource has expected path");
 			return resource.getString().then(function(content) {
-				t.deepEqual(content, "content", "Resource has expected content");
+				t.is(content, "content", "Resource has expected content");
 			});
 		});
 });

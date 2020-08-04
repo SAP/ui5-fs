@@ -80,13 +80,13 @@ test.serial("createCollectionsForTree", (t) => {
 		}
 	});
 
-	t.deepEqual(createFsAdapterForVirtualBasePathSpy.callCount, 9,
+	t.is(createFsAdapterForVirtualBasePathSpy.callCount, 9,
 		"createFsAdapterForVirtualBasePath got called nine times");
 
-	t.deepEqual(resourceReaders.source._readers.length, 1, "One reader for the application code");
-	t.deepEqual(resourceReaders.dependencies._readers.length, 7,
+	t.is(resourceReaders.source._readers.length, 1, "One reader for the application code");
+	t.is(resourceReaders.dependencies._readers.length, 7,
 		"Seven readers for the application's dependencies on top level");
-	t.deepEqual(resourceReaders.dependencies._readers[0]._readers.length, 3,
+	t.is(resourceReaders.dependencies._readers[0]._readers.length, 3,
 		"First dependency reader is a (prioritized) collection of three readers");
 	t.is(resourceReaders.dependencies._readers[0]._readers[0], libraryDMemoryAdapter,
 		"First reader of that collection is the supplied memory reader");
@@ -94,7 +94,7 @@ test.serial("createCollectionsForTree", (t) => {
 	const firstCall = createFsAdapterForVirtualBasePathSpy.getCall(0).args[0];
 	t.is(firstCall.project, applicationBTree,
 		"First createAdapter call: Correct project supplied");
-	t.deepEqual(firstCall.virBasePath, "/",
+	t.is(firstCall.virBasePath, "/",
 		"First createAdapter call: Correct virBasePath supplied");
 	t.is(firstCall.getProjectExcludes, getProjectExcludesCallback,
 		"First createAdapter call: Correct getProjectExcludes parameter supplied");
@@ -104,7 +104,7 @@ test.serial("createCollectionsForTree", (t) => {
 	const secondCall = createFsAdapterForVirtualBasePathSpy.getCall(1).args[0];
 	t.is(secondCall.project, applicationBTree.dependencies[0],
 		"second createAdapter call: Correct project supplied");
-	t.deepEqual(secondCall.virBasePath, "/resources/",
+	t.is(secondCall.virBasePath, "/resources/",
 		"second createAdapter call: Correct virBasePath supplied");
 	t.is(secondCall.getProjectExcludes, getProjectExcludesCallback,
 		"second createAdapter call: Correct getProjectExcludes parameter supplied");
@@ -114,7 +114,7 @@ test.serial("createCollectionsForTree", (t) => {
 	const thirdCall = createFsAdapterForVirtualBasePathSpy.getCall(2).args[0];
 	t.is(thirdCall.project, applicationBTree.dependencies[0],
 		"third createAdapter call: Correct project supplied");
-	t.deepEqual(thirdCall.virBasePath, "/test-resources/",
+	t.is(thirdCall.virBasePath, "/test-resources/",
 		"third createAdapter call: Correct virBasePath supplied");
 	t.is(thirdCall.getProjectExcludes, getProjectExcludesCallback,
 		"third createAdapter call: Correct getProjectExcludes parameter supplied");
@@ -124,7 +124,7 @@ test.serial("createCollectionsForTree", (t) => {
 	const fourthCall = createFsAdapterForVirtualBasePathSpy.getCall(3).args[0];
 	t.is(fourthCall.project, applicationBTree.dependencies[1],
 		"fourth createAdapter call: Correct project supplied");
-	t.deepEqual(fourthCall.virBasePath, "/resources/",
+	t.is(fourthCall.virBasePath, "/resources/",
 		"fourth createAdapter call: Correct virBasePath supplied");
 	t.is(fourthCall.getProjectExcludes, getProjectExcludesCallback,
 		"fourth createAdapter call: Correct getProjectExcludes parameter supplied");
@@ -134,7 +134,7 @@ test.serial("createCollectionsForTree", (t) => {
 	const fifthCall = createFsAdapterForVirtualBasePathSpy.getCall(4).args[0];
 	t.is(fifthCall.project, applicationBTree.dependencies[1],
 		"fifth createAdapter call: Correct project supplied");
-	t.deepEqual(fifthCall.virBasePath, "/test-resources/",
+	t.is(fifthCall.virBasePath, "/test-resources/",
 		"fifth createAdapter call: Correct virBasePath supplied");
 	t.is(fifthCall.getProjectExcludes, getProjectExcludesCallback,
 		"fifth createAdapter call: Correct getProjectExcludes parameter supplied");
@@ -144,7 +144,7 @@ test.serial("createCollectionsForTree", (t) => {
 	const sixthCall = createFsAdapterForVirtualBasePathSpy.getCall(5).args[0];
 	t.is(sixthCall.project, applicationBTree.dependencies[2],
 		"sixth createAdapter call: Correct project supplied");
-	t.deepEqual(sixthCall.virBasePath, "/resources/",
+	t.is(sixthCall.virBasePath, "/resources/",
 		"sixth createAdapter call: Correct virBasePath supplied");
 	t.is(sixthCall.getProjectExcludes, getProjectExcludesCallback,
 		"sixth createAdapter call: Correct getProjectExcludes parameter supplied");
@@ -154,7 +154,7 @@ test.serial("createCollectionsForTree", (t) => {
 	const seventhCall = createFsAdapterForVirtualBasePathSpy.getCall(6).args[0];
 	t.is(seventhCall.project, applicationBTree.dependencies[2],
 		"seventh createAdapter call: Correct project supplied");
-	t.deepEqual(seventhCall.virBasePath, "/test-resources/",
+	t.is(seventhCall.virBasePath, "/test-resources/",
 		"seventh createAdapter call: Correct virBasePath supplied");
 	t.is(seventhCall.getProjectExcludes, getProjectExcludesCallback,
 		"seventh createAdapter call: Correct getProjectExcludes parameter supplied");
@@ -164,7 +164,7 @@ test.serial("createCollectionsForTree", (t) => {
 	const eightCall = createFsAdapterForVirtualBasePathSpy.getCall(7).args[0];
 	t.is(eightCall.project, applicationBTree.dependencies[3],
 		"eight createAdapter call: Correct project supplied");
-	t.deepEqual(eightCall.virBasePath, "/resources/",
+	t.is(eightCall.virBasePath, "/resources/",
 		"eight createAdapter call: Correct virBasePath supplied");
 	t.is(eightCall.getProjectExcludes, getProjectExcludesCallback,
 		"eight createAdapter call: Correct getProjectExcludes parameter supplied");
@@ -174,7 +174,7 @@ test.serial("createCollectionsForTree", (t) => {
 	const ninthCall = createFsAdapterForVirtualBasePathSpy.getCall(8).args[0];
 	t.is(ninthCall.project, applicationBTree.dependencies[3],
 		"ninth createAdapter call: Correct project supplied");
-	t.deepEqual(ninthCall.virBasePath, "/test-resources/",
+	t.is(ninthCall.virBasePath, "/test-resources/",
 		"ninth createAdapter call: Correct virBasePath supplied");
 	t.is(ninthCall.getProjectExcludes, getProjectExcludesCallback,
 		"ninth createAdapter call: Correct getProjectExcludes parameter supplied");
@@ -190,7 +190,7 @@ test.serial("createCollectionsForTree/createFsAdapterForVirtualBasePath with exc
 		}
 	});
 
-	t.deepEqual(createAdapterSpy.callCount, 5, "createAdapter got called three times");
+	t.is(createAdapterSpy.callCount, 5, "createAdapter got called three times");
 
 	const firstCall = createAdapterSpy.getCall(0).args[0];
 	t.deepEqual(firstCall.fsBasePath, path.join(applicationBPath, "webapp"),
@@ -251,14 +251,14 @@ test.serial("_createFsAdapterForVirtualBasePath: application with virtual base p
 		}
 	});
 
-	t.deepEqual(getVirtualBasePathPrefixStub.callCount, 1,
+	t.is(getVirtualBasePathPrefixStub.callCount, 1,
 		"getVirtualBasePathPrefix callback called once");
-	t.deepEqual(getVirtualBasePathPrefixStub.getCall(0).args[0].project.id, "application.b",
+	t.is(getVirtualBasePathPrefixStub.getCall(0).args[0].project.id, "application.b",
 		"getVirtualBasePathPrefix callback called with correct project");
-	t.deepEqual(getVirtualBasePathPrefixStub.getCall(0).args[0].virBasePath, "/",
+	t.is(getVirtualBasePathPrefixStub.getCall(0).args[0].virBasePath, "/",
 		"getVirtualBasePathPrefix callback called with correct virtual base path");
 
-	t.deepEqual(createAdapterSpy.callCount, 1, "createAdapter got called one time");
+	t.is(createAdapterSpy.callCount, 1, "createAdapter got called one time");
 	const firstCall = createAdapterSpy.getCall(0).args[0];
 	t.deepEqual(firstCall.fsBasePath, path.join(applicationBPath, "webapp"),
 		"First createAdapter call: Correct base path supplied");
@@ -290,7 +290,7 @@ test.serial("_createFsAdapterForVirtualBasePath: library", (t) => {
 		}
 	});
 
-	t.deepEqual(createAdapterSpy.callCount, 1, "createAdapter got called one time");
+	t.is(createAdapterSpy.callCount, 1, "createAdapter got called one time");
 	const firstCall = createAdapterSpy.getCall(0).args[0];
 	t.deepEqual(firstCall.fsBasePath, path.join(libraryDTree.path, "main/src"),
 		"First createAdapter call: Correct base path supplied");
