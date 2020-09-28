@@ -20,7 +20,11 @@ module.exports = {
 		/**
 		 * @type {typeof import('./lib/adapters/Memory')}
 		 */
-		Memory: "./lib/adapters/Memory"
+		Memory: "./lib/adapters/Memory",
+		/**
+		 * @type {typeof import('./lib/adapters/ZipArchive')}
+		 */
+		ZipArchive: "./lib/adapters/ZipArchive"
 	},
 	/**
 	 * @type {typeof import('./lib/AbstractReader')}
