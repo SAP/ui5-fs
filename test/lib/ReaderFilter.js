@@ -11,7 +11,7 @@ test("_byGlob: Basic filter", async (t) => {
 	};
 	const readerCollection = new ReaderFilter({
 		reader: abstractReader,
-		filterCallback: function(resource) {
+		callback: function(resource) {
 			if (resource === "resource a") {
 				return false;
 			}
@@ -32,7 +32,7 @@ test("_byPath: Negative filter", async (t) => {
 	};
 	const readerCollection = new ReaderFilter({
 		reader: abstractReader,
-		filterCallback: function(resource) {
+		callback: function(resource) {
 			if (resource === "resource a") {
 				return false;
 			}
@@ -40,8 +40,8 @@ test("_byPath: Negative filter", async (t) => {
 		}
 	});
 
-	const resources = await readerCollection._byPath("anyPattern", {}, trace);
-	t.deepEqual(resources, null, "Correct empty in result");
+	const resource = await readerCollection._byPath("anyPattern", {}, trace);
+	t.deepEqual(resource, null, "Correct empty result");
 });
 
 test("_byPath: Positive filter", async (t) => {
@@ -53,7 +53,7 @@ test("_byPath: Positive filter", async (t) => {
 	};
 	const readerCollection = new ReaderFilter({
 		reader: abstractReader,
-		filterCallback: function(resource) {
+		callback: function(resource) {
 			if (resource === "resource a") {
 				return false;
 			}
@@ -61,6 +61,6 @@ test("_byPath: Positive filter", async (t) => {
 		}
 	});
 
-	const resources = await readerCollection._byPath("anyPattern", {}, trace);
-	t.deepEqual(resources, "resource b", "Correct resource in result");
+	const resource = await readerCollection._byPath("anyPattern", {}, trace);
+	t.deepEqual(resource, "resource b", "Correct resource in result");
 });
