@@ -1,6 +1,6 @@
 const test = require("ava");
 const sinon = require("sinon");
-const ReaderFilter = require("../../lib/ReaderFilter");
+const Filter = require("../../../lib/readers/Filter");
 
 test("_byGlob: Basic filter", async (t) => {
 	const abstractReader = {
@@ -9,7 +9,7 @@ test("_byGlob: Basic filter", async (t) => {
 	const trace = {
 		collection: sinon.spy()
 	};
-	const readerCollection = new ReaderFilter({
+	const readerCollection = new Filter({
 		reader: abstractReader,
 		callback: function(resource) {
 			if (resource === "resource a") {
@@ -30,7 +30,7 @@ test("_byPath: Negative filter", async (t) => {
 	const trace = {
 		collection: sinon.spy()
 	};
-	const readerCollection = new ReaderFilter({
+	const readerCollection = new Filter({
 		reader: abstractReader,
 		callback: function(resource) {
 			if (resource === "resource a") {
@@ -51,7 +51,7 @@ test("_byPath: Positive filter", async (t) => {
 	const trace = {
 		collection: sinon.spy()
 	};
-	const readerCollection = new ReaderFilter({
+	const readerCollection = new Filter({
 		reader: abstractReader,
 		callback: function(resource) {
 			if (resource === "resource a") {

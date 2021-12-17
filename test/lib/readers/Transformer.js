@@ -1,6 +1,6 @@
 const test = require("ava");
 const sinon = require("sinon");
-const ReaderTransformer = require("../../lib/ReaderTransformer");
+const Transformer = require("../../../lib/readers/Transformer");
 
 function getDummyResource(name) {
 	return {
@@ -20,7 +20,7 @@ test("_byGlob: Basic transformation", async (t) => {
 	const trace = {
 		collection: sinon.spy()
 	};
-	const readerCollection = new ReaderTransformer({
+	const readerCollection = new Transformer({
 		reader: abstractReader,
 		callback: function(resource) {
 			if (resource.name === "resource a") {
@@ -45,7 +45,7 @@ test("_byPath: Basic transformation", async (t) => {
 	const trace = {
 		collection: sinon.spy()
 	};
-	const readerCollection = new ReaderTransformer({
+	const readerCollection = new Transformer({
 		reader: abstractReader,
 		callback: function(resource) {
 			resource.name = "transformed resource a";
@@ -66,7 +66,7 @@ test("_byPath: No transformation", async (t) => {
 	const trace = {
 		collection: sinon.spy()
 	};
-	const readerCollection = new ReaderTransformer({
+	const readerCollection = new Transformer({
 		reader: abstractReader,
 		callback: function(resource) {
 			return;
@@ -88,7 +88,7 @@ test("async _byGlob: Basic transformation", async (t) => {
 	const trace = {
 		collection: sinon.spy()
 	};
-	const readerCollection = new ReaderTransformer({
+	const readerCollection = new Transformer({
 		reader: abstractReader,
 		callback: function(resource) {
 			return new Promise((resolve) => {
@@ -118,7 +118,7 @@ test("async _byPath: Basic transformation", async (t) => {
 	const trace = {
 		collection: sinon.spy()
 	};
-	const readerCollection = new ReaderTransformer({
+	const readerCollection = new Transformer({
 		reader: abstractReader,
 		callback: function(resource) {
 			return new Promise((resolve) => {
@@ -144,7 +144,7 @@ test("async _byPath: No transformation", async (t) => {
 	const trace = {
 		collection: sinon.spy()
 	};
-	const readerCollection = new ReaderTransformer({
+	const readerCollection = new Transformer({
 		reader: abstractReader,
 		callback: async function(resource) {
 			return;

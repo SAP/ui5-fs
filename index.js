@@ -22,6 +22,16 @@ module.exports = {
 		 */
 		Memory: "./lib/adapters/Memory"
 	},
+	readers: {
+		/**
+		 * @type {typeof import('./lib/readers/Filter')}
+		 */
+		Filter: "./lib/readers/Filter",
+		/**
+		 * @type {typeof import('./lib/readers/Transformer')}
+		 */
+		Transformer: "./lib/readers/Transformer",
+	},
 	/**
 	 * @type {typeof import('./lib/AbstractReader')}
 	 */
