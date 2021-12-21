@@ -82,7 +82,7 @@ test("Write resource in drain mode", async (t) => {
 		assert.fileEqual(destFsPath, "./test/fixtures/application.a/webapp/index.html");
 	});
 	await t.throwsAsync(resource.getBuffer(),
-		{message: /Failed to get buffer for resource \/app\/index.html: Content stream has been drained/});
+		{message: /Content of Resource \/app\/index.html has been drained/});
 });
 
 test("Writing with readOnly and drain options set should fail", async (t) => {
