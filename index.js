@@ -22,6 +22,11 @@ module.exports = {
 		 */
 		Memory: "./lib/adapters/Memory"
 	},
+	/**
+	 * @public
+	 * @alias module:@ui5/fs.readers
+	 * @namespace
+	 */
 	readers: {
 		/**
 		 * @type {typeof import('./lib/readers/Filter')}
