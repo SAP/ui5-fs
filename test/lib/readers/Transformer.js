@@ -4,7 +4,7 @@ const Transformer = require("../../../lib/readers/Transformer");
 
 function getDummyResource(name) {
 	return {
-		name,
+		name, // arbitrary attribute to change
 		getPath: function() {
 			return `/resources/${name}`;
 		},
@@ -25,10 +25,11 @@ test("_byGlob: Basic transformation", async (t) => {
 	};
 	const readerCollection = new Transformer({
 		reader: abstractReader,
-		callback: async function(resourcePath, getClonedResource) {
+		callback: async function(resourcePath, getResource) {
 			if (resourcePath === "/resources/resource.a") {
-				const resource = await getClonedResource();
+				const resource = await getResource();
 				resource.name = "transformed resource.a";
+				await getResource(); // additional call should not lead to additional clone
 			}
 		}
 	});
@@ -51,9 +52,11 @@ test("_byPath: Basic transformation", async (t) => {
 	};
 	const readerCollection = new Transformer({
 		reader: abstractReader,
-		callback: async function(resourcePath, getClonedResource) {
-			const resource = await getClonedResource();
+		callback: async function(resourcePath, getResource) {
+			const resource = await getResource();
 			resource.name = "transformed resource.a";
+
+			await getResource(); // additional call should not lead to additional clone
 		}
 	});
 
@@ -73,7 +76,7 @@ test("_byPath: No transformation", async (t) => {
 	};
 	const readerCollection = new Transformer({
 		reader: abstractReader,
-		callback: async function(resourcePath, getClonedResource) {
+		callback: async function(resourcePath, getResource) {
 			return;
 		}
 	});
