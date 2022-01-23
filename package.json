@@ -105,7 +105,7 @@
 	"dependencies": {
 		"@ui5/logger": "^2.0.1",
 		"clone": "^2.1.0",
-		"globby": "^11.1.0",
+		"globby": "^12.2.0",
 		"graceful-fs": "^4.2.9",
 		"make-dir": "^3.1.0",
 		"micromatch": "^4.0.4",
