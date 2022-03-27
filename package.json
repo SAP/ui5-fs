@@ -108,7 +108,7 @@
 		"globby": "^11.1.0",
 		"graceful-fs": "^4.2.9",
 		"make-dir": "^3.1.0",
-		"micromatch": "^4.0.4",
+		"micromatch": "^4.0.5",
 		"minimatch": "^3.1.2",
 		"pretty-hrtime": "^1.0.3",
 		"random-int": "^2.0.1"
