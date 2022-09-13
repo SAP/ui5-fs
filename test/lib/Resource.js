@@ -1,9 +1,7 @@
 import test from "ava";
-import Stream from "node:stream";
-import fs from "node:fs";
+import {Stream, Transform} from "node:stream";
+import {promises as fs, createReadStream} from "node:fs";
 import path from "node:path";
-import { promisify } from "node:util";
-const stat = promisify(fs.stat);
 import Resource from "../../lib/Resource.js";
 
 function createBasicResource() {
@@ -11,7 +9,7 @@ function createBasicResource() {
 	const resource = new Resource({
 		path: "/app/index.html",
 		createStream: function() {
-			return fs.createReadStream(fsPath);
+			return createReadStream(fsPath);
 		},
 		project: {},
 		statInfo: {},
@@ -327,7 +325,6 @@ test("getStream with Buffer content: Subsequent content requests should throw er
 test("getStream with Stream content: Subsequent content requests should throw error due to drained " +
 		"content", async (t) => {
 	const resource = createBasicResource();
-	const {Transform} = require("stream");
 	const tStream = new Transform({
 		transform(chunk, encoding, callback) {
 			this.push(chunk.toString());
@@ -349,7 +346,6 @@ test("getStream with Stream content: Subsequent content requests should throw er
 test("getBuffer from Stream content: Subsequent content requests should not throw error due to drained " +
 		"content", async (t) => {
 	const resource = createBasicResource();
-	const {Transform} = require("stream");
 	const tStream = new Transform({
 		transform(chunk, encoding, callback) {
 			this.push(chunk.toString());
@@ -395,13 +391,13 @@ test("Resource: constructor with stream", async (t) => {
 
 test("integration stat - resource size", async (t) => {
 	const fsPath = path.join("test", "fixtures", "application.a", "webapp", "index.html");
-	const statInfo = await stat(fsPath);
+	const statInfo = await fs.stat(fsPath);
 
 	const resource = new Resource({
 		path: fsPath,
 		statInfo,
 		createStream: () => {
-			return fs.createReadStream(fsPath);
+			return createReadStream(fsPath);
 		}
 	});
 	t.is(await resource.getSize(), 91);
