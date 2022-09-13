@@ -1,10 +1,10 @@
-const test = require("ava");
-const Stream = require("stream");
-const fs = require("fs");
-const path = require("path");
-const {promisify} = require("util");
+import test from "ava";
+import Stream from "node:stream";
+import fs from "node:fs";
+import path from "node:path";
+import { promisify } from "node:util";
 const stat = promisify(fs.stat);
-const Resource = require("../../lib/Resource");
+import Resource from "../../lib/Resource.js";
 
 function createBasicResource() {
 	const fsPath = path.join("test", "fixtures", "application.a", "webapp", "index.html");

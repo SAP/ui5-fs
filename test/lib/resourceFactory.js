@@ -1,8 +1,8 @@
-const test = require("ava");
-const resourceFactory = require("../../lib/resourceFactory");
-const FileSystem = require("../../lib/adapters/FileSystem");
-const Memory = require("../../lib/adapters/Memory");
-const ReaderCollection = require("../../lib/ReaderCollection");
+import test from "ava";
+import resourceFactory from "../../lib/resourceFactory.js";
+import FileSystem from "../../lib/adapters/FileSystem.js";
+import Memory from "../../lib/adapters/Memory.js";
+import ReaderCollection from "../../lib/ReaderCollection.js";
 
 // Set log level to silly to activate tracing
 require("@ui5/logger").setLevel("silly");

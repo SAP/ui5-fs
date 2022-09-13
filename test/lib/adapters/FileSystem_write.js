@@ -1,14 +1,14 @@
-const path = require("path");
-const {promisify} = require("util");
-const fs = require("fs");
+import path from "node:path";
+import { promisify } from "node:util";
+import fs from "node:fs";
 const fsAccess = promisify(fs.access);
-const test = require("ava");
+import test from "ava";
 const rimraf = promisify(require("rimraf"));
-const chai = require("chai");
+import chai from "chai";
 chai.use(require("chai-fs"));
 const assert = chai.assert;
 
-const ui5Fs = require("../../../");
+import ui5Fs from "../../../";
 
 test.beforeEach((t) => {
 	const tmpDirName = t.title.replace(/[^a-zA-Z0-9]/g, "_").toLowerCase(); // Generate tmp dir name from test name

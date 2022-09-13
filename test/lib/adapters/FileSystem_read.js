@@ -1,5 +1,5 @@
-const test = require("ava");
-const {resourceFactory} = require("../../../");
+import test from "ava";
+import { resourceFactory } from "../../../";
 
 test("glob resources from application.a w/ virtual base path prefix", async (t) => {
 	const readerWriter = resourceFactory.createAdapter({

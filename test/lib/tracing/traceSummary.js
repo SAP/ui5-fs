@@ -1,7 +1,7 @@
-const test = require("ava");
-const sinon = require("sinon");
-const logger = require("@ui5/logger");
-const mock = require("mock-require");
+import test from "ava";
+import sinon from "sinon";
+import logger from "@ui5/logger";
+import esmock from "esmock";
 
 test.afterEach.always((t) => {
 	sinon.restore();

@@ -1,9 +1,9 @@
-const test = require("ava");
-const {promisify} = require("util");
-const Buffer = require("buffer").Buffer;
-const path = require("path");
-const fs = require("fs");
-const ui5Fs = require("../../");
+import test from "ava";
+import { promisify } from "node:util";
+import { Buffer } from "node:buffer";
+import path from "node:path";
+import fs from "node:fs";
+import ui5Fs from "../../";
 const fsInterface = ui5Fs.fsInterface;
 const MemAdapter = ui5Fs.adapters.Memory;
 const FsAdapter = ui5Fs.adapters.FileSystem;

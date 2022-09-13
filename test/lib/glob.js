@@ -1,5 +1,5 @@
-const test = require("ava");
-const ui5Fs = require("../../");
+import test from "ava";
+import ui5Fs from "../../";
 const FsAdapter = ui5Fs.adapters.FileSystem;
 
 // Create readerWriter before running tests

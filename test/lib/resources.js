@@ -1,10 +1,9 @@
-const test = require("ava");
-const chai = require("chai");
+import test from "ava";
+import chai from "chai";
 chai.use(require("chai-fs"));
 const assert = chai.assert;
-const sinon = require("sinon");
-
-const ui5Fs = require("../../");
+import sinon from "sinon";
+import ui5Fs from "../../";
 
 test.afterEach.always((t) => {
 	sinon.restore();

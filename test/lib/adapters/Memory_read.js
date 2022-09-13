@@ -1,5 +1,5 @@
-const test = require("ava");
-const {resourceFactory} = require("../../../");
+import test from "ava";
+import { resourceFactory } from "../../../";
 
 async function fillFromFs(readerWriter, {fsBasePath = "./test/fixtures/glob", virBasePath = "/app/"} = {}) {
 	const fsReader = resourceFactory.createAdapter({

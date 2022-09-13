@@ -1,5 +1,5 @@
-const test = require("ava");
-const AbstractReaderWriter = require("../../lib/AbstractReaderWriter");
+import test from "ava";
+import AbstractReaderWriter from "../../lib/AbstractReaderWriter.js";
 
 test("AbstractReaderWriter: constructor throws an error", (t) => {
 	t.throws(() => {
