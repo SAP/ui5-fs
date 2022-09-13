@@ -1,26 +1,34 @@
 import test from "ava";
 import sinon from "sinon";
-import logger from "@ui5/logger";
 import esmock from "esmock";
+
+async function createMock(t, isLevelEnabled=true) {
+	t.context.loggerStub = {
+		silly: sinon.stub(),
+		isLevelEnabled: () => {
+			return isLevelEnabled;
+		}
+	};
+	t.context.traceSummary = await esmock("../../../lib/tracing/traceSummary.js", {
+		"@ui5/logger": {
+			getLogger: sinon.stub().returns(t.context.loggerStub)
+		}
+	});
+	return t.context;
+}
 
 test.afterEach.always((t) => {
 	sinon.restore();
+	esmock.purge(t.context.traceSummary);
 });
 
 test.serial("traceSummary", async (t) => {
 	t.plan(2);
 
-	const myLoggerInstance = {
-		silly: sinon.stub(),
-		isLevelEnabled: () => {
-			return true;
-		}
-	};
-	sinon.stub(logger, "getLogger").returns(myLoggerInstance);
+	const {traceSummary, loggerStub} = await createMock(t);
 
 	// Measure always constant time
 	sinon.stub(process, "hrtime").returns([3, 426604599]);
-	const traceSummary = mock.reRequire("../../../lib/tracing/traceSummary");
 
 	const expectedReport = "==========================\n[=> TRACE SUMMARY:\n" +
 		"  3.43 s elapsed time \n" +
@@ -51,22 +59,14 @@ test.serial("traceSummary", async (t) => {
 	// Print reporting and reset tracing
 	await traceSummary.traceEnded();
 
-	t.is(myLoggerInstance.silly.callCount, 1, "Logger has been called exactly once");
-	t.deepEqual(myLoggerInstance.silly.getCall(0).args[0], expectedReport, "Correct report logged to the console");
+	t.is(loggerStub.silly.callCount, 1, "Logger has been called exactly once");
+	t.deepEqual(loggerStub.silly.getCall(0).args[0], expectedReport, "Correct report logged to the console");
 });
 
 test.serial("traceSummary no silly logging", async (t) => {
 	t.plan(1);
 
-	const myLoggerInstance = {
-		silly: sinon.stub(),
-		isLevelEnabled: () => {
-			return false;
-		}
-	};
-	sinon.stub(logger, "getLogger").returns(myLoggerInstance);
-
-	const traceSummary = mock.reRequire("../../../lib/tracing/traceSummary");
+	const {traceSummary, loggerStub} = await createMock(t, false);
 
 	// Add collection, byPath call and byGlob call w/o having a an active tracing started yet.
 	// Those calls will not be traced.
@@ -88,5 +88,5 @@ test.serial("traceSummary no silly logging", async (t) => {
 	// Print reporting and reset tracing
 	await traceSummary.traceEnded();
 
-	t.is(myLoggerInstance.silly.callCount, 0, "Logger has not been called (due to disabled silly logging)");
+	t.is(loggerStub.silly.callCount, 0, "Logger has not been called (due to disabled silly logging)");
 });
