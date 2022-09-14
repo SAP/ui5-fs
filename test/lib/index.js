@@ -1,18 +1,20 @@
 import test from "ava";
-import index from "../../index.js";
+import {adapters, AbstractReader, AbstractReaderWriter, DuplexCollection,
+	fsInterface, ReaderCollection, ReaderCollectionPrioritized,
+	Resource, ResourceTagCollection, resourceFactory} from "../../index.js";
 
 test("index.js exports all expected modules", (t) => {
-	t.truthy(index.adapters.AbstractAdapter, "Module exported");
-	t.truthy(index.adapters.FileSystem, "Module exported");
-	t.truthy(index.adapters.Memory, "Module exported");
+	t.truthy(adapters.AbstractAdapter, "Module exported");
+	t.truthy(adapters.FileSystem, "Module exported");
+	t.truthy(adapters.Memory, "Module exported");
 
-	t.truthy(index.AbstractReader, "Module exported");
-	t.truthy(index.AbstractReaderWriter, "Module exported");
-	t.truthy(index.DuplexCollection, "Module exported");
-	t.truthy(index.fsInterface, "Module exported");
-	t.truthy(index.ReaderCollection, "Module exported");
-	t.truthy(index.ReaderCollectionPrioritized, "Module exported");
-	t.truthy(index.Resource, "Module exported");
-	t.truthy(index.ResourceTagCollection, "Module exported");
-	t.truthy(index.resourceFactory, "Module exported");
+	t.truthy(AbstractReader, "Module exported");
+	t.truthy(AbstractReaderWriter, "Module exported");
+	t.truthy(DuplexCollection, "Module exported");
+	t.truthy(fsInterface, "Module exported");
+	t.truthy(ReaderCollection, "Module exported");
+	t.truthy(ReaderCollectionPrioritized, "Module exported");
+	t.truthy(Resource, "Module exported");
+	t.truthy(ResourceTagCollection, "Module exported");
+	t.truthy(resourceFactory, "Module exported");
 });
