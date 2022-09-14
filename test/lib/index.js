@@ -1,7 +1,8 @@
 import test from "ava";
-import {adapters, AbstractReader, AbstractReaderWriter, DuplexCollection,
+import index from "../../index.js";
+const {adapters, AbstractReader, AbstractReaderWriter, DuplexCollection,
 	fsInterface, ReaderCollection, ReaderCollectionPrioritized,
-	Resource, ResourceTagCollection, resourceFactory} from "../../index.js";
+	Resource, ResourceTagCollection, resourceFactory} = index;
 
 test("index.js exports all expected modules", (t) => {
 	t.truthy(adapters.AbstractAdapter, "Module exported");

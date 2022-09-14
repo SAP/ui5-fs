@@ -3,9 +3,10 @@ import resourceFactory from "../../lib/resourceFactory.js";
 import FileSystem from "../../lib/adapters/FileSystem.js";
 import Memory from "../../lib/adapters/Memory.js";
 import ReaderCollection from "../../lib/ReaderCollection.js";
+import logger from "@ui5/logger";
 
 // Set log level to silly to activate tracing
-require("@ui5/logger").setLevel("silly");
+logger.setLevel("silly");
 
 test("prefixGlobPattern", (t) => {
 	t.deepEqual(
@@ -134,7 +135,7 @@ test("createReaderCollection", async (t) => {
 });
 
 test("createReaderCollectionPrioritized", async (t) => {
-	const ReaderCollectionPrioritized = require("../../lib/ReaderCollectionPrioritized");
+	const {default: ReaderCollectionPrioritized} = await import("../../lib/ReaderCollectionPrioritized.js");
 	const adapter = resourceFactory.createAdapter({
 		virBasePath: "/resources/app/",
 		project: {
@@ -164,7 +165,7 @@ test("createReaderCollectionPrioritized", async (t) => {
 });
 
 test("createWriterCollection", async (t) => {
-	const WriterCollection = require("../../lib/WriterCollection");
+	const {default: WriterCollection} = await import("../../lib/WriterCollection.js");
 	const adapter1 = resourceFactory.createAdapter({
 		virBasePath: "/",
 		project: {
@@ -205,7 +206,7 @@ test("createWriterCollection", async (t) => {
 
 
 test("createWorkspace", async (t) => {
-	const DuplexCollection = require("../../lib/DuplexCollection");
+	const {default: DuplexCollection} = await import("../../lib/DuplexCollection.js");
 	const reader = resourceFactory.createAdapter({
 		fsBasePath: "./test/fixtures/application.a/webapp",
 		virBasePath: "/resources/app/",
