@@ -113,6 +113,7 @@
 		"clone": "^2.1.0",
 		"escape-string-regexp": "^4.0.0",
 		"globby": "^11.1.0",
+		"graceful-fs": "^4.2.9",
 		"make-dir": "^3.1.0",
 		"micromatch": "^4.0.4",
 		"minimatch": "^3.0.3",
