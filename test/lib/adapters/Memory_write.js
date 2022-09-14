@@ -1,5 +1,6 @@
 import test from "ava";
-import { resourceFactory } from "../../../";
+import index from "../../../index.js";
+const {resourceFactory} = index;
 
 test("glob resources from application.a w/ virtual base path prefix", async (t) => {
 	const dest = resourceFactory.createAdapter({
