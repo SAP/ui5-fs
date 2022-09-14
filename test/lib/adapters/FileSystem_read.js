@@ -1,6 +1,6 @@
 import test from "ava";
-import index from "../../../index.js";
-const {resourceFactory} = index;
+import ui5Fs from "../../../index.js";
+const {resourceFactory} = ui5Fs;
 
 test("glob resources from application.a w/ virtual base path prefix", async (t) => {
 	const readerWriter = resourceFactory.createAdapter({

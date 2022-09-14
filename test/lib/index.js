@@ -1,8 +1,8 @@
 import test from "ava";
-import index from "../../index.js";
+import ui5Fs from "../../index.js";
 const {adapters, AbstractReader, AbstractReaderWriter, DuplexCollection,
 	fsInterface, ReaderCollection, ReaderCollectionPrioritized,
-	Resource, ResourceTagCollection, resourceFactory} = index;
+	Resource, ResourceTagCollection, resourceFactory} = ui5Fs;
 
 test("index.js exports all expected modules", (t) => {
 	t.truthy(adapters.AbstractAdapter, "Module exported");

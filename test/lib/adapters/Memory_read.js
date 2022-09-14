@@ -1,6 +1,6 @@
 import test from "ava";
-import index from "../../../index.js";
-const {resourceFactory} = index;
+import ui5Fs from "../../../index.js";
+const {resourceFactory} = ui5Fs;
 
 async function fillFromFs(readerWriter, {fsBasePath = "./test/fixtures/glob", virBasePath = "/app/"} = {}) {
 	const fsReader = resourceFactory.createAdapter({

@@ -1,9 +1,11 @@
 import test from "ava";
 import chai from "chai";
-chai.use(require("chai-fs"));
+import chaifs from "chai-fs";
+chai.use(chaifs);
 const assert = chai.assert;
 import sinon from "sinon";
-import ui5Fs from "../../";
+import ui5Fs from "../../index.js";
+const {resourceFactory} = ui5Fs;
 
 test.afterEach.always((t) => {
 	sinon.restore();
@@ -13,11 +15,11 @@ test.afterEach.always((t) => {
 	Always make sure that every test writes to a separate file! By default, tests are running concurrent.
 */
 test("Get resource from application.a (/index.html) and write it to /dest/ using a ReadableStream", async (t) => {
-	const source = ui5Fs.resourceFactory.createAdapter({
+	const source = resourceFactory.createAdapter({
 		fsBasePath: "./test/fixtures/application.a/webapp",
 		virBasePath: "/app/"
 	});
-	const dest = ui5Fs.resourceFactory.createAdapter({
+	const dest = resourceFactory.createAdapter({
 		fsBasePath: "./test/tmp/readerWriters/application.a/simple-read-write",
 		virBasePath: "/dest/"
 	});
@@ -37,7 +39,7 @@ test("Get resource from application.a (/index.html) and write it to /dest/ using
 });
 
 test("Filter resources", async (t) => {
-	const source = ui5Fs.resourceFactory.createAdapter({
+	const source = resourceFactory.createAdapter({
 		fsBasePath: "./test/fixtures/application.a/webapp",
 		virBasePath: "/app/"
 	});
@@ -54,7 +56,7 @@ test("Filter resources", async (t) => {
 });
 
 test("Transform resources", async (t) => {
-	const source = ui5Fs.resourceFactory.createAdapter({
+	const source = resourceFactory.createAdapter({
 		fsBasePath: "./test/fixtures/application.a/webapp",
 		virBasePath: "/app/"
 	});
@@ -78,7 +80,7 @@ test("Transform resources", async (t) => {
 });
 
 test("Flatten resources", async (t) => {
-	const source = ui5Fs.resourceFactory.createAdapter({
+	const source = resourceFactory.createAdapter({
 		fsBasePath: "./test/fixtures/application.a/webapp",
 		virBasePath: "/resources/app/"
 	});

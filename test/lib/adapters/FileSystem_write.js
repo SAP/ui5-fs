@@ -1,20 +1,26 @@
 import path from "node:path";
-import { promisify } from "node:util";
+import {promisify} from "node:util";
 import fs from "node:fs";
+import {fileURLToPath} from "node:url";
 const fsAccess = promisify(fs.access);
 import test from "ava";
-const rimraf = promisify(require("rimraf"));
+import rimraf from "rimraf";
+const rimrafp = promisify(rimraf);
 import chai from "chai";
-chai.use(require("chai-fs"));
+import chaifs from "chai-fs";
+chai.use(chaifs);
 const assert = chai.assert;
 
-import ui5Fs from "../../../";
+
+import ui5Fs from "../../../index.js";
 
 test.beforeEach((t) => {
 	const tmpDirName = t.title.replace(/[^a-zA-Z0-9]/g, "_").toLowerCase(); // Generate tmp dir name from test name
 
 	// Create a tmp directory for every test
-	t.context.tmpDirPath = path.join(__dirname, "..", "..", "tmp", "adapters", "FileSystemWrite", tmpDirName);
+
+	fs.mkdir(new URL("../../tmp/adapters/FileSystemWrite/" + tmpDirName, import.meta.url).toString());
+	t.context.tmpDirPath = fileURLToPath(new URL("../../tmp/adapters/FileSystemWrite")) + tmpDirName;
 
 	t.context.readerWriters = {
 		source: ui5Fs.resourceFactory.createAdapter({
@@ -30,7 +36,7 @@ test.beforeEach((t) => {
 
 test.afterEach.always((t) => {
 	// Cleanup tmp directory
-	return rimraf(t.context.tmpDirPath);
+	return rimrafp(t.context.tmpDirPath);
 });
 
 
