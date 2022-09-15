@@ -3,6 +3,7 @@ import {promisify} from "node:util";
 import fs from "node:fs";
 import {fileURLToPath} from "node:url";
 const fsAccess = promisify(fs.access);
+import makeDir from "make-dir";
 import test from "ava";
 import rimraf from "rimraf";
 const rimrafp = promisify(rimraf);
@@ -14,13 +15,12 @@ const assert = chai.assert;
 
 import ui5Fs from "../../../index.js";
 
-test.beforeEach((t) => {
+test.beforeEach(async (t) => {
 	const tmpDirName = t.title.replace(/[^a-zA-Z0-9]/g, "_").toLowerCase(); // Generate tmp dir name from test name
 
 	// Create a tmp directory for every test
-
-	fs.mkdir(new URL("../../tmp/adapters/FileSystemWrite/" + tmpDirName, import.meta.url).toString());
-	t.context.tmpDirPath = fileURLToPath(new URL("../../tmp/adapters/FileSystemWrite")) + tmpDirName;
+	t.context.tmpDirPath = fileURLToPath(new URL("../../tmp/adapters/FileSystemWrite/" + tmpDirName, import.meta.url));
+	await makeDir(t.context.tmpDirPath);
 
 	t.context.readerWriters = {
 		source: ui5Fs.resourceFactory.createAdapter({
