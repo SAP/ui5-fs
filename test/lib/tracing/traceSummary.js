@@ -19,7 +19,6 @@ async function createMock(t, isLevelEnabled=true) {
 
 test.afterEach.always((t) => {
 	sinon.restore();
-	esmock.purge(t.context.traceSummary);
 });
 
 test.serial("traceSummary", async (t) => {
