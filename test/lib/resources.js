@@ -43,7 +43,7 @@ test("Filter resources", async (t) => {
 		fsBasePath: "./test/fixtures/application.a/webapp",
 		virBasePath: "/app/"
 	});
-	const filteredSource = source.filter((resource) => {
+	const filteredSource = await source.filter((resource) => {
 		return resource.getPath().endsWith(".js");
 	});
 	const sourceResources = await source.byGlob("**");
@@ -60,7 +60,7 @@ test("Transform resources", async (t) => {
 		fsBasePath: "./test/fixtures/application.a/webapp",
 		virBasePath: "/app/"
 	});
-	const transformedSource = source.transform(async (resourcePath, getResource) => {
+	const transformedSource = await source.transform(async (resourcePath, getResource) => {
 		if (resourcePath === "/app/test.js") {
 			const resource = await getResource();
 			resource.setPath("/app/transformed-test.js");
@@ -84,7 +84,7 @@ test("Flatten resources", async (t) => {
 		fsBasePath: "./test/fixtures/application.a/webapp",
 		virBasePath: "/resources/app/"
 	});
-	const transformedSource = source.flatten("app");
+	const transformedSource = await source.flatten("app");
 
 	const resources = await transformedSource.byGlob("**/*.js");
 	t.is(resources.length, 1, "Found one resource via transformer");
