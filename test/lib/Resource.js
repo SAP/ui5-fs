@@ -366,6 +366,38 @@ test("getBuffer from Stream content: Subsequent content requests should not thro
 	await t.notThrowsAsync(p2);
 });
 
+test("Resource: getProject", (t) => {
+	t.plan(1);
+	const resource = new Resource({
+		path: "my/path/to/resource",
+		project: {getName: () => "Mock Project"}
+	});
+	const project = resource.getProject();
+	t.is(project.getName(), "Mock Project");
+});
+
+test("Resource: setProject", (t) => {
+	t.plan(1);
+	const resource = new Resource({
+		path: "my/path/to/resource"
+	});
+	const project = {getName: () => "Mock Project"};
+	resource.setProject(project);
+	t.is(resource.getProject().getName(), "Mock Project");
+});
+
+test("Resource: reassign with setProject", (t) => {
+	t.plan(2);
+	const resource = new Resource({
+		path: "my/path/to/resource",
+		project: {getName: () => "Mock Project"}
+	});
+	const project = {getName: () => "New Mock Project"};
+	const error = t.throws(() => resource.setProject(project));
+	t.is(error.message, "Unable to assign project New Mock Project to resource my/path/to/resource: " +
+		"Resource is already associated to project " + project);
+});
+
 test("Resource: constructor with stream", async (t) => {
 	const stream = new Stream.Readable();
 	stream._read = function() {};
