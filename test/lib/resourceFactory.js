@@ -105,6 +105,18 @@ test("createReader", async (t) => {
 	t.is(resources[0].getPath(), "/resources/app/test.js", "Found correct resource");
 });
 
+test("createReader: Throw error missing 'fsBasePath'", (t) => {
+	const error = t.throws(() => resourceFactory.createReader({
+		virBasePath: "/resources/app/",
+		project: {
+			getName: () => "my.project"
+		},
+		excludes: ["**/*.html"],
+		name: "reader name"
+	}));
+	t.is(error.message, "Missing parameter \"fsBasePath\"");
+});
+
 test("createReaderCollection", async (t) => {
 	const adapter = resourceFactory.createAdapter({
 		virBasePath: "/resources/app/",
@@ -237,3 +249,22 @@ test("createWorkspace", async (t) => {
 	const resources = await writerCollection.byGlob("**/*");
 	t.is(resources.length, 3, "Found three resources");
 });
+
+test("createWorkspace: Without writer", async (t) => {
+	const {default: DuplexCollection} = await import("../../lib/DuplexCollection.js");
+	const {default: Memory} = await import("../../lib/adapters/Memory.js");
+	const reader = resourceFactory.createAdapter({
+		fsBasePath: "./test/fixtures/application.a/webapp",
+		virBasePath: "/resources/app/",
+		project: {
+			getName: () => "my.project"
+		}
+	});
+	const writerCollection = resourceFactory.createWorkspace({
+		name: "writer collection name",
+		reader
+	});
+	t.true(writerCollection instanceof DuplexCollection, "Returned a ReaderCollection");
+	t.true(writerCollection._writer instanceof Memory, "Internal Writer is created and a MemAdapter");
+});
+
