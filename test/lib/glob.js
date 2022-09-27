@@ -1,6 +1,5 @@
 import test from "ava";
-import ui5Fs from "../../index.js";
-const FsAdapter = ui5Fs.adapters.FileSystem;
+import FsAdapter from "../../lib/adapters/FileSystem.js";
 
 // Create readerWriter before running tests
 test.beforeEach((t) => {

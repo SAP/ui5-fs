@@ -13,7 +13,7 @@ chai.use(chaifs);
 const assert = chai.assert;
 
 
-import ui5Fs from "../../../index.js";
+import resourceFactory from "../../../lib/resourceFactory.js";
 
 test.beforeEach(async (t) => {
 	const tmpDirName = t.title.replace(/[^a-zA-Z0-9]/g, "_").toLowerCase(); // Generate tmp dir name from test name
@@ -23,11 +23,11 @@ test.beforeEach(async (t) => {
 	await makeDir(t.context.tmpDirPath);
 
 	t.context.readerWriters = {
-		source: ui5Fs.resourceFactory.createAdapter({
+		source: resourceFactory.createAdapter({
 			fsBasePath: "./test/fixtures/application.a/webapp",
 			virBasePath: "/app/"
 		}),
-		dest: ui5Fs.resourceFactory.createAdapter({
+		dest: resourceFactory.createAdapter({
 			fsBasePath: "./test/tmp/adapters/FileSystemWrite/" + tmpDirName,
 			virBasePath: "/app/"
 		})

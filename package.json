@@ -17,7 +17,19 @@
 		"tool"
 	],
 	"type": "module",
-	"exports": "./index.js",
+	"exports": {
+		"./adapters/*": "./lib/adapters/*.js",
+		"./AbstractReader": "./lib/AbstractReader.js",
+		"./AbstractReaderWriter": "./lib/AbstractReaderWriter.js",
+		"./DuplexCollection": "./lib/DuplexCollection.js",
+		"./fsInterface": "./lib/fsInterface.js",
+		"./ReaderCollection": "./lib/ReaderCollection.js",
+		"./ReaderCollectionPrioritized": "./lib/ReaderCollectionPrioritized.js",
+		"./Resource": "./lib/Resource.js",
+		"./ResourceTagCollection": "./lib/ResourceTagCollection.js",
+		"./resourceFactory": "./lib/resourceFactory.js",
+		"./package.json": "./package.json"
+	},
 	"engines": {
 		"node": ">= 16.13.2",
 		"npm": ">= 8"
@@ -41,10 +53,9 @@
 		"version": "git-chglog --sort semver --next-tag v$npm_package_version -o CHANGELOG.md && git add CHANGELOG.md",
 		"postversion": "git push --follow-tags",
 		"release-note": "git-chglog --sort semver -c .chglog/release-config.yml v$npm_package_version",
-		"depcheck": "depcheck --ignores docdash,@istanbuljs/esm-loader-hook"
+		"depcheck": "depcheck --ignores @ui5/fs,docdash,@istanbuljs/esm-loader-hook"
 	},
 	"files": [
-		"index.js",
 		"CHANGELOG.md",
 		"CONTRIBUTING.md",
 		"jsdoc.json",
@@ -75,8 +86,7 @@
 			"jsdocs/**",
 			"coverage/**",
 			"test/**",
-			".eslintrc.cjs",
-			"jsdoc-plugin.cjs"
+			".eslintrc.cjs"
 		],
 		"check-coverage": true,
 		"statements": 85,

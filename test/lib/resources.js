@@ -4,8 +4,7 @@ import chaifs from "chai-fs";
 chai.use(chaifs);
 const assert = chai.assert;
 import sinon from "sinon";
-import ui5Fs from "../../index.js";
-const {resourceFactory} = ui5Fs;
+import resourceFactory from "../../lib/resourceFactory.js";
 
 test.afterEach.always((t) => {
 	sinon.restore();
