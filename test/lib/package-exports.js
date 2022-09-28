@@ -11,20 +11,58 @@ test("export of package.json", (t) => {
 
 // Public API contract (exported modules)
 [
-	"@ui5/fs/adapters/AbstractAdapter",
-	"@ui5/fs/adapters/FileSystem",
-	"@ui5/fs/adapters/Memory",
-	"@ui5/fs/AbstractReader",
-	"@ui5/fs/AbstractReaderWriter",
-	"@ui5/fs/DuplexCollection",
-	"@ui5/fs/fsInterface",
-	"@ui5/fs/ReaderCollection",
-	"@ui5/fs/ReaderCollectionPrioritized",
-	"@ui5/fs/Resource",
-	"@ui5/fs/ResourceTagCollection",
-	"@ui5/fs/resourceFactory",
-].forEach((specifier) => {
-	test(`export of ${specifier}`, async (t) => {
-		t.truthy(await import(specifier), "Module exported");
+	{
+		exportedSpecifier: "@ui5/fs/adapters/AbstractAdapter",
+		mappedModule: "../../lib/adapters/AbstractAdapter.js"
+	},
+	{
+		exportedSpecifier: "@ui5/fs/adapters/FileSystem",
+		mappedModule: "../../lib/adapters/FileSystem.js"
+	},
+	{
+		exportedSpecifier: "@ui5/fs/adapters/Memory",
+		mappedModule: "../../lib/adapters/Memory.js"
+	},
+	{
+		exportedSpecifier: "@ui5/fs/AbstractReader",
+		mappedModule: "../../lib/AbstractReader.js"
+	},
+	{
+		exportedSpecifier: "@ui5/fs/AbstractReaderWriter",
+		mappedModule: "../../lib/AbstractReaderWriter.js"
+	},
+	{
+		exportedSpecifier: "@ui5/fs/DuplexCollection",
+		mappedModule: "../../lib/DuplexCollection.js"
+	},
+	{
+		exportedSpecifier: "@ui5/fs/fsInterface",
+		mappedModule: "../../lib/fsInterface.js"
+	},
+	{
+		exportedSpecifier: "@ui5/fs/ReaderCollection",
+		mappedModule: "../../lib/ReaderCollection.js"
+	},
+	{
+		exportedSpecifier: "@ui5/fs/ReaderCollectionPrioritized",
+		mappedModule: "../../lib/ReaderCollectionPrioritized.js"
+	},
+	{
+		exportedSpecifier: "@ui5/fs/Resource",
+		mappedModule: "../../lib/Resource.js"
+	},
+	{
+		exportedSpecifier: "@ui5/fs/ResourceTagCollection",
+		mappedModule: "../../lib/ResourceTagCollection.js"
+	},
+	{
+		exportedSpecifier: "@ui5/fs/resourceFactory",
+		mappedModule: "../../lib/resourceFactory.js"
+	},
+].forEach(({exportedSpecifier, mappedModule}) => {
+	test(`${exportedSpecifier}`, async (t) => {
+		const actual = await import(exportedSpecifier);
+		const expected = await import(mappedModule);
+		t.is(actual, expected, "Correct module exported");
 	});
 });
