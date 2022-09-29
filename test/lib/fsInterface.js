@@ -69,7 +69,6 @@ test("fs: readFile", async (t) => {
 		getPath(), path.join("/", "foo.txt"), "content");
 });
 
-
 const assertStat = async (t, stat, basepath, filepath) => {
 	const fullpath = path.join(basepath, filepath);
 	const stats = await stat(fullpath);

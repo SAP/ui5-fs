@@ -216,7 +216,6 @@ test("createWriterCollection", async (t) => {
 	t.is(resources2[0].getPath(), "/resources/app2/index.html", "Found correct resource");
 });
 
-
 test("createWorkspace", async (t) => {
 	const {default: DuplexCollection} = await import("../../lib/DuplexCollection.js");
 	const reader = resourceFactory.createAdapter({

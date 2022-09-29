@@ -12,7 +12,6 @@ import chaifs from "chai-fs";
 chai.use(chaifs);
 const assert = chai.assert;
 
-
 import resourceFactory from "../../../lib/resourceFactory.js";
 
 test.beforeEach(async (t) => {
@@ -38,7 +37,6 @@ test.afterEach.always((t) => {
 	// Cleanup tmp directory
 	return rimrafp(t.context.tmpDirPath);
 });
-
 
 test("Write resource", async (t) => {
 	const readerWriters = t.context.readerWriters;

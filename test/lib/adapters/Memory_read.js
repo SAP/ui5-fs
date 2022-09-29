@@ -257,7 +257,6 @@ test("glob subdirectory", async (t) => {
 	t.is(resources[0].getStatInfo().isDirectory(), true);
 });
 
-
 function getPathFromResource(resource) {
 	return resource.getPath();
 }

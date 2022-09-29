@@ -172,7 +172,6 @@ test("Resource: size modification", async (t) => {
 		string: "Content"
 	}).getSize(), 7, "size when passing string to constructor");
 
-
 	// buffer
 	resource.setBuffer(Buffer.from("Super"));
 
@@ -180,7 +179,6 @@ test("Resource: size modification", async (t) => {
 
 	const clonedResource1 = await resource.clone();
 	t.is(await clonedResource1.getSize(), 5, "size after cloning the resource");
-
 
 	// buffer with alloc
 	const buf = Buffer.alloc(1234);
