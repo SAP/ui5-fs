@@ -26,9 +26,9 @@
 		"./ReaderCollection": "./lib/ReaderCollection.js",
 		"./ReaderCollectionPrioritized": "./lib/ReaderCollectionPrioritized.js",
 		"./Resource": "./lib/Resource.js",
-		"./ResourceTagCollection": "./lib/ResourceTagCollection.js",
 		"./resourceFactory": "./lib/resourceFactory.js",
-		"./package.json": "./package.json"
+		"./package.json": "./package.json",
+		"./internal/ResourceTagCollection": "./lib/ResourceTagCollection.js"
 	},
 	"engines": {
 		"node": ">= 16.13.2",
