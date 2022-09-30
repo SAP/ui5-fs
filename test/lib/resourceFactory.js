@@ -1,5 +1,7 @@
 import test from "ava";
-import resourceFactory from "../../lib/resourceFactory.js";
+import {
+	createAdapter, createReader, createReaderCollection, createReaderCollectionPrioritized,
+	createResource, createWriterCollection, createWorkspace, prefixGlobPattern} from "../../lib/resourceFactory.js";
 import FileSystem from "../../lib/adapters/FileSystem.js";
 import Memory from "../../lib/adapters/Memory.js";
 import ReaderCollection from "../../lib/ReaderCollection.js";
@@ -10,7 +12,7 @@ logger.setLevel("silly");
 
 test("prefixGlobPattern", (t) => {
 	t.deepEqual(
-		resourceFactory.prefixGlobPattern("{/sub-directory-1/,/sub-directory-2/}**", "/pony/path/a"),
+		prefixGlobPattern("{/sub-directory-1/,/sub-directory-2/}**", "/pony/path/a"),
 		[
 			"/pony/path/a/sub-directory-1/**",
 			"/pony/path/a/sub-directory-2/**"
@@ -18,33 +20,33 @@ test("prefixGlobPattern", (t) => {
 		"GLOBs correctly prefixed");
 
 	t.deepEqual(
-		resourceFactory.prefixGlobPattern("/pony-path/**", "/pony/path/a"),
+		prefixGlobPattern("/pony-path/**", "/pony/path/a"),
 		["/pony/path/a/pony-path/**"],
 		"GLOBs correctly prefixed");
 
 	t.deepEqual(
-		resourceFactory.prefixGlobPattern("!/duck*path/**", "/pony/path/a"),
+		prefixGlobPattern("!/duck*path/**", "/pony/path/a"),
 		["!/pony/path/a/duck*path/**"],
 		"GLOBs correctly prefixed");
 
 	t.deepEqual(
-		resourceFactory.prefixGlobPattern("!**.json", "/pony/path/a"),
+		prefixGlobPattern("!**.json", "/pony/path/a"),
 		["!/pony/path/a/**.json"],
 		"GLOBs correctly prefixed");
 
 	t.deepEqual(
-		resourceFactory.prefixGlobPattern("!**.json", "/pony/path/a/"), // trailing slash
+		prefixGlobPattern("!**.json", "/pony/path/a/"), // trailing slash
 		["!/pony/path/a/**.json"],
 		"GLOBs correctly prefixed");
 
 	t.deepEqual(
-		resourceFactory.prefixGlobPattern("pony-path/**", "/pony/path/a/"), // trailing slash
+		prefixGlobPattern("pony-path/**", "/pony/path/a/"), // trailing slash
 		["/pony/path/a/pony-path/**"],
 		"GLOBs correctly prefixed");
 });
 
 test("createAdapter: FS Adapter", async (t) => {
-	const adapter = resourceFactory.createAdapter({
+	const adapter = createAdapter({
 		fsBasePath: "./test/fixtures/application.a/webapp",
 		virBasePath: "/resources/app/",
 		project: {
@@ -61,7 +63,7 @@ test("createAdapter: FS Adapter", async (t) => {
 });
 
 test("createAdapter: Memory", async (t) => {
-	const adapter = resourceFactory.createAdapter({
+	const adapter = createAdapter({
 		virBasePath: "/resources/app/",
 		project: {
 			getName: () => "my.project"
@@ -71,12 +73,12 @@ test("createAdapter: Memory", async (t) => {
 
 	t.true(adapter instanceof Memory, "Returned a Memory adapter");
 
-	const resource1 = resourceFactory.createResource({
+	const resource1 = createResource({
 		path: "/resources/app/File.js"
 	});
 	await adapter.write(resource1);
 
-	const resource2 = resourceFactory.createResource({
+	const resource2 = createResource({
 		path: "/resources/app/index.html"
 	});
 	await adapter.write(resource2);
@@ -87,7 +89,7 @@ test("createAdapter: Memory", async (t) => {
 });
 
 test("createReader", async (t) => {
-	const reader = resourceFactory.createReader({
+	const reader = createReader({
 		fsBasePath: "./test/fixtures/application.a/webapp",
 		virBasePath: "/resources/app/",
 		project: {
@@ -106,7 +108,7 @@ test("createReader", async (t) => {
 });
 
 test("createReader: Throw error missing 'fsBasePath'", (t) => {
-	const error = t.throws(() => resourceFactory.createReader({
+	const error = t.throws(() => createReader({
 		virBasePath: "/resources/app/",
 		project: {
 			getName: () => "my.project"
@@ -118,23 +120,23 @@ test("createReader: Throw error missing 'fsBasePath'", (t) => {
 });
 
 test("createReaderCollection", async (t) => {
-	const adapter = resourceFactory.createAdapter({
+	const adapter = createAdapter({
 		virBasePath: "/resources/app/",
 		project: {
 			getName: () => "my.project"
 		},
 		excludes: ["**/*.html"]
 	});
-	const resource1 = resourceFactory.createResource({
+	const resource1 = createResource({
 		path: "/resources/app/File.js"
 	});
-	const resource2 = resourceFactory.createResource({
+	const resource2 = createResource({
 		path: "/resources/app/index.html"
 	});
 	await adapter.write(resource1);
 	await adapter.write(resource2);
 
-	const reader = resourceFactory.createReaderCollection({
+	const reader = createReaderCollection({
 		name: "reader name",
 		readers: [adapter]
 	});
@@ -148,23 +150,23 @@ test("createReaderCollection", async (t) => {
 
 test("createReaderCollectionPrioritized", async (t) => {
 	const {default: ReaderCollectionPrioritized} = await import("../../lib/ReaderCollectionPrioritized.js");
-	const adapter = resourceFactory.createAdapter({
+	const adapter = createAdapter({
 		virBasePath: "/resources/app/",
 		project: {
 			getName: () => "my.project"
 		},
 		excludes: ["**/*.html"]
 	});
-	const resource1 = resourceFactory.createResource({
+	const resource1 = createResource({
 		path: "/resources/app/File.js"
 	});
-	const resource2 = resourceFactory.createResource({
+	const resource2 = createResource({
 		path: "/resources/app/index.html"
 	});
 	await adapter.write(resource1);
 	await adapter.write(resource2);
 
-	const reader = resourceFactory.createReaderCollectionPrioritized({
+	const reader = createReaderCollectionPrioritized({
 		name: "reader name",
 		readers: [adapter]
 	});
@@ -178,26 +180,26 @@ test("createReaderCollectionPrioritized", async (t) => {
 
 test("createWriterCollection", async (t) => {
 	const {default: WriterCollection} = await import("../../lib/WriterCollection.js");
-	const adapter1 = resourceFactory.createAdapter({
+	const adapter1 = createAdapter({
 		virBasePath: "/",
 		project: {
 			getName: () => "my.project"
 		}
 	});
-	const adapter2 = resourceFactory.createAdapter({
+	const adapter2 = createAdapter({
 		virBasePath: "/",
 		project: {
 			getName: () => "my.other.project"
 		}
 	});
-	const resource1 = resourceFactory.createResource({
+	const resource1 = createResource({
 		path: "/resources/app/File.js"
 	});
-	const resource2 = resourceFactory.createResource({
+	const resource2 = createResource({
 		path: "/resources/app2/index.html"
 	});
 
-	const writerCollection = resourceFactory.createWriterCollection({
+	const writerCollection = createWriterCollection({
 		name: "writer collection name",
 		writerMapping: {
 			"/resources/app/": adapter1,
@@ -218,28 +220,28 @@ test("createWriterCollection", async (t) => {
 
 test("createWorkspace", async (t) => {
 	const {default: DuplexCollection} = await import("../../lib/DuplexCollection.js");
-	const reader = resourceFactory.createAdapter({
+	const reader = createAdapter({
 		fsBasePath: "./test/fixtures/application.a/webapp",
 		virBasePath: "/resources/app/",
 		project: {
 			getName: () => "my.project"
 		}
 	});
-	const readerWriter = resourceFactory.createAdapter({
+	const readerWriter = createAdapter({
 		virBasePath: "/",
 		project: {
 			getName: () => "my.other.project"
 		}
 	});
 
-	const writerCollection = resourceFactory.createWorkspace({
+	const writerCollection = createWorkspace({
 		name: "writer collection name",
 		reader,
 		writer: readerWriter
 	});
 	t.true(writerCollection instanceof DuplexCollection, "Returned a ReaderCollection");
 
-	const resource1 = resourceFactory.createResource({
+	const resource1 = createResource({
 		path: "/resources/app/File.js"
 	});
 
@@ -252,14 +254,14 @@ test("createWorkspace", async (t) => {
 test("createWorkspace: Without writer", async (t) => {
 	const {default: DuplexCollection} = await import("../../lib/DuplexCollection.js");
 	const {default: Memory} = await import("../../lib/adapters/Memory.js");
-	const reader = resourceFactory.createAdapter({
+	const reader = createAdapter({
 		fsBasePath: "./test/fixtures/application.a/webapp",
 		virBasePath: "/resources/app/",
 		project: {
 			getName: () => "my.project"
 		}
 	});
-	const writerCollection = resourceFactory.createWorkspace({
+	const writerCollection = createWorkspace({
 		name: "writer collection name",
 		reader
 	});

@@ -12,7 +12,7 @@ import chaifs from "chai-fs";
 chai.use(chaifs);
 const assert = chai.assert;
 
-import resourceFactory from "../../../lib/resourceFactory.js";
+import {createAdapter} from "../../../lib/resourceFactory.js";
 
 test.beforeEach(async (t) => {
 	const tmpDirName = t.title.replace(/[^a-zA-Z0-9]/g, "_").toLowerCase(); // Generate tmp dir name from test name
@@ -22,11 +22,11 @@ test.beforeEach(async (t) => {
 	await makeDir(t.context.tmpDirPath);
 
 	t.context.readerWriters = {
-		source: resourceFactory.createAdapter({
+		source: createAdapter({
 			fsBasePath: "./test/fixtures/application.a/webapp",
 			virBasePath: "/app/"
 		}),
-		dest: resourceFactory.createAdapter({
+		dest: createAdapter({
 			fsBasePath: "./test/tmp/adapters/FileSystemWrite/" + tmpDirName,
 			virBasePath: "/app/"
 		})
