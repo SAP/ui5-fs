@@ -86,7 +86,8 @@
 			"jsdocs/**",
 			"coverage/**",
 			"test/**",
-			".eslintrc.cjs"
+			".eslintrc.cjs",
+			"jsdoc-plugin.cjs"
 		],
 		"check-coverage": true,
 		"statements": 85,

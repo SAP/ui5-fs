@@ -52,12 +52,13 @@ test("export of package.json", (t) => {
 		mappedModule: "../../lib/Resource.js"
 	},
 	{
-		exportedSpecifier: "@ui5/fs/ResourceTagCollection",
-		mappedModule: "../../lib/ResourceTagCollection.js"
-	},
-	{
 		exportedSpecifier: "@ui5/fs/resourceFactory",
 		mappedModule: "../../lib/resourceFactory.js"
+	},
+	// Internal modules (only to be used by @ui5/* packages)
+	{
+		exportedSpecifier: "@ui5/fs/internal/ResourceTagCollection",
+		mappedModule: "../../lib/ResourceTagCollection.js"
 	},
 ].forEach(({exportedSpecifier, mappedModule}) => {
 	test(`${exportedSpecifier}`, async (t) => {
