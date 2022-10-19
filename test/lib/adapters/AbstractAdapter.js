@@ -1,12 +1,14 @@
 import test from "ava";
-import {createAdapter} from "../../../lib/resourceFactory.js";
+import AbstractAdapter from "../../../lib/adapters/AbstractAdapter.js";
+
+class MyAbstractAdapter extends AbstractAdapter {}
 
 test("_migrateResource", async (t) => {
 	const resource = {
 		_path: "/test.js"
 	};
 
-	const writer = createAdapter({
+	const writer = new MyAbstractAdapter({
 		virBasePath: "/"
 	});
 
