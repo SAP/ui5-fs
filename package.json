@@ -111,7 +111,7 @@
 		"micromatch": "^4.0.5",
 		"minimatch": "^3.1.2",
 		"pretty-hrtime": "^1.0.3",
-		"random-int": "^2.0.1"
+		"random-int": "^3.0.0"
 	},
 	"devDependencies": {
 		"ava": "^3.15.0",
