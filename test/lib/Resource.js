@@ -316,6 +316,31 @@ test("Resource: clone resource with stream", async (t) => {
 	t.is(clonedResourceContent, "Content", "Cloned resource has correct content string");
 });
 
+test("Resource: clone resource with project", async (t) => {
+	t.plan(3);
+
+	const myProject = {
+		name: "my project"
+	};
+	const resourceOptions = {
+		path: "my/path/to/resource",
+		project: myProject
+	};
+
+	const resource = new Resource({
+		path: "my/path/to/resource",
+		project: myProject
+	});
+
+	const clonedResource = await resource.clone();
+	t.pass("Resource cloned");
+
+	const clonedResourceProject = await clonedResource.getProject();
+	t.deepEqual(clonedResourceProject, resourceOptions.project, "Cloned resource has correct project content");
+	t.not(clonedResourceProject, resourceOptions.project, "Cloned resource should not have same " +
+		"project reference as the original resource");
+});
+
 test("getStream with createStream callback content: Subsequent content requests should throw error due " +
 		"to drained content", async (t) => {
 	const resource = createBasicResource();
