@@ -337,7 +337,7 @@ test("Resource: clone resource with project", async (t) => {
 
 	const clonedResourceProject = await clonedResource.getProject();
 	t.deepEqual(clonedResourceProject, resourceOptions.project, "Cloned resource has correct project content");
-	t.not(clonedResourceProject, resourceOptions.project, "Cloned resource should not have same " +
+	t.is(clonedResourceProject, resourceOptions.project, "Cloned resource should have same " +
 		"project reference as the original resource");
 });
 
