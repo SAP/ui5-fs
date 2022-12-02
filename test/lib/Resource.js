@@ -317,7 +317,7 @@ test("Resource: clone resource with stream", async (t) => {
 });
 
 test("Resource: clone resource with project", async (t) => {
-	t.plan(3);
+	t.plan(2);
 
 	const myProject = {
 		name: "my project"
@@ -336,7 +336,6 @@ test("Resource: clone resource with project", async (t) => {
 	t.pass("Resource cloned");
 
 	const clonedResourceProject = await clonedResource.getProject();
-	t.deepEqual(clonedResourceProject, resourceOptions.project, "Cloned resource has correct project content");
 	t.is(clonedResourceProject, resourceOptions.project, "Cloned resource should have same " +
 		"project reference as the original resource");
 });
