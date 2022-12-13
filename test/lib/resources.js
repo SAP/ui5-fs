@@ -10,82 +10,109 @@ test.afterEach.always((t) => {
 	sinon.restore();
 });
 
-/* BEWARE:
-	Always make sure that every test writes to a separate file! By default, tests are running concurrent.
-*/
-test("Get resource from application.a (/index.html) and write it to /dest/ using a ReadableStream", async (t) => {
-	const source = createAdapter({
-		fsBasePath: "./test/fixtures/application.a/webapp",
-		virBasePath: "/app/"
-	});
-	const dest = createAdapter({
-		fsBasePath: "./test/tmp/readerWriters/application.a/simple-read-write",
-		virBasePath: "/dest/"
-	});
-	// Get resource from one readerWriter
-	const resource = await source.byPath("/app/index.html");
+const adapters = ["FileSystem", "Memory"];
 
-	const clonedResource = await resource.clone();
-
-	// Write resource content to another readerWriter
-	clonedResource.setPath("/dest/index_readableStreamTest.html");
-	await dest.write(clonedResource);
-
-	t.notThrows(() => {
-		assert.fileEqual("./test/tmp/readerWriters/application.a/simple-read-write/index_readableStreamTest.html",
-			"./test/fixtures/application.a/webapp/index.html");
-	});
-});
-
-test("Filter resources", async (t) => {
-	const source = createAdapter({
-		fsBasePath: "./test/fixtures/application.a/webapp",
-		virBasePath: "/app/"
-	});
-	const filteredSource = createFilterReader({
-		reader: source,
-		callback: (resource) => {
-			return resource.getPath().endsWith(".js");
+async function getAdapter(config, adapter) {
+	if (adapter === "Memory") {
+		const fsAdapter = createAdapter(config);
+		const fsResources = await fsAdapter.byGlob("**/*");
+		// By removing the fsBasePath a MemAdapter will be created
+		delete config.fsBasePath;
+		const memAdapter = createAdapter(config);
+		for (const resource of fsResources) {
+			await memAdapter.write(resource);
 		}
+		return memAdapter;
+	} else {
+		return createAdapter(config);
+	}
+}
+
+for (const adapter of adapters) {
+	/* BEWARE:
+		Always make sure that every test writes to a separate file! By default, tests are running concurrent.
+	*/
+	test.serial(adapter +
+		": Get resource from application.a (/index.html) and write it to /dest/ using a ReadableStream", async (t) => {
+		const source = await getAdapter({
+			fsBasePath: "./test/fixtures/application.a/webapp",
+			virBasePath: "/app/"
+		}, adapter);
+		const dest = await getAdapter({
+			fsBasePath: "./test/tmp/readerWriters/application.a/simple-read-write",
+			virBasePath: "/dest/"
+		}, adapter);
+		// Get resource from one readerWriter
+		const resource = await source.byPath("/app/index.html");
+
+		const clonedResource = await resource.clone();
+
+		// Write resource content to another readerWriter
+		clonedResource.setPath("/dest/index_readableStreamTest.html");
+		await dest.write(clonedResource);
+
+		t.notThrows(async () => {
+			if (adapter === "FileSystem") {
+				assert.fileEqual(
+					"./test/tmp/readerWriters/application.a/simple-read-write/index_readableStreamTest.html",
+					"./test/fixtures/application.a/webapp/index.html");
+			} else {
+				const destResource = await dest.byPath("/dest/index_readableStreamTest.html");
+				t.deepEqual(await destResource.getString(), await resource.getString());
+			}
+		});
 	});
-	const sourceResources = await source.byGlob("**");
-	t.is(sourceResources.length, 2, "Found two resources in source");
 
-	const resources = await filteredSource.byGlob("**");
+	test.serial(adapter + ": Filter resources", async (t) => {
+		const source = createAdapter({
+			fsBasePath: "./test/fixtures/application.a/webapp",
+			virBasePath: "/app/"
+		});
+		const filteredSource = createFilterReader({
+			reader: source,
+			callback: (resource) => {
+				return resource.getPath().endsWith(".js");
+			}
+		});
+		const sourceResources = await source.byGlob("**");
+		t.is(sourceResources.length, 2, "Found two resources in source");
 
-	t.is(resources.length, 1, "Found exactly one resource via filter");
-	t.is(resources[0].getPath(), "/app/test.js", "Found correct resource");
-});
+		const resources = await filteredSource.byGlob("**");
 
-test("Flatten resources", async (t) => {
-	const source = createAdapter({
-		fsBasePath: "./test/fixtures/application.a/webapp",
-		virBasePath: "/resources/app/"
-	});
-	const transformedSource = createFlatReader({
-		reader: source,
-		namespace: "app"
-	});
-
-	const resources = await transformedSource.byGlob("**/*.js");
-	t.is(resources.length, 1, "Found one resource via transformer");
-	t.is(resources[0].getPath(), "/test.js", "Found correct resource");
-});
-
-test("Link resources", async (t) => {
-	const source = createAdapter({
-		fsBasePath: "./test/fixtures/application.a/webapp",
-		virBasePath: "/resources/app/"
-	});
-	const transformedSource = createLinkReader({
-		reader: source,
-		pathMapping: {
-			linkPath: "/wow/this/is/a/beautiful/path/just/wow/",
-			targetPath: "/resources/"
-		}
+		t.is(resources.length, 1, "Found exactly one resource via filter");
+		t.is(resources[0].getPath(), "/app/test.js", "Found correct resource");
 	});
 
-	const resources = await transformedSource.byGlob("**/*.js");
-	t.is(resources.length, 1, "Found one resource via transformer");
-	t.is(resources[0].getPath(), "/wow/this/is/a/beautiful/path/just/wow/app/test.js", "Found correct resource");
-});
+	test.serial(adapter + ": Flatten resources", async (t) => {
+		const source = await getAdapter({
+			fsBasePath: "./test/fixtures/application.a/webapp",
+			virBasePath: "/resources/app/"
+		}, adapter);
+		const transformedSource = createFlatReader({
+			reader: source,
+			namespace: "app"
+		});
+
+		const resources = await transformedSource.byGlob("**/*.js");
+		t.is(resources.length, 1, "Found one resource via transformer");
+		t.is(resources[0].getPath(), "/test.js", "Found correct resource");
+	});
+
+	test.serial(adapter + ": Link resources", async (t) => {
+		const source = await getAdapter({
+			fsBasePath: "./test/fixtures/application.a/webapp",
+			virBasePath: "/resources/app/"
+		}, adapter);
+		const transformedSource = createLinkReader({
+			reader: source,
+			pathMapping: {
+				linkPath: "/wow/this/is/a/beautiful/path/just/wow/",
+				targetPath: "/resources/"
+			}
+		});
+
+		const resources = await transformedSource.byGlob("**/*.js");
+		t.is(resources.length, 1, "Found one resource via transformer");
+		t.is(resources[0].getPath(), "/wow/this/is/a/beautiful/path/just/wow/app/test.js", "Found correct resource");
+	});
+}
