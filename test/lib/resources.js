@@ -32,7 +32,7 @@ for (const adapter of adapters) {
 	/* BEWARE:
 		Always make sure that every test writes to a separate file! By default, tests are running concurrent.
 	*/
-	test.serial(adapter +
+	test(adapter +
 		": Get resource from application.a (/index.html) and write it to /dest/ using a ReadableStream", async (t) => {
 		const source = await getAdapter({
 			fsBasePath: "./test/fixtures/application.a/webapp",
@@ -63,7 +63,7 @@ for (const adapter of adapters) {
 		});
 	});
 
-	test.serial(adapter + ": Filter resources", async (t) => {
+	test(adapter + ": Filter resources", async (t) => {
 		const source = createAdapter({
 			fsBasePath: "./test/fixtures/application.a/webapp",
 			virBasePath: "/app/"
@@ -83,7 +83,7 @@ for (const adapter of adapters) {
 		t.is(resources[0].getPath(), "/app/test.js", "Found correct resource");
 	});
 
-	test.serial(adapter + ": Flatten resources", async (t) => {
+	test(adapter + ": Flatten resources", async (t) => {
 		const source = await getAdapter({
 			fsBasePath: "./test/fixtures/application.a/webapp",
 			virBasePath: "/resources/app/"
@@ -98,7 +98,7 @@ for (const adapter of adapters) {
 		t.is(resources[0].getPath(), "/test.js", "Found correct resource");
 	});
 
-	test.serial(adapter + ": Link resources", async (t) => {
+	test(adapter + ": Link resources", async (t) => {
 		const source = await getAdapter({
 			fsBasePath: "./test/fixtures/application.a/webapp",
 			virBasePath: "/resources/app/"
