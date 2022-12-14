@@ -63,7 +63,7 @@ for (const adapter of adapters) {
 		});
 	});
 
-	test(adapter + ": Create resource, write and change", async (t) => {
+	test(adapter + ": Create resource, write and change content", async (t) => {
 		const dest = await getAdapter({
 			fsBasePath: "./test/tmp/writer/",
 			virBasePath: "/dest/writer/"
@@ -83,11 +83,50 @@ for (const adapter of adapters) {
 		t.is(await resource.getString(), "MyNewContent");
 		t.is(await resource1.getString(), "MyInitialContent");
 
+		t.is(await resource.getString(), "MyNewContent");
+		t.is(await resource1.getString(), "MyInitialContent");
+
 		await dest.write(resource);
 
 		const resource2 = await dest.byPath("/dest/writer/test.js");
 		t.is(await resource.getString(), "MyNewContent");
 		t.is(await resource2.getString(), "MyNewContent");
+	});
+
+	test(adapter + ": Create resource, write and change path", async (t) => {
+		const dest = await getAdapter({
+			fsBasePath: "./test/tmp/writer/",
+			virBasePath: "/dest/writer/"
+		});
+
+		const resource = createResource({
+			path: "/dest/writer/test.js",
+			string: "MyInitialContent"
+		});
+
+		await dest.write(resource);
+
+		resource.setPath("/dest/writer/test2.js");
+
+		const resourceOldPath = await dest.byPath("/dest/writer/test.js");
+		const resourceNewPath = await dest.byPath("/dest/writer/test2.js");
+
+		t.is(await resource.getPath(), "/dest/writer/test2.js");
+		t.truthy(resourceOldPath);
+		t.is(await resourceOldPath.getString(), await resource.getString());
+		t.is(await resourceOldPath.getPath(), "/dest/writer/test.js");
+		t.not(resourceNewPath);
+
+		await dest.write(resource);
+
+		const resourceOldPath1 = await dest.byPath("/dest/writer/test.js");
+		const resourceNewPath1 = await dest.byPath("/dest/writer/test2.js");
+
+		t.is(await resource.getPath(), "/dest/writer/test2.js");
+		t.truthy(resourceNewPath1);
+		t.is(await resourceNewPath1.getString(), await resource.getString());
+		t.is(await resourceNewPath1.getPath(), "/dest/writer/test2.js");
+		t.not(resourceOldPath1);
 	});
 
 	test(adapter + ": Filter resources", async (t) => {
