@@ -131,3 +131,29 @@ test("Migration of resource is executed", async (t) => {
 	await writer.write(resource);
 	t.is(migrateResourceWriterSpy.callCount, 1);
 });
+
+test("Resource: Change instance after write", async (t) => {
+	const writer = createAdapter({
+		virBasePath: "/"
+	});
+
+	const resource = createResource({
+		path: "/test.js",
+		string: "MyInitialContent"
+	});
+
+	await writer.write(resource);
+
+	resource.setString("MyNewContent");
+
+	const resource1 = await writer.byPath("/test.js");
+
+	t.is(await resource.getString(), "MyNewContent");
+	t.is(await resource1.getString(), "MyInitialContent");
+
+	await writer.write(resource);
+
+	const resource2 = await writer.byPath("/test.js");
+	t.is(await resource.getString(), "MyNewContent");
+	t.is(await resource2.getString(), "MyNewContent");
+});
