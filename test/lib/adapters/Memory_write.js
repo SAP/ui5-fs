@@ -155,5 +155,6 @@ test("Resource: Change instance after write", async (t) => {
 
 	const resource2 = await writer.byPath("/test.js");
 	t.is(await resource.getString(), "MyNewContent");
+	t.is(await resource1.getString(), "MyInitialContent");
 	t.is(await resource2.getString(), "MyNewContent");
 });
