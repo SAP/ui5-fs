@@ -4,7 +4,8 @@ import chaifs from "chai-fs";
 chai.use(chaifs);
 const assert = chai.assert;
 import sinon from "sinon";
-import {createAdapter, createFilterReader, createFlatReader, createLinkReader} from "../../lib/resourceFactory.js";
+import {createAdapter, createFilterReader,
+	createFlatReader, createLinkReader, createResource} from "../../lib/resourceFactory.js";
 
 test.afterEach.always((t) => {
 	sinon.restore();
@@ -42,14 +43,13 @@ for (const adapter of adapters) {
 			fsBasePath: "./test/tmp/readerWriters/application.a/simple-read-write",
 			virBasePath: "/dest/"
 		}, adapter);
+
 		// Get resource from one readerWriter
 		const resource = await source.byPath("/app/index.html");
 
-		const clonedResource = await resource.clone();
-
 		// Write resource content to another readerWriter
-		clonedResource.setPath("/dest/index_readableStreamTest.html");
-		await dest.write(clonedResource);
+		resource.setPath("/dest/index_readableStreamTest.html");
+		await dest.write(resource);
 
 		t.notThrows(async () => {
 			if (adapter === "FileSystem") {
@@ -61,6 +61,33 @@ for (const adapter of adapters) {
 				t.deepEqual(await destResource.getString(), await resource.getString());
 			}
 		});
+	});
+
+	test(adapter + ": Create resource, write and change", async (t) => {
+		const dest = await getAdapter({
+			fsBasePath: "./test/tmp/writer/",
+			virBasePath: "/dest/writer/"
+		});
+
+		const resource = createResource({
+			path: "/dest/writer/test.js",
+			string: "MyInitialContent"
+		});
+
+		await dest.write(resource);
+
+		resource.setString("MyNewContent");
+
+		const resource1 = await dest.byPath("/dest/writer/test.js");
+
+		t.is(await resource.getString(), "MyNewContent");
+		t.is(await resource1.getString(), "MyInitialContent");
+
+		await dest.write(resource);
+
+		const resource2 = await dest.byPath("/dest/writer/test.js");
+		t.is(await resource.getString(), "MyNewContent");
+		t.is(await resource2.getString(), "MyNewContent");
 	});
 
 	test(adapter + ": Filter resources", async (t) => {
