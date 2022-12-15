@@ -129,7 +129,7 @@ for (const adapter of adapters) {
 		t.not(resourceOldPath1);
 	});
 
-	test(adapter + ": Create resource with mismatch paths", async (t) => {
+	test(adapter + ": Create a resource with a path not starting with path configured in the adapter", async (t) => {
 		t.pass(2);
 		const dest = await getAdapter({
 			fsBasePath: "./test/tmp/writer/",
@@ -142,7 +142,8 @@ for (const adapter of adapters) {
 		});
 
 		const error = await t.throwsAsync(dest.write(resource));
-		t.is(error.message, "The path of the resource does not starts with the virBasePath of the adapter");
+		t.is(error.message, "The path of the resource '/dest2/tmp/test.js' does not starts with the configured " +
+			"virtual base path of the adapter '/dest2/writer/'");
 	});
 
 	test(adapter + ": Filter resources", async (t) => {
