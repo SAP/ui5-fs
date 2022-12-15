@@ -129,7 +129,8 @@
 		"micromatch": "^4.0.5",
 		"minimatch": "^5.1.1",
 		"pretty-hrtime": "^1.0.3",
-		"random-int": "^3.0.0"
+		"random-int": "^3.0.0",
+		"node-stream-zip": "^1.15.0"
 	},
 	"devDependencies": {
 		"@istanbuljs/esm-loader-hook": "^0.2.0",
