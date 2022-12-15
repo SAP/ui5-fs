@@ -70,7 +70,7 @@ for (const adapter of adapters) {
 		});
 
 		const resource = createResource({
-			path: "/dest/writer/test.js",
+			path: "/dest/writer/content/test.js",
 			string: "MyInitialContent"
 		});
 
@@ -78,7 +78,7 @@ for (const adapter of adapters) {
 
 		resource.setString("MyNewContent");
 
-		const resource1 = await dest.byPath("/dest/writer/test.js");
+		const resource1 = await dest.byPath("/dest/writer/content/test.js");
 
 		t.is(await resource.getString(), "MyNewContent");
 		t.is(await resource1.getString(), "MyInitialContent");
@@ -88,7 +88,7 @@ for (const adapter of adapters) {
 
 		await dest.write(resource);
 
-		const resource2 = await dest.byPath("/dest/writer/test.js");
+		const resource2 = await dest.byPath("/dest/writer/content/test.js");
 		t.is(await resource.getString(), "MyNewContent");
 		t.is(await resource2.getString(), "MyNewContent");
 	});
@@ -100,32 +100,32 @@ for (const adapter of adapters) {
 		});
 
 		const resource = createResource({
-			path: "/dest/writer/test.js",
+			path: "/dest/writer/path/test.js",
 			string: "MyInitialContent"
 		});
 
 		await dest.write(resource);
 
-		resource.setPath("/dest/writer/test2.js");
+		resource.setPath("/dest/writer/path/test2.js");
 
-		const resourceOldPath = await dest.byPath("/dest/writer/test.js");
-		const resourceNewPath = await dest.byPath("/dest/writer/test2.js");
+		const resourceOldPath = await dest.byPath("/dest/writer/path/test.js");
+		const resourceNewPath = await dest.byPath("/dest/writer/path/test2.js");
 
-		t.is(await resource.getPath(), "/dest/writer/test2.js");
+		t.is(await resource.getPath(), "/dest/writer/path/test2.js");
 		t.truthy(resourceOldPath);
 		t.is(await resourceOldPath.getString(), await resource.getString());
-		t.is(await resourceOldPath.getPath(), "/dest/writer/test.js");
+		t.is(await resourceOldPath.getPath(), "/dest/writer/path/test.js");
 		t.not(resourceNewPath);
 
 		await dest.write(resource);
 
-		const resourceOldPath1 = await dest.byPath("/dest/writer/test.js");
-		const resourceNewPath1 = await dest.byPath("/dest/writer/test2.js");
+		const resourceOldPath1 = await dest.byPath("/dest/writer/path/test.js");
+		const resourceNewPath1 = await dest.byPath("/dest/writer/path/test2.js");
 
-		t.is(await resource.getPath(), "/dest/writer/test2.js");
+		t.is(await resource.getPath(), "/dest/writer/path/test2.js");
 		t.truthy(resourceNewPath1);
 		t.is(await resourceNewPath1.getString(), await resource.getString());
-		t.is(await resourceNewPath1.getPath(), "/dest/writer/test2.js");
+		t.is(await resourceNewPath1.getPath(), "/dest/writer/path/test2.js");
 		t.not(resourceOldPath1);
 	});
 
