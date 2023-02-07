@@ -33,9 +33,6 @@ A list of unreleased changes can be found [here]({{ .Info.RepositoryURL }}/compa
 {{ end -}}
 {{ end -}}
 
-<a name="v3.0.0"></a>
-## [v3.0.0] - 2023-02-XX
-
 ### Breaking Changes
 - Transform to ES Modules ([#398](https://github.com/SAP/ui5-fs/issues/398)) [`2b61580`](https://github.com/SAP/ui5-fs/commit/2b615807a610dd7dfeb5423496ec7aebc9169011)
 - Throw an error on write of a resource when path does not starts with virBasePath of the respective adapter ([#453](https://github.com/SAP/ui5-fs/issues/453)) [`d76575f`](https://github.com/SAP/ui5-fs/commit/d76575f8f05a0b6695285200ba595e532620daed)
