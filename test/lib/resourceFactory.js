@@ -105,7 +105,7 @@ test("createReader", async (t) => {
 	const resources = await reader.byGlob("**/*");
 	t.is(resources.length, 1, "Found one resource");
 	t.is(resources[0].getPath(), "/resources/app/test.js", "Found correct resource");
-	
+
 	t.deepEqual(reader._readers[0]._excludes, ["**/*.html"], "Excludes do not get prefixed.");
 });
 
