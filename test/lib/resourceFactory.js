@@ -100,7 +100,9 @@ test("createReader: application project", async (t) => {
 			"**/*.html",
 			"/resources/app/test/**",
 			"/test/**",
-			"test/**"
+			"test/**",
+			"!/resources/app/test/**",
+			"!/test/**/*.html"
 		],
 		name: "reader name"
 	});
@@ -117,6 +119,8 @@ test("createReader: application project", async (t) => {
 		"/resources/app/test/**", // Was already prefixed correctly
 		"/resources/app/test/**",
 		"/resources/app/test/**",
+		"!/resources/app/test/**",
+		"!/resources/app/test/**/*.html",
 	], "Some excludes got prefixed.");
 });
 
