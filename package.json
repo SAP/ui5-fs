@@ -37,15 +37,12 @@
 	},
 	"scripts": {
 		"test": "npm run lint && npm run jsdoc-generate && npm run coverage && npm run depcheck",
-		"test-azure": "npm run coverage-xunit",
 		"lint": "eslint ./",
 		"unit": "rimraf test/tmp && ava",
 		"unit-verbose": "rimraf test/tmp && cross-env UI5_LOG_LVL=verbose ava --verbose --serial",
 		"unit-watch": "npm run unit -- --watch",
-		"unit-xunit": "rimraf test/tmp && ava --node-arguments=\"--experimental-loader=@istanbuljs/esm-loader-hook\" --tap | tap-xunit --dontUseCommentsAsTestNames=true > test-results.xml",
 		"unit-inspect": "cross-env UI5_LOG_LVL=verbose ava debug --break",
 		"coverage": "rimraf test/tmp && nyc ava --node-arguments=\"--experimental-loader=@istanbuljs/esm-loader-hook\"",
-		"coverage-xunit": "nyc --reporter=text --reporter=text-summary --reporter=cobertura npm run unit-xunit",
 		"jsdoc": "npm run jsdoc-generate && open-cli jsdocs/index.html",
 		"jsdoc-generate": "jsdoc -c ./jsdoc.json -t $(node -p 'path.dirname(require.resolve(\"docdash\"))') ./lib/ || (echo 'Error during JSDoc generation! Check log.' && exit 1)",
 		"jsdoc-watch": "npm run jsdoc && chokidar \"./lib/**/*.js\" -c \"npm run jsdoc-generate\"",
@@ -148,7 +145,6 @@
 		"nyc": "^15.1.0",
 		"open-cli": "^7.2.0",
 		"rimraf": "^5.0.1",
-		"sinon": "^15.2.0",
-		"tap-xunit": "^2.4.1"
+		"sinon": "^15.2.0"
 	}
 }
