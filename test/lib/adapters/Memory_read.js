@@ -416,6 +416,20 @@ test("static excludes: glob with negated directory exclude, not excluding resour
 	t.deepEqual(resources.length, 2, "Found two resources");
 });
 
+test("static excludes: glob not existing resource should not match any re-included excludes", async (t) => {
+	const srcReader = resourceFactory.createAdapter({
+		fsBasePath: "./test/fixtures/library.l/src",
+		virBasePath: "/resources/",
+		excludes: [
+			"**",
+			"!**/some.js"
+		]
+	});
+
+	const resources = await srcReader.byGlob("/resources/**/does-not-exist", {nodir: true});
+	t.deepEqual(resources.length, 0, "Found no resources");
+});
+
 test("static excludes: byPath exclude everything in sub-directory", async (t) => {
 	const readerWriter = resourceFactory.createAdapter({
 		virBasePath: "/resources/app/",
