@@ -1,15 +1,23 @@
 import test from "ava";
-import chai from "chai";
-import chaifs from "chai-fs";
-chai.use(chaifs);
-const assert = chai.assert;
 import sinon from "sinon";
+import {readFileSync} from "node:fs";
+
 import {createAdapter, createFilterReader,
 	createFlatReader, createLinkReader, createResource} from "../../lib/resourceFactory.js";
 
 test.afterEach.always((t) => {
 	sinon.restore();
 });
+
+function getFileContent(path) {
+	return readFileSync(path, "utf8");
+}
+
+function fileEqual(t, actual, expected) {
+	const actualContent = getFileContent(actual);
+	const expectedContent = getFileContent(expected);
+	t.is(actualContent, expectedContent);
+}
 
 ["FileSystem", "Memory"].forEach((adapter) => {
 	async function getAdapter(config) {
@@ -51,7 +59,8 @@ test.afterEach.always((t) => {
 
 		t.notThrows(async () => {
 			if (adapter === "FileSystem") {
-				assert.fileEqual(
+				fileEqual(
+					t,
 					"./test/tmp/readerWriters/application.a/simple-read-write/index_readableStreamTest.html",
 					"./test/fixtures/application.a/webapp/index.html");
 			} else {

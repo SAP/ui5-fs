@@ -1,16 +1,27 @@
 import path from "node:path";
+import {readFileSync} from "node:fs";
 import {access as fsAccess, constants as fsConstants, mkdir} from "node:fs/promises";
 import {fileURLToPath} from "node:url";
 import test from "ava";
 import {rimraf} from "rimraf";
-import chai from "chai";
-import chaifs from "chai-fs";
-chai.use(chaifs);
-const assert = chai.assert;
-
 import sinon from "sinon";
 
 import {createAdapter, createResource} from "../../../lib/resourceFactory.js";
+
+function getFileContent(path) {
+	return readFileSync(path, "utf8");
+}
+
+function fileEqual(t, actual, expected) {
+	const actualContent = getFileContent(actual);
+	const expectedContent = getFileContent(expected);
+	t.is(actualContent, expectedContent);
+}
+
+function fileContent(t, path, expected) {
+	const actualContent = getFileContent(path);
+	t.is(actualContent, expected);
+}
 
 test.beforeEach(async (t) => {
 	const tmpDirName = t.title.replace(/[^a-zA-Z0-9]/g, "_").toLowerCase(); // Generate tmp dir name from test name
@@ -46,7 +57,7 @@ test("Write resource", async (t) => {
 
 	await readerWriters.dest.write(resource);
 	t.notThrows(() => {
-		assert.fileEqual(destFsPath, "./test/fixtures/application.a/webapp/index.html");
+		fileEqual(t, destFsPath, "./test/fixtures/application.a/webapp/index.html");
 	});
 	await t.notThrowsAsync(resource.getBuffer(), "Resource content can still be accessed");
 });
@@ -66,7 +77,7 @@ test("Write resource in readOnly mode", async (t) => {
 		"File can not be written");
 
 	t.notThrows(() => {
-		assert.fileEqual(destFsPath, "./test/fixtures/application.a/webapp/index.html");
+		fileEqual(t, destFsPath, "./test/fixtures/application.a/webapp/index.html");
 	});
 	await t.notThrowsAsync(resource.getBuffer(), "Resource content can still be accessed");
 });
@@ -81,7 +92,7 @@ test("Write resource in drain mode", async (t) => {
 	await readerWriters.dest.write(resource, {drain: true});
 
 	t.notThrows(() => {
-		assert.fileEqual(destFsPath, "./test/fixtures/application.a/webapp/index.html");
+		fileEqual(t, destFsPath, "./test/fixtures/application.a/webapp/index.html");
 	});
 
 	// Should not fail as resource hasn't been modified
@@ -110,7 +121,7 @@ test("Write modified resource in drain mode", async (t) => {
 	await readerWriters.dest.write(resource, {drain: true});
 
 	t.notThrows(() => {
-		assert.fileEqual(destFsPath, "./test/fixtures/application.a/webapp/index.html");
+		fileEqual(t, destFsPath, "./test/fixtures/application.a/webapp/index.html");
 	});
 	await t.throwsAsync(resource.getBuffer(),
 		{message: /Content of Resource \/app\/index.html has been drained/});
@@ -141,7 +152,7 @@ test("Write unmodified resource into same file", async (t) => {
 	await dest.write(resource);
 
 	t.notThrows(() => {
-		assert.fileEqual(destFsPath, "./test/fixtures/application.a/webapp/index.html");
+		fileEqual(t, destFsPath, "./test/fixtures/application.a/webapp/index.html");
 	});
 	await t.notThrowsAsync(resource.getBuffer(), "Resource content can still be accessed");
 });
@@ -158,7 +169,7 @@ test("Write unmodified resource into same file in drain mode", async (t) => {
 	await dest.write(resource, {drain: true});
 
 	t.notThrows(() => {
-		assert.fileEqual(destFsPath, "./test/fixtures/application.a/webapp/index.html");
+		fileEqual(t, destFsPath, "./test/fixtures/application.a/webapp/index.html");
 	});
 	await t.notThrowsAsync(resource.getBuffer(),
 		"Resource content can still be accessed, since stream had to be buffered");
@@ -176,7 +187,7 @@ test("Write unmodified resource into same file in read-only mode", async (t) => 
 	await dest.write(resource, {readOnly: true});
 
 	t.notThrows(() => {
-		assert.fileEqual(destFsPath, "./test/fixtures/application.a/webapp/index.html");
+		fileEqual(t, destFsPath, "./test/fixtures/application.a/webapp/index.html");
 	});
 	await t.notThrowsAsync(resource.getBuffer(),
 		"Resource content can still be accessed, since stream had to be buffered");
@@ -201,7 +212,7 @@ test("Write modified resource into same file", async (t) => {
 	await dest.write(resource);
 
 	t.notThrows(() => {
-		assert.fileEqual(destFsPath, "./test/fixtures/application.a/webapp/index.html");
+		fileEqual(t, destFsPath, "./test/fixtures/application.a/webapp/index.html");
 	});
 	await t.notThrowsAsync(resource.getBuffer(), "Resource content can still be accessed");
 });
@@ -220,7 +231,7 @@ test("Write modified resource into same file in drain mode", async (t) => {
 	await dest.write(resource, {drain: true});
 
 	t.notThrows(() => {
-		assert.fileEqual(destFsPath, "./test/fixtures/application.a/webapp/index.html");
+		fileEqual(t, destFsPath, "./test/fixtures/application.a/webapp/index.html");
 	});
 	await t.throwsAsync(resource.getBuffer(),
 		{message: /Content of Resource \/app\/index.html has been drained/});
@@ -240,7 +251,7 @@ test("Write modified resource into same file in read-only mode", async (t) => {
 	await dest.write(resource, {readOnly: true});
 
 	t.notThrows(() => {
-		assert.fileEqual(destFsPath, "./test/fixtures/application.a/webapp/index.html");
+		fileEqual(t, destFsPath, "./test/fixtures/application.a/webapp/index.html");
 	});
 	await t.notThrowsAsync(resource.getBuffer(),
 		"Resource content can still be accessed");
@@ -262,7 +273,7 @@ test("Write new resource", async (t) => {
 
 	await readerWriters.dest.write(resource);
 	t.notThrows(() => {
-		assert.fileContent(destFsPath, "Resource content");
+		fileContent(t, destFsPath, "Resource content");
 	});
 	await t.notThrowsAsync(resource.getBuffer(), "Resource content can still be accessed");
 });
@@ -278,7 +289,7 @@ test("Write new resource in drain mode", async (t) => {
 
 	await readerWriters.dest.write(resource, {drain: true});
 	t.notThrows(() => {
-		assert.fileContent(destFsPath, "Resource content");
+		fileContent(t, destFsPath, "Resource content");
 	});
 	await t.throwsAsync(resource.getBuffer(),
 		{message: /Content of Resource \/app\/index.html has been drained/});
@@ -295,7 +306,7 @@ test("Write new resource in read-only mode", async (t) => {
 
 	await readerWriters.dest.write(resource, {readOnly: true});
 	t.notThrows(() => {
-		assert.fileContent(destFsPath, "Resource content");
+		fileContent(t, destFsPath, "Resource content");
 	});
 	await t.notThrowsAsync(resource.getBuffer(),
 		"Resource content can still be accessed");
@@ -318,7 +329,7 @@ test("Migration of resource is executed", async (t) => {
 
 	t.is(migrateResourceWriterSpy.callCount, 1);
 	t.notThrows(() => {
-		assert.fileEqual(destFsPath, "./test/fixtures/application.a/webapp/index.html");
+		fileEqual(t, destFsPath, "./test/fixtures/application.a/webapp/index.html");
 	});
 	await t.notThrowsAsync(resource.getBuffer(), "Resource content can still be accessed");
 });
