@@ -1,6 +1,6 @@
 import test from "ava";
 import sinon from "sinon";
-import {readFileSync} from "node:fs";
+import {readFile} from "node:fs/promises";
 
 import {createAdapter, createFilterReader,
 	createFlatReader, createLinkReader, createResource} from "../../lib/resourceFactory.js";
@@ -10,12 +10,12 @@ test.afterEach.always((t) => {
 });
 
 function getFileContent(path) {
-	return readFileSync(path, "utf8");
+	return readFile(path, "utf8");
 }
 
-function fileEqual(t, actual, expected) {
-	const actualContent = getFileContent(actual);
-	const expectedContent = getFileContent(expected);
+async function fileEqual(t, actual, expected) {
+	const actualContent = await getFileContent(actual);
+	const expectedContent = await getFileContent(expected);
 	t.is(actualContent, expectedContent);
 }
 
@@ -59,7 +59,7 @@ function fileEqual(t, actual, expected) {
 
 		t.notThrows(async () => {
 			if (adapter === "FileSystem") {
-				fileEqual(
+				await fileEqual(
 					t,
 					"./test/tmp/readerWriters/application.a/simple-read-write/index_readableStreamTest.html",
 					"./test/fixtures/application.a/webapp/index.html");
