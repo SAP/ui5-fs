@@ -127,7 +127,7 @@
 		"globby": "^13.2.2",
 		"graceful-fs": "^4.2.11",
 		"micromatch": "^4.0.5",
-		"minimatch": "^9.0.3",
+		"minimatch": "^9.0.4",
 		"pretty-hrtime": "^1.0.3",
 		"random-int": "^3.0.0"
 	},
