@@ -134,6 +134,7 @@
 		"random-int": "^3.0.0"
 	},
 	"devDependencies": {
+		"eslint": "^9.8.0",
 		"@eslint/js": "^9.8.0",
 		"@istanbuljs/esm-loader-hook": "^0.2.0",
 		"ava": "^6.1.3",
