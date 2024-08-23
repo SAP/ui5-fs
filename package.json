@@ -36,6 +36,10 @@
 		"npm": ">= 8"
 	},
 	"scripts": {
+		"build": "npm run cleanup && tsc -p tsconfig.build.json",
+		"build-test": "tsc --noEmit -p .",
+		"build-watch": "npm run cleanup && tsc -w -p tsconfig.build.json",
+		"cleanup": "rimraf lib coverage",
 		"test": "npm run lint && npm run jsdoc-generate && npm run coverage && npm run depcheck",
 		"test-azure": "npm run coverage-xunit",
 		"lint": "eslint ./",
@@ -43,7 +47,8 @@
 		"unit-verbose": "rimraf test/tmp && cross-env UI5_LOG_LVL=verbose ava --verbose --serial",
 		"unit-watch": "npm run unit -- --watch",
 		"unit-xunit": "rimraf test/tmp && ava --node-arguments=\"--experimental-loader=@istanbuljs/esm-loader-hook\" --tap | tap-xunit --dontUseCommentsAsTestNames=true > test-results.xml",
-		"unit-inspect": "cross-env UI5_LOG_LVL=verbose ava debug --break",
+		"unit-debug": "cross-env UI5_LOG_LVL=verbose ava debug",
+		"unit-update-snapshots": "ava --update-snapshots",
 		"coverage": "rimraf test/tmp && nyc ava --node-arguments=\"--experimental-loader=@istanbuljs/esm-loader-hook\"",
 		"coverage-xunit": "nyc --reporter=text --reporter=text-summary --reporter=cobertura npm run unit-xunit",
 		"jsdoc": "npm run jsdoc-generate && open-cli jsdocs/index.html",
@@ -63,21 +68,6 @@
 		"LICENSES/**",
 		".reuse/**"
 	],
-	"ava": {
-		"files": [
-			"test/lib/**/*.js"
-		],
-		"watchMode": {
-			"ignoreChanges": [
-				"test/tmp/**"
-			]
-		},
-		"nodeArguments": [
-			"--loader=esmock",
-			"--no-warnings"
-		],
-		"workerThreads": false
-	},
 	"nyc": {
 		"reporter": [
 			"lcov",
@@ -134,17 +124,18 @@
 		"random-int": "^3.0.0"
 	},
 	"devDependencies": {
-		"@eslint/js": "^9.8.0",
+		"@eslint/js": "^9.9.0",
 		"@istanbuljs/esm-loader-hook": "^0.2.0",
+		"@istanbuljs/nyc-config-typescript": "^1.0.2",
+		"@stylistic/eslint-plugin": "^2.6.4",
+		"@types/node": "^20.11.0",
+		"@types/sinon": "^17.0.3",
 		"ava": "^6.1.3",
 		"chokidar-cli": "^3.0.0",
 		"cross-env": "^7.0.3",
 		"depcheck": "^1.4.7",
 		"docdash": "^2.0.2",
-		"eslint": "^9.9.1",
-		"eslint-config-google": "^0.14.0",
-		"eslint-plugin-ava": "^15.0.1",
-		"eslint-plugin-jsdoc": "^50.2.2",
+		"eslint": "^9.9.0",
 		"esmock": "^2.6.7",
 		"globals": "^15.9.0",
 		"jsdoc": "^4.0.3",
@@ -152,6 +143,8 @@
 		"open-cli": "^8.0.0",
 		"rimraf": "^6.0.1",
 		"sinon": "^18.0.0",
-		"tap-xunit": "^2.4.1"
+		"tap-xunit": "^2.4.1",
+		"tsx": "^4.17.0",
+		"typescript-eslint": "^8.2.0"
 	}
 }
