@@ -3,8 +3,7 @@ const log = getLogger("resources:tracing:Trace");
 const logGlobs = getLogger("resources:tracing:Trace:globs");
 const logPaths = getLogger("resources:tracing:Trace:paths");
 import prettyHrtime from "pretty-hrtime";
-import summaryTrace from "./traceSummary.js";
-const hasOwnProperty = Object.prototype.hasOwnProperty;
+import summaryTrace, {CollectionsType} from "./traceSummary.js";
 
 /**
  * Trace
@@ -13,7 +12,13 @@ const hasOwnProperty = Object.prototype.hasOwnProperty;
  * @class
  */
 class Trace {
-	constructor(name) {
+	_name!: string;
+	_startTime!: [number, number];
+	_globCalls!: number;
+	_pathCalls!: number;
+	_collections!: CollectionsType<object>;
+
+	constructor(name: string) {
 		if (!log.isLevelEnabled("silly")) {
 			return;
 		}
@@ -21,7 +26,7 @@ class Trace {
 		this._startTime = process.hrtime();
 		this._globCalls = 0;
 		this._pathCalls = 0;
-		this._collections = Object.create(null);
+		this._collections = Object.create(null) as CollectionsType<object>;
 		summaryTrace.traceStarted();
 	}
 
@@ -41,7 +46,7 @@ class Trace {
 		summaryTrace.pathCall();
 	}
 
-	collection(name) {
+	collection(name: string) {
 		if (!log.isLevelEnabled("silly")) {
 			return;
 		}
@@ -76,7 +81,7 @@ class Trace {
 		report += `  ${colCount} reader-collections involed:\n`;
 
 		for (const coll in this._collections) {
-			if (hasOwnProperty.call(this._collections, coll)) {
+			if (Object.prototype.hasOwnProperty.call(this._collections, coll)) {
 				report += `      ${this._collections[coll].calls}x ${coll}\n`;
 			}
 		}
@@ -90,7 +95,7 @@ class Trace {
 			logPaths.silly(report);
 		}
 
-		summaryTrace.traceEnded();
+		void summaryTrace.traceEnded();
 	}
 }
 

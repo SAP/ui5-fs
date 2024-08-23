@@ -10,9 +10,9 @@ declare module "@ui5/project/specifications/Project" {
 
 declare module "@ui5/logger" {
 	interface logger {
-		silly(x: string): void
-		isLevelEnabled(x:string): boolean
+		silly(x: string): void;
+		isLevelEnabled(x: string): boolean;
 	}
 
-	export function getLogger(x: string): logger
+	export function getLogger(x: string): logger;
 }

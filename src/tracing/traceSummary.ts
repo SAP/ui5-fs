@@ -5,7 +5,9 @@ import prettyHrtime from "pretty-hrtime";
 let timeoutId: NodeJS.Timeout;
 let active = false;
 let tracesRunning = 0;
-type CollectionsType<T> = T & Record<string, T>;
+
+export type CollectionsType<T> = T & Record<string, T>;
+
 let traceData: null | {
 	startTime: [number, number];
 	pathCalls: number;
