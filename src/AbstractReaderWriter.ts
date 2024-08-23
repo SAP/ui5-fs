@@ -1,4 +1,5 @@
 import AbstractReader from "./AbstractReader.js";
+import Resource from "./Resource.js";
 
 /**
  * Abstract resource locator implementing the general API for <b>reading and writing</b> resources
@@ -16,7 +17,7 @@ class AbstractReaderWriter extends AbstractReader {
 	 * @public
 	 * @param {string} name Name of the reader/writer. Typically used for tracing purposes
 	 */
-	constructor(name) {
+	constructor(name: string | undefined) {
 		if (new.target === AbstractReaderWriter) {
 			throw new TypeError("Class 'AbstractReaderWriter' is abstract");
 		}
@@ -28,8 +29,8 @@ class AbstractReaderWriter extends AbstractReader {
 	 *
 	 * @returns {string} Name of the reader/writer
 	 */
-	getName() {
-		return this._name || `<unnamed ${this.constructor.name} Reader/Writer>`;
+	getName(): string {
+		return this._name ?? `<unnamed ${this.constructor.name} Reader/Writer>`;
 	}
 
 	/**
@@ -50,7 +51,7 @@ class AbstractReaderWriter extends AbstractReader {
 	 *						E.g. the final write of a resource after all processing is finished.
 	 * @returns {Promise<undefined>} Promise resolving once data has been written
 	 */
-	write(resource, options = {drain: false, readOnly: false}) {
+	write(resource: Resource, options = {drain: false, readOnly: false}): Promise<void> {
 		return this._write(resource, options);
 	}
 
@@ -63,7 +64,7 @@ class AbstractReaderWriter extends AbstractReader {
 	 * @param {object} [options] Write options, see above
 	 * @returns {Promise<undefined>} Promise resolving once data has been written
 	 */
-	_write(resource, options) {
+	_write(_resource: Resource, _options: object): Promise<void> {
 		throw new Error("Not implemented");
 	}
 }
