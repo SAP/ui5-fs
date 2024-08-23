@@ -3,7 +3,7 @@
 
 declare module "@ui5/project/specifications/Project" {
 
-	export interface Project { 
-		getName: () => string
+	export interface Project {
+		getName: () => string;
 	}
 }
