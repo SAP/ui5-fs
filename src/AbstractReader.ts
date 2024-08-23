@@ -1,5 +1,6 @@
 import randomInt from "random-int";
 import Trace from "./tracing/Trace.js";
+import Resource from "./Resource.js";
 
 /**
  * Abstract resource locator implementing the general API for <b>reading</b> resources
@@ -10,13 +11,14 @@ import Trace from "./tracing/Trace.js";
  * @alias @ui5/fs/AbstractReader
  */
 class AbstractReader {
+	_name: string | undefined;
 	/**
 	 * The constructor.
 	 *
 	 * @public
 	 * @param {string} name Name of the reader. Typically used for tracing purposes
 	 */
-	constructor(name) {
+	constructor(name: string | undefined) {
 		if (new.target === AbstractReader) {
 			throw new TypeError("Class 'AbstractReader' is abstract");
 		}
@@ -28,8 +30,8 @@ class AbstractReader {
 	 *
 	 * @returns {string} Name of the reader
 	 */
-	getName() {
-		return this._name || `<unnamed ${this.constructor.name} Reader>`;
+	getName(): string {
+		return this._name ?? `<unnamed ${this.constructor.name} Reader>`;
 	}
 
 	/**
@@ -47,12 +49,12 @@ class AbstractReader {
 	 * @param {boolean} [options.nodir=true] Do not match directories
 	 * @returns {Promise<@ui5/fs/Resource[]>} Promise resolving to list of resources
 	 */
-	byGlob(virPattern, options = {nodir: true}) {
+	byGlob(virPattern: string, options = {nodir: true}): Promise<Resource[]> {
 		const trace = new Trace(virPattern);
-		return this._byGlob(virPattern, options, trace).then(function (result) {
+		return this._byGlob(virPattern, options, trace).then(function (result: Resource[]) {
 			trace.printReport();
 			return result;
-		}).then((resources) => {
+		}).then((resources: Resource[]) => {
 			if (resources.length > 1) {
 				// Pseudo randomize result order to prevent consumers from relying on it:
 				// Swap the first object with a randomly chosen one
@@ -74,7 +76,7 @@ class AbstractReader {
 	 * @param {boolean} [options.nodir=true] Do not match directories
 	 * @returns {Promise<@ui5/fs/Resource>} Promise resolving to a single resource
 	 */
-	byPath(virPath, options = {nodir: true}) {
+	byPath(virPath: string, options = {nodir: true}): Promise<Resource[]> {
 		const trace = new Trace(virPath);
 		return this._byPath(virPath, options, trace).then(function (resource) {
 			trace.printReport();
@@ -93,7 +95,7 @@ class AbstractReader {
 	 * @param {@ui5/fs/tracing.Trace} trace Trace instance
 	 * @returns {Promise<@ui5/fs/Resource[]>} Promise resolving to list of resources
 	 */
-	_byGlob(virPattern, options, trace) {
+	_byGlob(_virPattern: string | string[], _options: object, _trace: Trace): Promise<Resource[]> {
 		throw new Error("Function '_byGlob' is not implemented");
 	}
 
@@ -107,7 +109,7 @@ class AbstractReader {
 	 * @param {@ui5/fs/tracing.Trace} trace Trace instance
 	 * @returns {Promise<@ui5/fs/Resource[]>} Promise resolving to list of resources
 	 */
-	_runGlob(pattern, options, trace) {
+	_runGlob(_pattern: string, _options: object, _trace: Trace): Promise<Resource[]> {
 		throw new Error("Function '_runGlob' is not implemented");
 	}
 
@@ -121,7 +123,7 @@ class AbstractReader {
 	 * @param {@ui5/fs/tracing.Trace} trace Trace instance
 	 * @returns {Promise<@ui5/fs/Resource>} Promise resolving to a single resource
 	 */
-	_byPath(virPath, options, trace) {
+	_byPath(_virPath: string, _options: object, _trace: Trace): Promise<Resource[]> {
 		throw new Error("Function '_byPath' is not implemented");
 	}
 }
