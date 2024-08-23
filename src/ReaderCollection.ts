@@ -36,7 +36,7 @@ class ReaderCollection extends AbstractReader {
 	 * @returns {Promise<@ui5/fs/Resource[]>} Promise resolving to list of resources
 	 */
 	_byGlob(pattern, options, trace) {
-		return Promise.all(this._readers.map(function(resourceLocator) {
+		return Promise.all(this._readers.map(function (resourceLocator) {
 			return resourceLocator._byGlob(pattern, options, trace);
 		})).then((result) => {
 			trace.collection(this._name);
@@ -66,9 +66,9 @@ class ReaderCollection extends AbstractReader {
 		}
 
 		// Using Promise.race to deliver files that can be found as fast as possible
-		return Promise.race(this._readers.map(function(resourceLocator) {
-			return resourceLocator._byPath(virPath, options, trace).then(function(resource) {
-				return new Promise(function(resolve, reject) {
+		return Promise.race(this._readers.map(function (resourceLocator) {
+			return resourceLocator._byPath(virPath, options, trace).then(function (resource) {
+				return new Promise(function (resolve, reject) {
 					trace.collection(that._name);
 					resolveCount++;
 					if (resource) {

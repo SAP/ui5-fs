@@ -48,6 +48,7 @@ class AbstractAdapter extends AbstractReaderWriter {
 		this._excludesNegated = excludes.map((pattern) => `!${pattern}`);
 		this._project = project;
 	}
+
 	/**
 	 * Locates resources by glob.
 	 *
@@ -83,15 +84,15 @@ class AbstractAdapter extends AbstractReaderWriter {
 					return [
 						this._createResource({
 							statInfo: { // TODO: make closer to fs stat info
-								isDirectory: function() {
+								isDirectory: function () {
 									return true;
-								}
+								},
 							},
 							source: {
-								adapter: "Abstract"
+								adapter: "Abstract",
 							},
-							path: subPath
-						})
+							path: subPath,
+						}),
 					];
 				}
 			}
@@ -221,7 +222,7 @@ class AbstractAdapter extends AbstractReaderWriter {
 		const options = {
 			path: resource._path,
 			statInfo: resource._statInfo,
-			source: resource._source
+			source: resource._source,
 		};
 
 		if (resource._stream) {
@@ -265,15 +266,15 @@ class AbstractAdapter extends AbstractReaderWriter {
 			if (!this._isPathHandled(virPath)) {
 				if (log.isLevelEnabled("silly")) {
 					log.silly(`Failed to resolve virtual path '${inputVirPath}': ` +
-						`Resolved path does not start with adapter base path '${this._virBasePath}' or equals ` +
-						`base dir: ${this._virBaseDir}`);
+					`Resolved path does not start with adapter base path '${this._virBasePath}' or equals ` +
+					`base dir: ${this._virBaseDir}`);
 				}
 				return null;
 			}
 			if (this._isPathExcluded(virPath)) {
 				if (log.isLevelEnabled("silly")) {
 					log.silly(`Failed to resolve virtual path '${inputVirPath}': ` +
-						`Resolved path is excluded by configuration of adapter with base path '${this._virBasePath}'`);
+					`Resolved path is excluded by configuration of adapter with base path '${this._virBasePath}'`);
 				}
 				return null;
 			}

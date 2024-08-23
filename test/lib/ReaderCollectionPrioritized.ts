@@ -6,7 +6,7 @@ import Resource from "../../lib/Resource.js";
 test("ReaderCollectionPrioritized: constructor", (t) => {
 	const readerCollectionPrioritized = new ReaderCollectionPrioritized({
 		name: "myReader",
-		readers: [{}, {}, {}]
+		readers: [{}, {}, {}],
 	});
 
 	t.is(readerCollectionPrioritized.getName(), "myReader", "correct name assigned");
@@ -15,14 +15,14 @@ test("ReaderCollectionPrioritized: constructor", (t) => {
 
 test("ReaderCollectionPrioritized: _byGlob w/o finding a resource", async (t) => {
 	const abstractReader = {
-		_byGlob: sinon.stub().returns(Promise.resolve([]))
+		_byGlob: sinon.stub().returns(Promise.resolve([])),
 	};
 	const trace = {
-		collection: sinon.spy()
+		collection: sinon.spy(),
 	};
 	const readerCollectionPrioritized = new ReaderCollectionPrioritized({
 		name: "myReader",
-		readers: [abstractReader]
+		readers: [abstractReader],
 	});
 	const resources = await readerCollectionPrioritized._byGlob("anyPattern", {someOption: true}, trace);
 
@@ -36,17 +36,17 @@ test("ReaderCollectionPrioritized: _byGlob w/o finding a resource", async (t) =>
 test("ReaderCollectionPrioritized: _byGlob with finding a resource", async (t) => {
 	const resource = new Resource({
 		path: "/my/path",
-		buffer: Buffer.from("content")
+		buffer: Buffer.from("content"),
 	});
 	const abstractReader = {
-		_byGlob: sinon.stub().returns(Promise.resolve([resource]))
+		_byGlob: sinon.stub().returns(Promise.resolve([resource])),
 	};
 	const trace = {
-		collection: sinon.spy()
+		collection: sinon.spy(),
 	};
 	const readerCollectionPrioritized = new ReaderCollectionPrioritized({
 		name: "myReader",
-		readers: [abstractReader]
+		readers: [abstractReader],
 	});
 
 	const resources = await readerCollectionPrioritized._byGlob("anyPattern", {someOption: true}, trace);
@@ -64,18 +64,18 @@ test("ReaderCollectionPrioritized: _byGlob with finding a resource", async (t) =
 test("ReaderCollectionPrioritized: _byPath with reader finding a resource", async (t) => {
 	const resource = new Resource({
 		path: "/my/path",
-		buffer: Buffer.from("content")
+		buffer: Buffer.from("content"),
 	});
 	const pushCollectionSpy = sinon.spy(resource, "pushCollection");
 	const abstractReader = {
-		_byPath: sinon.stub().returns(Promise.resolve(resource))
+		_byPath: sinon.stub().returns(Promise.resolve(resource)),
 	};
 	const trace = {
-		collection: sinon.spy()
+		collection: sinon.spy(),
 	};
 	const readerCollectionPrioritized = new ReaderCollectionPrioritized({
 		name: "myReader",
-		readers: [abstractReader]
+		readers: [abstractReader],
 	});
 
 	const readResource = await readerCollectionPrioritized._byPath("anyVirtualPath", {someOption: true}, trace);
@@ -90,17 +90,17 @@ test("ReaderCollectionPrioritized: _byPath with reader finding a resource", asyn
 
 test("ReaderCollectionPrioritized: _byPath with two readers both finding no resource", async (t) => {
 	const abstractReaderOne = {
-		_byPath: sinon.stub().returns(Promise.resolve())
+		_byPath: sinon.stub().returns(Promise.resolve()),
 	};
 	const abstractReaderTwo = {
-		_byPath: sinon.stub().returns(Promise.resolve())
+		_byPath: sinon.stub().returns(Promise.resolve()),
 	};
 	const trace = {
-		collection: sinon.spy()
+		collection: sinon.spy(),
 	};
 	const readerCollectionPrioritized = new ReaderCollectionPrioritized({
 		name: "myReader",
-		readers: [abstractReaderOne, abstractReaderTwo]
+		readers: [abstractReaderOne, abstractReaderTwo],
 	});
 
 	const resource = await readerCollectionPrioritized._byPath("anyVirtualPath", {someOption: true}, trace);
@@ -114,11 +114,11 @@ test("ReaderCollectionPrioritized: _byPath with two readers both finding no reso
 
 test("ReaderCollectionPrioritized: _byPath with empty readers array", async (t) => {
 	const trace = {
-		collection: sinon.spy()
+		collection: sinon.spy(),
 	};
 	const readerCollectionPrioritized = new ReaderCollectionPrioritized({
 		name: "myReader",
-		readers: []
+		readers: [],
 	});
 
 	const resource = await readerCollectionPrioritized._byPath("anyVirtualPath", {someOption: true}, trace);
@@ -128,21 +128,21 @@ test("ReaderCollectionPrioritized: _byPath with empty readers array", async (t) 
 test("ReaderCollectionPrioritized: _byPath with some empty readers", async (t) => {
 	const resource = new Resource({
 		path: "/my/path",
-		buffer: Buffer.from("content")
+		buffer: Buffer.from("content"),
 	});
 	const abstractReaderOne = {
-		_byPath: sinon.stub().resolves(resource)
+		_byPath: sinon.stub().resolves(resource),
 	};
 	const abstractReaderTwo = {
-		_byPath: sinon.stub().resolves()
+		_byPath: sinon.stub().resolves(),
 	};
 
 	const trace = {
-		collection: sinon.spy()
+		collection: sinon.spy(),
 	};
 	const readerCollectionPrioritized = new ReaderCollectionPrioritized({
 		name: "myReader",
-		readers: [abstractReaderOne, undefined, abstractReaderTwo]
+		readers: [abstractReaderOne, undefined, abstractReaderTwo],
 	});
 
 	const res = await readerCollectionPrioritized._byPath("anyVirtualPath", {someOption: true}, trace);
@@ -151,11 +151,11 @@ test("ReaderCollectionPrioritized: _byPath with some empty readers", async (t) =
 
 test("ReaderCollectionPrioritized: _byGlob with empty readers array", async (t) => {
 	const trace = {
-		collection: sinon.spy()
+		collection: sinon.spy(),
 	};
 	const readerCollectionPrioritized = new ReaderCollectionPrioritized({
 		name: "myReader",
-		readers: []
+		readers: [],
 	});
 
 	const resource = await readerCollectionPrioritized.byGlob("anyPattern", {someOption: true}, trace);
@@ -165,21 +165,21 @@ test("ReaderCollectionPrioritized: _byGlob with empty readers array", async (t) 
 test("ReaderCollectionPrioritized: _byGlob with some empty readers", async (t) => {
 	const resource = new Resource({
 		path: "/my/path",
-		buffer: Buffer.from("content")
+		buffer: Buffer.from("content"),
 	});
 	const abstractReaderOne = {
-		_byGlob: sinon.stub().resolves([resource])
+		_byGlob: sinon.stub().resolves([resource]),
 	};
 	const abstractReaderTwo = {
-		_byGlob: sinon.stub().resolves([])
+		_byGlob: sinon.stub().resolves([]),
 	};
 
 	const trace = {
-		collection: sinon.spy()
+		collection: sinon.spy(),
 	};
 	const readerCollectionPrioritized = new ReaderCollectionPrioritized({
 		name: "myReader",
-		readers: [abstractReaderOne, undefined, abstractReaderTwo]
+		readers: [abstractReaderOne, undefined, abstractReaderTwo],
 	});
 
 	const res = await readerCollectionPrioritized._byGlob("anyVirtualPath", {someOption: true}, trace);

@@ -7,7 +7,7 @@ import {createAdapter} from "../../../lib/resourceFactory.js";
 test("glob resources from application.a w/ virtual base path prefix", async (t) => {
 	const readerWriter = createAdapter({
 		fsBasePath: "./test/fixtures/application.a/webapp",
-		virBasePath: "/app/"
+		virBasePath: "/app/",
 	});
 
 	const resources = await readerWriter.byGlob("/app/**/*.html");
@@ -17,7 +17,7 @@ test("glob resources from application.a w/ virtual base path prefix", async (t) 
 test("glob resources from application.a w/o virtual base path prefix", async (t) => {
 	const readerWriter = createAdapter({
 		fsBasePath: "./test/fixtures/application.a/webapp",
-		virBasePath: "/app/"
+		virBasePath: "/app/",
 	});
 
 	const resources = await readerWriter.byGlob("/**/*.html");
@@ -27,7 +27,7 @@ test("glob resources from application.a w/o virtual base path prefix", async (t)
 test("glob virtual directory w/o virtual base path prefix", async (t) => {
 	const readerWriter = createAdapter({
 		fsBasePath: "./test/fixtures/application.a/webapp",
-		virBasePath: "/app/"
+		virBasePath: "/app/",
 	});
 
 	const resources = await readerWriter.byGlob("/*", {nodir: false});
@@ -37,12 +37,12 @@ test("glob virtual directory w/o virtual base path prefix", async (t) => {
 test("glob virtual directory w/o virtual base path prefix and multiple patterns", async (t) => {
 	const readerWriter = createAdapter({
 		fsBasePath: "./test/fixtures/application.a/webapp",
-		virBasePath: "/app/"
+		virBasePath: "/app/",
 	});
 
 	const resources = await readerWriter.byGlob([
 		"/*",
-		"/*"
+		"/*",
 	], {nodir: false});
 	t.is(resources.length, 1, "Found exactly one resource");
 });
@@ -50,7 +50,7 @@ test("glob virtual directory w/o virtual base path prefix and multiple patterns"
 test("glob virtual directory w/ virtual base path prefix", async (t) => {
 	const readerWriter = createAdapter({
 		fsBasePath: "./test/fixtures/application.a/webapp",
-		virBasePath: "/app/one/two/"
+		virBasePath: "/app/one/two/",
 	});
 
 	const resources = await readerWriter.byGlob("/app/*", {nodir: false});
@@ -60,7 +60,7 @@ test("glob virtual directory w/ virtual base path prefix", async (t) => {
 test("glob virtual directory w/o virtual base path prefix and nodir: true", async (t) => {
 	const readerWriter = createAdapter({
 		fsBasePath: "./test/fixtures/application.a/webapp",
-		virBasePath: "/app/"
+		virBasePath: "/app/",
 	});
 
 	const resources = await readerWriter.byGlob("/*", {nodir: true});
@@ -70,12 +70,12 @@ test("glob virtual directory w/o virtual base path prefix and nodir: true", asyn
 test("glob virtual directory w/o virtual base path prefix and nodir: true and multiple patterns", async (t) => {
 	const readerWriter = createAdapter({
 		fsBasePath: "./test/fixtures/application.a/webapp",
-		virBasePath: "/app/"
+		virBasePath: "/app/",
 	});
 
 	const resources = await readerWriter.byGlob([
 		"/*",
-		"/*"
+		"/*",
 	], {nodir: true});
 	t.is(resources.length, 0, "Found no resources");
 });
@@ -83,7 +83,7 @@ test("glob virtual directory w/o virtual base path prefix and nodir: true and mu
 test("glob virtual directory w/ virtual base path prefix and nodir: true", async (t) => {
 	const readerWriter = createAdapter({
 		fsBasePath: "./test/fixtures/application.a/webapp",
-		virBasePath: "/app/one/two/"
+		virBasePath: "/app/one/two/",
 	});
 
 	const resources = await readerWriter.byGlob("/app/*", {nodir: true});
@@ -93,10 +93,10 @@ test("glob virtual directory w/ virtual base path prefix and nodir: true", async
 test("glob resources from application.a with directory exclude", async (t) => {
 	const readerWriter = createAdapter({
 		fsBasePath: "./test/fixtures/application.a/webapp",
-		virBasePath: "/app/"
+		virBasePath: "/app/",
 	});
 
-	await readerWriter.byGlob("/!(pony,unicorn)/**").then(function(resources) {
+	await readerWriter.byGlob("/!(pony,unicorn)/**").then(function (resources) {
 		t.is(resources.length, 2, "Found exactly two resource");
 	});
 });
@@ -104,7 +104,7 @@ test("glob resources from application.a with directory exclude", async (t) => {
 test("glob all above virtual base path (path traversal)", async (t) => {
 	const readerWriter = createAdapter({
 		fsBasePath: "./test/fixtures/application.a/webapp",
-		virBasePath: "/app/"
+		virBasePath: "/app/",
 	});
 
 	const res = await readerWriter.byGlob([
@@ -116,7 +116,7 @@ test("glob all above virtual base path (path traversal)", async (t) => {
 test("glob virtual directory above virtual base path (path traversal)", async (t) => {
 	const readerWriter = createAdapter({
 		fsBasePath: "./test/fixtures/application.a/webapp",
-		virBasePath: "/app/"
+		virBasePath: "/app/",
 	});
 
 	const res = await readerWriter.byGlob([
@@ -134,7 +134,7 @@ test("glob not existing directory with existing file path (nodir: true)", async 
 	// globby will throw if it is attempted to glob the content of a directory
 	// which is actually a file
 	await t.throwsAsync(srcReader.byGlob("/test/library/l/Test.html/*", {nodir: true}), {
-		message: /ENOTDIR/
+		message: /ENOTDIR/,
 	}, "Threw with expected error message");
 });
 
@@ -147,14 +147,14 @@ test("glob not existing directory with existing file path (nodir: false)", async
 	// globby will throw if it is attempted to glob the content of a directory
 	// which is actually a file
 	await t.throwsAsync(srcReader.byGlob("/test/library/l/Test.html/*", {nodir: false}), {
-		message: /ENOTDIR/
+		message: /ENOTDIR/,
 	}, "Threw with expected error message");
 });
 
 test("byPath", async (t) => {
 	const readerWriter = createAdapter({
 		fsBasePath: "./test/fixtures/application.a/webapp",
-		virBasePath: "/resources/app/"
+		virBasePath: "/resources/app/",
 	});
 
 	const resource = await readerWriter.byPath("/resources/app/index.html", {nodir: true});
@@ -164,7 +164,7 @@ test("byPath", async (t) => {
 test("byPath virtual directory above base path (path traversal)", async (t) => {
 	const readerWriter = createAdapter({
 		fsBasePath: "./test/fixtures/application.a/webapp",
-		virBasePath: "/resources/app/"
+		virBasePath: "/resources/app/",
 	});
 
 	const resource = await readerWriter.byPath("/resources/app/../package.json", {nodir: true});
@@ -174,7 +174,7 @@ test("byPath virtual directory above base path (path traversal)", async (t) => {
 test("byPath: Root dir w/ trailing slash", async (t) => {
 	const readerWriter = createAdapter({
 		fsBasePath: "./test/fixtures/application.a/webapp",
-		virBasePath: "/resources/app/"
+		virBasePath: "/resources/app/",
 	});
 
 	const resource = await readerWriter.byPath("/resources/app/", {nodir: false});
@@ -184,7 +184,7 @@ test("byPath: Root dir w/ trailing slash", async (t) => {
 test("byPath: Root dir w/o trailing slash", async (t) => {
 	const readerWriter = createAdapter({
 		fsBasePath: "./test/fixtures/application.a/webapp",
-		virBasePath: "/resources/app/"
+		virBasePath: "/resources/app/",
 	});
 
 	const resource = await readerWriter.byPath("/resources/app", {nodir: false});
@@ -194,7 +194,7 @@ test("byPath: Root dir w/o trailing slash", async (t) => {
 test("byPath: Virtual directory w/ trailing slash", async (t) => {
 	const readerWriter = createAdapter({
 		fsBasePath: "./test/fixtures/application.a/webapp",
-		virBasePath: "/resources/app/"
+		virBasePath: "/resources/app/",
 	});
 
 	const resource = await readerWriter.byPath("/resources/", {nodir: false});
@@ -204,7 +204,7 @@ test("byPath: Virtual directory w/ trailing slash", async (t) => {
 test("byPath: Virtual directory w/o trailing slash", async (t) => {
 	const readerWriter = createAdapter({
 		fsBasePath: "./test/fixtures/application.a/webapp",
-		virBasePath: "/resources/app/"
+		virBasePath: "/resources/app/",
 	});
 
 	const resource = await readerWriter.byPath("/resources", {nodir: false});
@@ -216,7 +216,7 @@ test("byPath: Incorrect virtual directory w/o trailing slash", async (t) => {
 	// tested elsewhere
 	const readerWriter = createAdapter({
 		fsBasePath: "./test/fixtures/application.a/webapp",
-		virBasePath: "/resources/app/"
+		virBasePath: "/resources/app/",
 	});
 
 	// TODO: This should actually not match
@@ -240,13 +240,13 @@ test("static excludes: glob library src and test", async (t) => {
 	const srcReader = createAdapter({
 		fsBasePath: "./test/fixtures/library.l/src",
 		virBasePath: "/resources/",
-		excludes
+		excludes,
 	});
 
 	const testReader = createAdapter({
 		fsBasePath: "./test/fixtures/library.l/test",
 		virBasePath: "/test-resources/",
-		excludes
+		excludes,
 	});
 
 	const srcResources = await srcReader.byGlob("/**/*", {nodir: true});
@@ -254,7 +254,7 @@ test("static excludes: glob library src and test", async (t) => {
 
 	t.is(srcResources.length, 1, "Found one src resource");
 	t.deepEqual(srcResources.map(getPathFromResource), [
-		"/resources/library/l/.library"
+		"/resources/library/l/.library",
 	], "Found expected src resources");
 
 	t.is(testResources.length, 0, "Found no test resources");
@@ -271,13 +271,13 @@ test("static excludes: glob library src and test with double negation", async (t
 	const srcReader = createAdapter({
 		fsBasePath: "./test/fixtures/library.l/src",
 		virBasePath: "/resources/",
-		excludes
+		excludes,
 	});
 
 	const testReader = createAdapter({
 		fsBasePath: "./test/fixtures/library.l/test",
 		virBasePath: "/test-resources/",
-		excludes
+		excludes,
 	});
 
 	const srcResources = await srcReader.byGlob("/**/*", {nodir: true});
@@ -285,12 +285,12 @@ test("static excludes: glob library src and test with double negation", async (t
 
 	t.is(srcResources.length, 1, "Found one src resource");
 	t.deepEqual(srcResources.map(getPathFromResource), [
-		"/resources/library/l/.library"
+		"/resources/library/l/.library",
 	], "Found expected src resources");
 
 	t.is(testResources.length, 1, "Found one test resource");
 	t.deepEqual(testResources.map(getPathFromResource), [
-		"/test-resources/library/l/Test2.html"
+		"/test-resources/library/l/Test2.html",
 	], "Found expected test resources");
 });
 
@@ -305,14 +305,14 @@ test("static excludes: glob library test with double negation", async (t) => {
 	const testReader = createAdapter({
 		fsBasePath: "./test/fixtures/library.l/test",
 		virBasePath: "/test-resources/",
-		excludes
+		excludes,
 	});
 
 	const testResources = await testReader.byGlob("/**/*", {nodir: true});
 
 	t.is(testResources.length, 1, "Found one test resource");
 	t.deepEqual(testResources.map(getPathFromResource), [
-		"/test-resources/library/l/Test2.html"
+		"/test-resources/library/l/Test2.html",
 	], "Found expected test resources");
 });
 
@@ -321,8 +321,8 @@ test("static excludes: glob with virtual root exclude", async (t) => {
 		fsBasePath: "./test/fixtures/library.l/src",
 		virBasePath: "/resources/",
 		excludes: [
-			"/**"
-		]
+			"/**",
+		],
 	});
 
 	const resources = await srcReader.byGlob("/**/*", {nodir: true});
@@ -335,8 +335,8 @@ test("static excludes: glob with negated directory exclude, excluding resources"
 		fsBasePath: "./test/fixtures/library.l/src",
 		virBasePath: "/resources/",
 		excludes: [
-			"/!({pony,unicorn})/**"
-		]
+			"/!({pony,unicorn})/**",
+		],
 	});
 
 	const resources = await srcReader.byGlob("/**/*", {nodir: true});
@@ -349,8 +349,8 @@ test("static excludes: glob with negated directory exclude, not excluding resour
 		fsBasePath: "./test/fixtures/library.l/src",
 		virBasePath: "/resources/",
 		excludes: [
-			"/!(resources)/**"
-		]
+			"/!(resources)/**",
+		],
 	});
 
 	const resources = await srcReader.byGlob("/**/*", {nodir: true});
@@ -362,7 +362,7 @@ test("static excludes: byPath exclude everything in sub-directory", async (t) =>
 	const readerWriter = createAdapter({
 		fsBasePath: "./test/fixtures/application.a/webapp",
 		virBasePath: "/resources/app/",
-		excludes: ["/resources/app/**"]
+		excludes: ["/resources/app/**"],
 	});
 
 	const resource = await readerWriter.byPath("/resources/app/index.html", {nodir: true});
@@ -375,8 +375,8 @@ test("static excludes: byPath exclude with negation", async (t) => {
 		virBasePath: "/resources/app/",
 		excludes: [
 			"/resources/app/**",
-			"!/resources/app/index.html"
-		]
+			"!/resources/app/index.html",
+		],
 	});
 
 	const resource = await readerWriter.byPath("/resources/app/index.html", {nodir: true});
@@ -389,8 +389,8 @@ test("static excludes: byPath exclude with unused negation", async (t) => {
 		virBasePath: "/resources/app/",
 		excludes: [
 			"!/resources/app/index.html",
-			"/resources/app/**"
-		]
+			"/resources/app/**",
+		],
 	});
 
 	const resource = await readerWriter.byPath("/resources/app/index.html", {nodir: true});
@@ -402,8 +402,8 @@ test("static excludes: byPath exclude with negated directory pattern, excluding 
 		fsBasePath: "./test/fixtures/application.a/webapp",
 		virBasePath: "/resources/app/",
 		excludes: [
-			"/!({pony,unicorn})/**"
-		]
+			"/!({pony,unicorn})/**",
+		],
 	});
 
 	const resource = await readerWriter.byPath("/resources/app/index.html", {nodir: true});
@@ -415,8 +415,8 @@ test("static excludes: byPath exclude with negated directory pattern, not exclud
 		fsBasePath: "./test/fixtures/application.a/webapp",
 		virBasePath: "/resources/app/",
 		excludes: [
-			"/!(resources)/**"
-		]
+			"/!(resources)/**",
+		],
 	});
 
 	const resource = await readerWriter.byPath("/resources/app/index.html", {nodir: true});
@@ -430,14 +430,14 @@ test("byPath: exclude with unused negation", async (t) => {
 		excludes: [
 			"!/resources/app/i18n/**",
 			"/resources/app/**",
-			"!/resources/app/manifest.json"
-		]
+			"!/resources/app/manifest.json",
+		],
 	});
 
 	const [manifest, i18n, i18ni18n] = await Promise.all([
 		readerWriter.byPath("/resources/app/manifest.json", {nodir: true}),
 		readerWriter.byPath("/resources/app/i18n.properties", {nodir: true}),
-		readerWriter.byPath("/resources/app/i18n/i18n.properties", {nodir: true})
+		readerWriter.byPath("/resources/app/i18n/i18n.properties", {nodir: true}),
 	]);
 	t.truthy(manifest, "Found manifest.json resource");
 	t.is(i18n, null, "i18n resource is excluded");
@@ -455,13 +455,13 @@ test("static excludes: glob library src and test with double negation (nodir: fa
 	const srcReader = createAdapter({
 		fsBasePath: "./test/fixtures/library.l/src",
 		virBasePath: "/resources/",
-		excludes
+		excludes,
 	});
 
 	const testReader = createAdapter({
 		fsBasePath: "./test/fixtures/library.l/test",
 		virBasePath: "/test-resources/",
-		excludes
+		excludes,
 	});
 
 	const srcResources = await srcReader.byGlob("/**/*", {nodir: false});
@@ -471,7 +471,7 @@ test("static excludes: glob library src and test with double negation (nodir: fa
 
 	t.is(testResources.length, 1, "Found one test resource");
 	t.deepEqual(testResources.map(getPathFromResource), [
-		"/test-resources/library/l/Test2.html"
+		"/test-resources/library/l/Test2.html",
 	], "Found expected test resources");
 });
 
@@ -480,8 +480,8 @@ test("static excludes: glob with virtual root exclude (nodir: false)", async (t)
 		fsBasePath: "./test/fixtures/library.l/src",
 		virBasePath: "/resources/",
 		excludes: [
-			"/**"
-		]
+			"/**",
+		],
 	});
 
 	const resources = await srcReader.byGlob("/**/*", {nodir: false});
@@ -493,8 +493,8 @@ test("static excludes: glob with negated directory exclude, excluding resources 
 		fsBasePath: "./test/fixtures/library.l/src",
 		virBasePath: "/resources/",
 		excludes: [
-			"/!({pony,unicorn})/**"
-		]
+			"/!({pony,unicorn})/**",
+		],
 	});
 
 	const resources = await srcReader.byGlob("/**/*", {nodir: false});
@@ -507,8 +507,8 @@ test("static excludes: glob with negated directory exclude, not excluding resour
 		fsBasePath: "./test/fixtures/library.l/src",
 		virBasePath: "/resources/",
 		excludes: [
-			"/!(resources)/**"
-		]
+			"/!(resources)/**",
+		],
 	});
 
 	const resources = await srcReader.byGlob("/**/*", {nodir: false});
@@ -521,8 +521,8 @@ test("static excludes: glob with exclude (nodir: false)", async (t) => {
 		fsBasePath: "./test/fixtures/library.l/",
 		virBasePath: "/",
 		excludes: [
-			"/test/**"
-		]
+			"/test/**",
+		],
 	});
 
 	const resources = await srcReader.byGlob("/test/library/l/Test.html", {nodir: false});
@@ -534,7 +534,7 @@ test("glob with useGitignore: true", async (t) => {
 	const srcReader = createAdapter({
 		fsBasePath: "./test/fixtures/library.l/",
 		virBasePath: "/",
-		useGitignore: true
+		useGitignore: true,
 	});
 
 	const resources = await srcReader.byGlob("/**/*");
@@ -554,16 +554,16 @@ test("byPath with useGitignore: true", async (t) => {
 	const isGitIgnoredSpy = sinon.stub().callsFake(isGitIgnored);
 
 	const FileSystem = await esmock("../../../lib/adapters/FileSystem.js", {
-		"globby": {
-			isGitIgnored: isGitIgnoredSpy
-		}
+		globby: {
+			isGitIgnored: isGitIgnoredSpy,
+		},
 	});
 
 	const fsBasePath = "./test/fixtures/library.l/";
 	const srcReader = new FileSystem({
 		fsBasePath,
 		virBasePath: "/",
-		useGitignore: true
+		useGitignore: true,
 	});
 
 	const testResource = await srcReader.byPath("/test/library/l/Test.html");

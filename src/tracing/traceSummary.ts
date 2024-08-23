@@ -14,7 +14,7 @@ function init() {
 		pathCalls: 0,
 		globCalls: 0,
 		collections: {},
-		traceCalls: 0
+		traceCalls: 0,
 	};
 	active = true;
 }
@@ -65,7 +65,7 @@ function someTraceStarted() {
 }
 
 function someTraceEnded() {
-	return new Promise(function(resolve, reject) {
+	return new Promise(function (resolve, reject) {
 		if (!active) {
 			resolve();
 			return;
@@ -80,7 +80,7 @@ function someTraceEnded() {
 			clearTimeout(timeoutId);
 		}
 		traceData.timeDiff = process.hrtime(traceData.startTime);
-		timeoutId = setTimeout(function() {
+		timeoutId = setTimeout(function () {
 			report();
 			reset();
 			resolve();
@@ -111,7 +111,7 @@ function collection(name) {
 		traceData.collections[name].calls++;
 	} else {
 		traceData.collections[name] = {
-			calls: 1
+			calls: 1,
 		};
 	}
 }
@@ -121,5 +121,5 @@ export default {
 	globCall: globCall,
 	collection: collection,
 	traceStarted: someTraceStarted,
-	traceEnded: someTraceEnded
+	traceEnded: someTraceEnded,
 };

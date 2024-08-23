@@ -15,7 +15,7 @@ test("prefixGlobPattern", (t) => {
 		prefixGlobPattern("{/sub-directory-1/,/sub-directory-2/}**", "/pony/path/a"),
 		[
 			"/pony/path/a/sub-directory-1/**",
-			"/pony/path/a/sub-directory-2/**"
+			"/pony/path/a/sub-directory-2/**",
 		],
 		"GLOBs correctly prefixed");
 
@@ -50,9 +50,9 @@ test("createAdapter: FS Adapter", async (t) => {
 		fsBasePath: "./test/fixtures/application.a/webapp",
 		virBasePath: "/resources/app/",
 		project: {
-			getName: () => "my.project"
+			getName: () => "my.project",
 		},
-		excludes: ["**/*.html"]
+		excludes: ["**/*.html"],
 	});
 
 	t.true(adapter instanceof FileSystem, "Returned a FileSystem adapter");
@@ -66,20 +66,20 @@ test("createAdapter: Memory", async (t) => {
 	const adapter = createAdapter({
 		virBasePath: "/resources/app/",
 		project: {
-			getName: () => "my.project"
+			getName: () => "my.project",
 		},
-		excludes: ["**/*.html"]
+		excludes: ["**/*.html"],
 	});
 
 	t.true(adapter instanceof Memory, "Returned a Memory adapter");
 
 	const resource1 = createResource({
-		path: "/resources/app/File.js"
+		path: "/resources/app/File.js",
 	});
 	await adapter.write(resource1);
 
 	const resource2 = createResource({
-		path: "/resources/app/index.html"
+		path: "/resources/app/index.html",
 	});
 	await adapter.write(resource2);
 
@@ -94,7 +94,7 @@ test("createReader: application project", async (t) => {
 		virBasePath: "/resources/app/",
 		project: {
 			getName: () => "my.project",
-			getType: () => "application"
+			getType: () => "application",
 		},
 		excludes: [
 			"**/*.html",
@@ -102,9 +102,9 @@ test("createReader: application project", async (t) => {
 			"/test/**",
 			"test/**",
 			"!/resources/app/test/**",
-			"!/test/**/*.html"
+			"!/test/**/*.html",
 		],
-		name: "reader name"
+		name: "reader name",
 	});
 
 	t.true(reader instanceof ReaderCollection, "Returned a ReaderCollection");
@@ -130,16 +130,16 @@ test("createReader: library project", async (t) => {
 		virBasePath: "/resources/lib/",
 		project: {
 			getName: () => "my.project",
-			getType: () => "library"
+			getType: () => "library",
 		},
 		excludes: [
 			"**/*.html",
 			"/resources/lib/dir/**",
 			"/test-resources/lib/dir/**",
 			"/test/**",
-			"test/**"
+			"test/**",
 		],
-		name: "reader name"
+		name: "reader name",
 	});
 
 	t.true(reader instanceof ReaderCollection, "Returned a ReaderCollection");
@@ -167,9 +167,9 @@ test("createReader: No project", async (t) => {
 			"/resources/app/dir/**",
 			"/test-resources/app/dir/**",
 			"/test/**",
-			"test/**"
+			"test/**",
 		],
-		name: "reader name"
+		name: "reader name",
 	});
 
 	t.true(reader instanceof ReaderCollection, "Returned a ReaderCollection");
@@ -184,7 +184,7 @@ test("createReader: No project", async (t) => {
 		"/resources/app/dir/**",
 		"/test-resources/app/dir/**",
 		"/test/**",
-		"test/**"
+		"test/**",
 	], "Excludes do not get prefixed.");
 });
 
@@ -192,10 +192,10 @@ test("createReader: Throw error missing 'fsBasePath'", (t) => {
 	const error = t.throws(() => createReader({
 		virBasePath: "/resources/app/",
 		project: {
-			getName: () => "my.project"
+			getName: () => "my.project",
 		},
 		excludes: ["**/*.html"],
-		name: "reader name"
+		name: "reader name",
 	}));
 	t.is(error.message, "Unable to create reader: Missing parameter \"fsBasePath\"");
 });
@@ -204,22 +204,22 @@ test("createReaderCollection", async (t) => {
 	const adapter = createAdapter({
 		virBasePath: "/resources/app/",
 		project: {
-			getName: () => "my.project"
+			getName: () => "my.project",
 		},
-		excludes: ["**/*.html"]
+		excludes: ["**/*.html"],
 	});
 	const resource1 = createResource({
-		path: "/resources/app/File.js"
+		path: "/resources/app/File.js",
 	});
 	const resource2 = createResource({
-		path: "/resources/app/index.html"
+		path: "/resources/app/index.html",
 	});
 	await adapter.write(resource1);
 	await adapter.write(resource2);
 
 	const reader = createReaderCollection({
 		name: "reader name",
-		readers: [adapter]
+		readers: [adapter],
 	});
 	t.true(reader instanceof ReaderCollection, "Returned a ReaderCollection");
 	t.is(reader._name, "reader name", "Reader has correct name");
@@ -234,22 +234,22 @@ test("createReaderCollectionPrioritized", async (t) => {
 	const adapter = createAdapter({
 		virBasePath: "/resources/app/",
 		project: {
-			getName: () => "my.project"
+			getName: () => "my.project",
 		},
-		excludes: ["**/*.html"]
+		excludes: ["**/*.html"],
 	});
 	const resource1 = createResource({
-		path: "/resources/app/File.js"
+		path: "/resources/app/File.js",
 	});
 	const resource2 = createResource({
-		path: "/resources/app/index.html"
+		path: "/resources/app/index.html",
 	});
 	await adapter.write(resource1);
 	await adapter.write(resource2);
 
 	const reader = createReaderCollectionPrioritized({
 		name: "reader name",
-		readers: [adapter]
+		readers: [adapter],
 	});
 	t.true(reader instanceof ReaderCollectionPrioritized, "Returned a ReaderCollection");
 	t.is(reader._name, "reader name", "Reader has correct name");
@@ -264,28 +264,28 @@ test("createWriterCollection", async (t) => {
 	const adapter1 = createAdapter({
 		virBasePath: "/",
 		project: {
-			getName: () => "my.project"
-		}
+			getName: () => "my.project",
+		},
 	});
 	const adapter2 = createAdapter({
 		virBasePath: "/",
 		project: {
-			getName: () => "my.other.project"
-		}
+			getName: () => "my.other.project",
+		},
 	});
 	const resource1 = createResource({
-		path: "/resources/app/File.js"
+		path: "/resources/app/File.js",
 	});
 	const resource2 = createResource({
-		path: "/resources/app2/index.html"
+		path: "/resources/app2/index.html",
 	});
 
 	const writerCollection = createWriterCollection({
 		name: "writer collection name",
 		writerMapping: {
 			"/resources/app/": adapter1,
-			"/resources/app2/": adapter2
-		}
+			"/resources/app2/": adapter2,
+		},
 	});
 	t.true(writerCollection instanceof WriterCollection, "Returned a ReaderCollection");
 	await writerCollection.write(resource1);
@@ -305,25 +305,25 @@ test("createWorkspace", async (t) => {
 		fsBasePath: "./test/fixtures/application.a/webapp",
 		virBasePath: "/resources/app/",
 		project: {
-			getName: () => "my.project"
-		}
+			getName: () => "my.project",
+		},
 	});
 	const readerWriter = createAdapter({
 		virBasePath: "/",
 		project: {
-			getName: () => "my.other.project"
-		}
+			getName: () => "my.other.project",
+		},
 	});
 
 	const writerCollection = createWorkspace({
 		name: "writer collection name",
 		reader,
-		writer: readerWriter
+		writer: readerWriter,
 	});
 	t.true(writerCollection instanceof DuplexCollection, "Returned a ReaderCollection");
 
 	const resource1 = createResource({
-		path: "/resources/app/File.js"
+		path: "/resources/app/File.js",
 	});
 
 	await writerCollection.write(resource1);
@@ -339,14 +339,13 @@ test("createWorkspace: Without writer", async (t) => {
 		fsBasePath: "./test/fixtures/application.a/webapp",
 		virBasePath: "/resources/app/",
 		project: {
-			getName: () => "my.project"
-		}
+			getName: () => "my.project",
+		},
 	});
 	const writerCollection = createWorkspace({
 		name: "writer collection name",
-		reader
+		reader,
 	});
 	t.true(writerCollection instanceof DuplexCollection, "Returned a ReaderCollection");
 	t.true(writerCollection._writer instanceof Memory, "Internal Writer is created and a MemAdapter");
 });
-

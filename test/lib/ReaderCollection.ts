@@ -6,7 +6,7 @@ import Resource from "../../lib/Resource.js";
 test("ReaderCollection: constructor", (t) => {
 	const readerCollection = new ReaderCollection({
 		name: "myReader",
-		readers: [{}, {}, {}]
+		readers: [{}, {}, {}],
 	});
 
 	t.is(readerCollection.getName(), "myReader", "correct name assigned");
@@ -17,14 +17,14 @@ test("ReaderCollection: _byGlob w/o finding a resource", async (t) => {
 	t.plan(4);
 
 	const abstractReader = {
-		_byGlob: sinon.stub().returns(Promise.resolve([]))
+		_byGlob: sinon.stub().returns(Promise.resolve([])),
 	};
 	const trace = {
-		collection: sinon.spy()
+		collection: sinon.spy(),
 	};
 	const readerCollection = new ReaderCollection({
 		name: "myReader",
-		readers: [abstractReader]
+		readers: [abstractReader],
 	});
 	const resources = await readerCollection._byGlob("anyPattern", {someOption: true}, trace);
 
@@ -40,17 +40,17 @@ test("ReaderCollection: _byGlob with finding a resource", async (t) => {
 
 	const resource = new Resource({
 		path: "/my/path",
-		buffer: Buffer.from("content")
+		buffer: Buffer.from("content"),
 	});
 	const abstractReader = {
-		_byGlob: sinon.stub().returns(Promise.resolve([resource]))
+		_byGlob: sinon.stub().returns(Promise.resolve([resource])),
 	};
 	const trace = {
-		collection: sinon.spy()
+		collection: sinon.spy(),
 	};
 	const readerCollection = new ReaderCollection({
 		name: "myReader",
-		readers: [abstractReader]
+		readers: [abstractReader],
 	});
 
 	const resources = await readerCollection._byGlob("anyPattern", {someOption: true}, trace);
@@ -70,18 +70,18 @@ test("ReaderCollection: _byPath with reader finding a resource", async (t) => {
 
 	const resource = new Resource({
 		path: "/my/path",
-		buffer: Buffer.from("content")
+		buffer: Buffer.from("content"),
 	});
 	const pushCollectionSpy = sinon.spy(resource, "pushCollection");
 	const abstractReader = {
-		_byPath: sinon.stub().returns(Promise.resolve(resource))
+		_byPath: sinon.stub().returns(Promise.resolve(resource)),
 	};
 	const trace = {
-		collection: sinon.spy()
+		collection: sinon.spy(),
 	};
 	const readerCollection = new ReaderCollection({
 		name: "myReader",
-		readers: [abstractReader]
+		readers: [abstractReader],
 	});
 
 	const readResource = await readerCollection._byPath("anyVirtualPath", {someOption: true}, trace);
@@ -99,17 +99,17 @@ test("ReaderCollection: _byPath with two readers both finding no resource", asyn
 	t.plan(4);
 
 	const abstractReaderOne = {
-		_byPath: sinon.stub().returns(Promise.resolve())
+		_byPath: sinon.stub().returns(Promise.resolve()),
 	};
 	const abstractReaderTwo = {
-		_byPath: sinon.stub().returns(Promise.resolve())
+		_byPath: sinon.stub().returns(Promise.resolve()),
 	};
 	const trace = {
-		collection: sinon.spy()
+		collection: sinon.spy(),
 	};
 	const readerCollection = new ReaderCollection({
 		name: "myReader",
-		readers: [abstractReaderOne, abstractReaderTwo]
+		readers: [abstractReaderOne, abstractReaderTwo],
 	});
 
 	const resource = await readerCollection._byPath("anyVirtualPath", {someOption: true}, trace);
@@ -124,11 +124,11 @@ test("ReaderCollection: _byPath with two readers both finding no resource", asyn
 
 test("ReaderCollection: _byPath with empty readers array", async (t) => {
 	const trace = {
-		collection: sinon.spy()
+		collection: sinon.spy(),
 	};
 	const readerCollection = new ReaderCollection({
 		name: "myReader",
-		readers: []
+		readers: [],
 	});
 
 	const resource = await readerCollection._byPath("anyVirtualPath", {someOption: true}, trace);
@@ -138,21 +138,21 @@ test("ReaderCollection: _byPath with empty readers array", async (t) => {
 test("ReaderCollection: _byPath with some empty readers", async (t) => {
 	const resource = new Resource({
 		path: "/my/path",
-		buffer: Buffer.from("content")
+		buffer: Buffer.from("content"),
 	});
 	const abstractReaderOne = {
-		_byPath: sinon.stub().resolves(resource)
+		_byPath: sinon.stub().resolves(resource),
 	};
 	const abstractReaderTwo = {
-		_byPath: sinon.stub().resolves()
+		_byPath: sinon.stub().resolves(),
 	};
 
 	const trace = {
-		collection: sinon.spy()
+		collection: sinon.spy(),
 	};
 	const readerCollection = new ReaderCollection({
 		name: "myReader",
-		readers: [abstractReaderOne, undefined, abstractReaderTwo]
+		readers: [abstractReaderOne, undefined, abstractReaderTwo],
 	});
 
 	const res = await readerCollection._byPath("anyVirtualPath", {someOption: true}, trace);
@@ -161,11 +161,11 @@ test("ReaderCollection: _byPath with some empty readers", async (t) => {
 
 test("ReaderCollection: _byGlob with empty readers array", async (t) => {
 	const trace = {
-		collection: sinon.spy()
+		collection: sinon.spy(),
 	};
 	const readerCollection = new ReaderCollection({
 		name: "myReader",
-		readers: []
+		readers: [],
 	});
 
 	const resource = await readerCollection.byGlob("anyPattern", {someOption: true}, trace);
@@ -175,21 +175,21 @@ test("ReaderCollection: _byGlob with empty readers array", async (t) => {
 test("ReaderCollection: _byGlob with some empty readers", async (t) => {
 	const resource = new Resource({
 		path: "/my/path",
-		buffer: Buffer.from("content")
+		buffer: Buffer.from("content"),
 	});
 	const abstractReaderOne = {
-		_byGlob: sinon.stub().resolves([resource])
+		_byGlob: sinon.stub().resolves([resource]),
 	};
 	const abstractReaderTwo = {
-		_byGlob: sinon.stub().resolves([])
+		_byGlob: sinon.stub().resolves([]),
 	};
 
 	const trace = {
-		collection: sinon.spy()
+		collection: sinon.spy(),
 	};
 	const readerCollection = new ReaderCollection({
 		name: "myReader",
-		readers: [abstractReaderOne, undefined, abstractReaderTwo]
+		readers: [abstractReaderOne, undefined, abstractReaderTwo],
 	});
 
 	const res = await readerCollection._byGlob("anyVirtualPath", {someOption: true}, trace);

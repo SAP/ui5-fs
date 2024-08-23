@@ -228,6 +228,7 @@ class ResourceFacade {
 	hasProject() {
 		return this.#resource.hasProject();
 	}
+
 	/**
 	 * Check whether the content of this resource has been changed during its life cycle
 	 *
@@ -247,7 +248,6 @@ class ResourceFacade {
 	getSourceMetadata() {
 		return this.#resource.getSourceMetadata();
 	}
-
 
 	/**
 	 * Returns the resource concealed by this facade

@@ -40,14 +40,14 @@ async function fileEqual(t, actual, expected) {
 		Always make sure that every test writes to a separate file! By default, tests are running concurrent.
 	*/
 	test(adapter +
-		": Get resource from application.a (/index.html) and write it to /dest/ using a ReadableStream", async (t) => {
+	": Get resource from application.a (/index.html) and write it to /dest/ using a ReadableStream", async (t) => {
 		const source = await getAdapter({
 			fsBasePath: "./test/fixtures/application.a/webapp",
-			virBasePath: "/app/"
+			virBasePath: "/app/",
 		});
 		const dest = await getAdapter({
 			fsBasePath: "./test/tmp/readerWriters/application.a/simple-read-write",
-			virBasePath: "/dest/"
+			virBasePath: "/dest/",
 		});
 
 		// Get resource from one readerWriter
@@ -73,12 +73,12 @@ async function fileEqual(t, actual, expected) {
 	test(adapter + ": Create resource, write and change content", async (t) => {
 		const dest = await getAdapter({
 			fsBasePath: "./test/tmp/writer/",
-			virBasePath: "/dest/writer/"
+			virBasePath: "/dest/writer/",
 		});
 
 		const resource = createResource({
 			path: "/dest/writer/content/test.js",
-			string: "MyInitialContent"
+			string: "MyInitialContent",
 		});
 
 		await dest.write(resource);
@@ -103,12 +103,12 @@ async function fileEqual(t, actual, expected) {
 	test(adapter + ": Create resource, write and change path", async (t) => {
 		const dest = await getAdapter({
 			fsBasePath: "./test/tmp/writer/",
-			virBasePath: "/dest/writer/"
+			virBasePath: "/dest/writer/",
 		});
 
 		const resource = createResource({
 			path: "/dest/writer/path/test.js",
-			string: "MyInitialContent"
+			string: "MyInitialContent",
 		});
 
 		await dest.write(resource);
@@ -137,16 +137,16 @@ async function fileEqual(t, actual, expected) {
 	});
 
 	test(adapter +
-		": Create a resource with a path different from the path configured in the adapter", async (t) => {
+	": Create a resource with a path different from the path configured in the adapter", async (t) => {
 		t.pass(2);
 		const dest = await getAdapter({
 			fsBasePath: "./test/tmp/writer/",
-			virBasePath: "/dest2/writer/"
+			virBasePath: "/dest2/writer/",
 		});
 
 		const resource = createResource({
 			path: "/dest2/tmp/test.js",
-			string: "MyContent"
+			string: "MyContent",
 		});
 
 		const error = await t.throwsAsync(dest.write(resource));
@@ -157,16 +157,16 @@ async function fileEqual(t, actual, expected) {
 	});
 
 	test(adapter +
-		": Create a resource with a path above the path configured in the adapter", async (t) => {
+	": Create a resource with a path above the path configured in the adapter", async (t) => {
 		t.pass(2);
 		const dest = await getAdapter({
 			fsBasePath: "./test/tmp/writer/",
-			virBasePath: "/dest2/writer/"
+			virBasePath: "/dest2/writer/",
 		});
 
 		const resource = createResource({
 			path: "/dest2/test.js",
-			string: "MyContent"
+			string: "MyContent",
 		});
 
 		const error = await t.throwsAsync(dest.write(resource));
@@ -177,16 +177,16 @@ async function fileEqual(t, actual, expected) {
 	});
 
 	test(adapter +
-		": Create a resource with a path resolving outside the path configured in the adapter", async (t) => {
+	": Create a resource with a path resolving outside the path configured in the adapter", async (t) => {
 		t.pass(2);
 		const dest = await getAdapter({
 			fsBasePath: "./test/tmp/writer/",
-			virBasePath: "/dest/writer/"
+			virBasePath: "/dest/writer/",
 		});
 
 		const resource = createResource({
 			path: "/dest/writer/../relative.js",
-			string: "MyContent"
+			string: "MyContent",
 		});
 		// Resource will already resolve relative path segments
 		t.is(resource.getPath(), "/dest/relative.js", "Resource path resolved");
@@ -198,20 +198,20 @@ async function fileEqual(t, actual, expected) {
 		await t.throwsAsync(dest.write(resource), {
 			message:
 				"Failed to write resource with virtual path '/dest/writer/../relative.js': " +
-				"Path must start with the configured virtual base path of the adapter. Base path: '/dest/writer/'"
+				"Path must start with the configured virtual base path of the adapter. Base path: '/dest/writer/'",
 		}, "Threw with expected error message");
 	});
 
 	test(adapter + ": Filter resources", async (t) => {
 		const source = createAdapter({
 			fsBasePath: "./test/fixtures/application.a/webapp",
-			virBasePath: "/app/"
+			virBasePath: "/app/",
 		});
 		const filteredSource = createFilterReader({
 			reader: source,
 			callback: (resource) => {
 				return resource.getPath().endsWith(".js");
-			}
+			},
 		});
 		const sourceResources = await source.byGlob("**");
 		t.is(sourceResources.length, 2, "Found two resources in source");
@@ -225,11 +225,11 @@ async function fileEqual(t, actual, expected) {
 	test(adapter + ": Flatten resources", async (t) => {
 		const source = await getAdapter({
 			fsBasePath: "./test/fixtures/application.a/webapp",
-			virBasePath: "/resources/app/"
+			virBasePath: "/resources/app/",
 		});
 		const transformedSource = createFlatReader({
 			reader: source,
-			namespace: "app"
+			namespace: "app",
 		});
 
 		const resources = await transformedSource.byGlob("**/*.js");
@@ -240,14 +240,14 @@ async function fileEqual(t, actual, expected) {
 	test(adapter + ": Link resources", async (t) => {
 		const source = await getAdapter({
 			fsBasePath: "./test/fixtures/application.a/webapp",
-			virBasePath: "/resources/app/"
+			virBasePath: "/resources/app/",
 		});
 		const transformedSource = createLinkReader({
 			reader: source,
 			pathMapping: {
 				linkPath: "/wow/this/is/a/beautiful/path/just/wow/",
-				targetPath: "/resources/"
-			}
+				targetPath: "/resources/",
+			},
 		});
 
 		const resources = await transformedSource.byGlob("**/*.js");

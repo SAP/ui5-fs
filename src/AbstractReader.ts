@@ -49,7 +49,7 @@ class AbstractReader {
 	 */
 	byGlob(virPattern, options = {nodir: true}) {
 		const trace = new Trace(virPattern);
-		return this._byGlob(virPattern, options, trace).then(function(result) {
+		return this._byGlob(virPattern, options, trace).then(function (result) {
 			trace.printReport();
 			return result;
 		}).then((resources) => {
@@ -59,7 +59,7 @@ class AbstractReader {
 				const x = 0;
 				const y = randomInt(0, resources.length - 1);
 				// Swap object at index "x" with  "y"
-				resources[x] = [resources[y], resources[y]=resources[x]][0];
+				resources[x] = [resources[y], resources[y] = resources[x]][0];
 			}
 			return resources;
 		});
@@ -76,7 +76,7 @@ class AbstractReader {
 	 */
 	byPath(virPath, options = {nodir: true}) {
 		const trace = new Trace(virPath);
-		return this._byPath(virPath, options, trace).then(function(resource) {
+		return this._byPath(virPath, options, trace).then(function (resource) {
 			trace.printReport();
 			return resource;
 		});

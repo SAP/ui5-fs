@@ -41,7 +41,7 @@ class Memory extends AbstractAdapter {
 	async _matchPatterns(patterns, resourceMap) {
 		const resourcePaths = Object.keys(resourceMap);
 		const matchedPaths = micromatch(resourcePaths, patterns, {
-			dot: true
+			dot: true,
 		});
 		return await Promise.all(matchedPaths.map((virPath) => {
 			const resource = resourceMap[virPath];
@@ -75,15 +75,15 @@ class Memory extends AbstractAdapter {
 				this._createResource({
 					project: this._project,
 					statInfo: { // TODO: make closer to fs stat info
-						isDirectory: function() {
+						isDirectory: function () {
 							return true;
-						}
+						},
 					},
 					sourceMetadata: {
-						adapter: ADAPTER_NAME
+						adapter: ADAPTER_NAME,
 					},
-					path: this._virBasePath.slice(0, -1)
-				})
+					path: this._virBasePath.slice(0, -1),
+				}),
 			];
 		}
 
@@ -160,14 +160,14 @@ class Memory extends AbstractAdapter {
 				this._virDirs[segment] = this._createResource({
 					project: this._project,
 					sourceMetadata: {
-						adapter: ADAPTER_NAME
+						adapter: ADAPTER_NAME,
 					},
 					statInfo: { // TODO: make closer to fs stat info
-						isDirectory: function() {
+						isDirectory: function () {
 							return true;
-						}
+						},
 					},
-					path: this._virBasePath + segment
+					path: this._virBasePath + segment,
 				});
 			}
 		}

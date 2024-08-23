@@ -6,7 +6,7 @@ test("AbstractReader: constructor throws an error", (t) => {
 		new AbstractReader();
 	}, {
 		instanceOf: TypeError,
-		message: "Class 'AbstractReader' is abstract"
+		message: "Class 'AbstractReader' is abstract",
 	});
 });
 
@@ -18,20 +18,20 @@ test("Incomplete AbstractReader subclass: Abstract functions throw error", (t) =
 		instance._byGlob();
 	}, {
 		instanceOf: Error,
-		message: "Function '_byGlob' is not implemented"
+		message: "Function '_byGlob' is not implemented",
 	});
 
 	t.throws(() => {
 		instance._runGlob();
 	}, {
 		instanceOf: Error,
-		message: "Function '_runGlob' is not implemented"
+		message: "Function '_runGlob' is not implemented",
 	});
 
 	t.throws(() => {
 		instance._byPath();
 	}, {
 		instanceOf: Error,
-		message: "Function '_byPath' is not implemented"
+		message: "Function '_byPath' is not implemented",
 	});
 });

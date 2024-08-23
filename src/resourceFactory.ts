@@ -84,7 +84,7 @@ export function createReader({fsBasePath, virBasePath, project, excludes = [], n
 		// Flatten list of patterns
 		normalizedExcludes = Array.prototype.concat.apply([], normalizedExcludes);
 		log.verbose(`Effective exclude patterns for application project ${project.getName()}:\n` +
-			normalizedExcludes.join(", "));
+		normalizedExcludes.join(", "));
 	}
 	return new ReaderCollection({
 		name,
@@ -92,8 +92,8 @@ export function createReader({fsBasePath, virBasePath, project, excludes = [], n
 			fsBasePath,
 			virBasePath,
 			project,
-			excludes: normalizedExcludes
-		})]
+			excludes: normalizedExcludes,
+		})],
 	});
 }
 
@@ -109,7 +109,7 @@ export function createReader({fsBasePath, virBasePath, project, excludes = [], n
 export function createReaderCollection({name, readers}) {
 	return new ReaderCollection({
 		name,
-		readers
+		readers,
 	});
 }
 
@@ -126,7 +126,7 @@ export function createReaderCollection({name, readers}) {
 export function createReaderCollectionPrioritized({name, readers}) {
 	return new ReaderCollectionPrioritized({
 		name,
-		readers
+		readers,
 	});
 }
 
@@ -143,7 +143,7 @@ export function createReaderCollectionPrioritized({name, readers}) {
 export function createWriterCollection({name, writerMapping}) {
 	return new WriterCollection({
 		name,
-		writerMapping
+		writerMapping,
 	});
 }
 
@@ -178,14 +178,14 @@ export function createResource(parameters) {
 export function createWorkspace({reader, writer, virBasePath = "/", name = "workspace"}) {
 	if (!writer) {
 		writer = new MemAdapter({
-			virBasePath
+			virBasePath,
 		});
 	}
 
 	return new DuplexCollection({
 		reader,
 		writer,
-		name
+		name,
 	});
 }
 
@@ -251,8 +251,8 @@ export function createFlatReader({reader, namespace}) {
 		reader: reader,
 		pathMapping: {
 			linkPath: `/`,
-			targetPath: `/resources/${namespace}/`
-		}
+			targetPath: `/resources/${namespace}/`,
+		},
 	});
 }
 

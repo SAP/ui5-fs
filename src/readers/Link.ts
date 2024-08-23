@@ -88,7 +88,7 @@ class Link extends AbstractReader {
 			if (resourcePath.startsWith(this._pathMapping.targetPath)) {
 				return new ResourceFacade({
 					resource,
-					path: this._pathMapping.linkPath + resourcePath.substr(this._pathMapping.targetPath.length)
+					path: this._pathMapping.linkPath + resourcePath.substr(this._pathMapping.targetPath.length),
 				});
 			}
 		});
@@ -114,7 +114,7 @@ class Link extends AbstractReader {
 		if (resource) {
 			return new ResourceFacade({
 				resource,
-				path: this._pathMapping.linkPath + resource.getPath().substr(this._pathMapping.targetPath.length)
+				path: this._pathMapping.linkPath + resource.getPath().substr(this._pathMapping.targetPath.length),
 			});
 		}
 		return null;

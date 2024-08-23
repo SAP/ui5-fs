@@ -8,38 +8,38 @@ test("Missing paramter: virBasePath", (t) => {
 	t.throws(() => {
 		new MyAbstractAdapter({});
 	}, {
-		message: "Unable to create adapter: Missing parameter 'virBasePath'"
+		message: "Unable to create adapter: Missing parameter 'virBasePath'",
 	}, "Threw with expected error message");
 });
 
 test("virBasePath must be absolute", (t) => {
 	t.throws(() => {
 		new MyAbstractAdapter({
-			virBasePath: "foo"
+			virBasePath: "foo",
 		});
 	}, {
-		message: "Unable to create adapter: Virtual base path must be absolute but is 'foo'"
+		message: "Unable to create adapter: Virtual base path must be absolute but is 'foo'",
 	}, "Threw with expected error message");
 });
 
 test("virBasePath must end with a slash", (t) => {
 	t.throws(() => {
 		new MyAbstractAdapter({
-			virBasePath: "/foo"
+			virBasePath: "/foo",
 		});
 	}, {
-		message: "Unable to create adapter: Virtual base path must end with a slash but is '/foo'"
+		message: "Unable to create adapter: Virtual base path must end with a slash but is '/foo'",
 	}, "Threw with expected error message");
 });
 
 test("_migrateResource", async (t) => {
 	// Any JS object which might be a kind of resource
 	const resource = {
-		_path: "/test.js"
+		_path: "/test.js",
 	};
 
 	const writer = new MyAbstractAdapter({
-		virBasePath: "/"
+		virBasePath: "/",
 	});
 
 	const migratedResource = await writer._migrateResource(resource);
@@ -52,16 +52,16 @@ test("_assignProjectToResource: Resource is already assigned to another project 
 		path: "/test.js",
 		project: {
 			getName: () => "test.lib",
-			getVersion: () => "2.0.0"
-		}
+			getVersion: () => "2.0.0",
+		},
 	});
 
 	const writer = new MyAbstractAdapter({
 		virBasePath: "/",
 		project: {
 			getName: () => "test.lib1",
-			getVersion: () => "2.0.0"
-		}
+			getVersion: () => "2.0.0",
+		},
 	});
 
 	const error = t.throws(() => writer._assignProjectToResource(resource));
@@ -74,8 +74,8 @@ test("_isPathHandled", (t) => {
 		virBasePath: "/dest2/writer/",
 		project: {
 			getName: () => "test.lib1",
-			getVersion: () => "2.0.0"
-		}
+			getVersion: () => "2.0.0",
+		},
 	});
 
 	t.true(writer._isPathHandled("/dest2/writer/test.js"), "Returned expected result");
@@ -90,8 +90,8 @@ test("_resolveVirtualPathToBase (read mode)", (t) => {
 		virBasePath: "/dest2/writer/",
 		project: {
 			getName: () => "test.lib1",
-			getVersion: () => "2.0.0"
-		}
+			getVersion: () => "2.0.0",
+		},
 	});
 
 	t.is(writer._resolveVirtualPathToBase("/dest2/writer/test.js"), "test.js", "Returned expected path");
@@ -106,8 +106,8 @@ test("_resolveVirtualPathToBase (read mode): Path does not starting with path co
 		virBasePath: "/dest2/writer/",
 		project: {
 			getName: () => "test.lib1",
-			getVersion: () => "2.0.0"
-		}
+			getVersion: () => "2.0.0",
+		},
 	});
 
 	t.is(writer._resolveVirtualPathToBase("/dest2/tmp/test.js"), null, "Returned null");
@@ -121,13 +121,13 @@ test("_resolveVirtualPathToBase (read mode): Path Must be absolute", (t) => {
 		virBasePath: "/dest2/writer/",
 		project: {
 			getName: () => "test.lib1",
-			getVersion: () => "2.0.0"
-		}
+			getVersion: () => "2.0.0",
+		},
 	});
 
 	t.throws(() => writer._resolveVirtualPathToBase("./dest2/write"), {
 		message:
-			`Failed to resolve virtual path './dest2/write': Path must be absolute`
+			`Failed to resolve virtual path './dest2/write': Path must be absolute`,
 	}, "Threw with expected error message");
 });
 
@@ -136,8 +136,8 @@ test("_resolveVirtualPathToBase (write mode)", (t) => {
 		virBasePath: "/dest2/writer/",
 		project: {
 			getName: () => "test.lib1",
-			getVersion: () => "2.0.0"
-		}
+			getVersion: () => "2.0.0",
+		},
 	});
 
 	t.is(writer._resolveVirtualPathToBase("/dest2/writer/test.js", true), "test.js", "Returned expected path");
@@ -153,32 +153,32 @@ test("_resolveVirtualPathToBase (write mode): Path does not starting with path c
 		virBasePath: "/dest2/writer/",
 		project: {
 			getName: () => "test.lib1",
-			getVersion: () => "2.0.0"
-		}
+			getVersion: () => "2.0.0",
+		},
 	});
 
 	t.throws(() => writer._resolveVirtualPathToBase("/dest2/tmp/test.js", true), {
 		message:
 			`Failed to write resource with virtual path '/dest2/tmp/test.js': ` +
-			`Path must start with the configured virtual base path of the adapter. Base path: '/dest2/writer/'`
+			`Path must start with the configured virtual base path of the adapter. Base path: '/dest2/writer/'`,
 	}, "Threw with expected error message");
 
 	t.throws(() => writer._resolveVirtualPathToBase("/dest2/writer/../reader", true), {
 		message:
 			`Failed to write resource with virtual path '/dest2/writer/../reader': ` +
-			`Path must start with the configured virtual base path of the adapter. Base path: '/dest2/writer/'`
+			`Path must start with the configured virtual base path of the adapter. Base path: '/dest2/writer/'`,
 	}, "Threw with expected error message");
 
 	t.throws(() => writer._resolveVirtualPathToBase("/dest2/write", true), {
 		message:
 			`Failed to write resource with virtual path '/dest2/write': ` +
-			`Path must start with the configured virtual base path of the adapter. Base path: '/dest2/writer/'`
+			`Path must start with the configured virtual base path of the adapter. Base path: '/dest2/writer/'`,
 	}, "Threw with expected error message");
 
 	t.throws(() => writer._resolveVirtualPathToBase("/..//write", true), {
 		message:
 			`Failed to write resource with virtual path '/..//write': ` +
-			`Path must start with the configured virtual base path of the adapter. Base path: '/dest2/writer/'`
+			`Path must start with the configured virtual base path of the adapter. Base path: '/dest2/writer/'`,
 	}, "Threw with expected error message");
 });
 
@@ -187,13 +187,13 @@ test("_resolveVirtualPathToBase (write mode): Path Must be absolute", (t) => {
 		virBasePath: "/dest2/writer/",
 		project: {
 			getName: () => "test.lib1",
-			getVersion: () => "2.0.0"
-		}
+			getVersion: () => "2.0.0",
+		},
 	});
 
 	t.throws(() => writer._resolveVirtualPathToBase("./dest2/write", true), {
 		message:
-			`Failed to resolve virtual path './dest2/write': Path must be absolute`
+			`Failed to resolve virtual path './dest2/write': Path must be absolute`,
 	}, "Threw with expected error message");
 });
 
@@ -202,13 +202,13 @@ test("_normalizePattern", async (t) => {
 		virBasePath: "/path/",
 		project: {
 			getName: () => "test.lib1",
-			getVersion: () => "2.0.0"
-		}
+			getVersion: () => "2.0.0",
+		},
 	});
 
 	t.deepEqual(await writer._normalizePattern("/*/{src,test}/**"), [
 		"src/**",
-		"test/**"
+		"test/**",
 	], "Returned expected patterns");
 });
 
@@ -217,8 +217,8 @@ test("_normalizePattern: Match base directory", async (t) => {
 		virBasePath: "/path/",
 		project: {
 			getName: () => "test.lib1",
-			getVersion: () => "2.0.0"
-		}
+			getVersion: () => "2.0.0",
+		},
 	});
 
 	t.deepEqual(await writer._normalizePattern("/*"), [""],
@@ -230,8 +230,8 @@ test("_normalizePattern: Match sub-directory", async (t) => {
 		virBasePath: "/path/",
 		project: {
 			getName: () => "test.lib1",
-			getVersion: () => "2.0.0"
-		}
+			getVersion: () => "2.0.0",
+		},
 	});
 
 	t.deepEqual(await writer._normalizePattern("/path/*"), ["*"],
@@ -243,8 +243,8 @@ test("_normalizePattern: Match all", (t) => {
 		virBasePath: "/path/",
 		project: {
 			getName: () => "test.lib1",
-			getVersion: () => "2.0.0"
-		}
+			getVersion: () => "2.0.0",
+		},
 	});
 
 	t.deepEqual(writer._normalizePattern("/**/*"), ["**/*"],
@@ -256,8 +256,8 @@ test("_normalizePattern: Relative path segment above virtual root directory", (t
 		virBasePath: "/path/",
 		project: {
 			getName: () => "test.lib1",
-			getVersion: () => "2.0.0"
-		}
+			getVersion: () => "2.0.0",
+		},
 	});
 
 	t.deepEqual(writer._normalizePattern("/path/../../*"), [],
@@ -269,8 +269,8 @@ test("_normalizePattern: Relative path segment resolving to base directory", (t)
 		virBasePath: "/path/",
 		project: {
 			getName: () => "test.lib1",
-			getVersion: () => "2.0.0"
-		}
+			getVersion: () => "2.0.0",
+		},
 	});
 
 	t.deepEqual(writer._normalizePattern("/*/../*"), [""],
@@ -282,8 +282,8 @@ test("_normalizePattern: Relative path segment", (t) => {
 		virBasePath: "/path/",
 		project: {
 			getName: () => "test.lib1",
-			getVersion: () => "2.0.0"
-		}
+			getVersion: () => "2.0.0",
+		},
 	});
 
 	t.deepEqual(writer._normalizePattern("/path/../*"), [""],
@@ -295,8 +295,8 @@ test("_normalizePattern: Relative path segment within base directory, matching a
 		virBasePath: "/path/",
 		project: {
 			getName: () => "test.lib1",
-			getVersion: () => "2.0.0"
-		}
+			getVersion: () => "2.0.0",
+		},
 	});
 
 	t.deepEqual(writer._normalizePattern("/path/path2/../**/*"), ["**/*"],

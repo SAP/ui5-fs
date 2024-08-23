@@ -5,23 +5,23 @@ import ResourceFacade from "../../../lib/ResourceFacade.js";
 
 test("_byGlob: Basic Link", async (t) => {
 	const dummyResourceA = {
-		getPath: () => "/resources/some/lib/FileA.js"
+		getPath: () => "/resources/some/lib/FileA.js",
 	};
 	const dummyResourceB = {
-		getPath: () => "/resources/some/lib/dir/FileB.js"
+		getPath: () => "/resources/some/lib/dir/FileB.js",
 	};
 	const abstractReader = {
-		_byGlob: sinon.stub().resolves([dummyResourceA, dummyResourceB])
+		_byGlob: sinon.stub().resolves([dummyResourceA, dummyResourceB]),
 	};
 	const trace = {
-		collection: sinon.spy()
+		collection: sinon.spy(),
 	};
 	const readerCollection = new Link({
 		reader: abstractReader,
 		pathMapping: {
 			linkPath: `/`,
-			targetPath: `/resources/some/lib/`
-		}
+			targetPath: `/resources/some/lib/`,
+		},
 	});
 	const options = "options";
 	const resources = await readerCollection._byGlob("anyPattern", options, trace);
@@ -46,17 +46,17 @@ test("_byGlob: Basic Link", async (t) => {
 
 test("_byGlob: Complex pattern", async (t) => {
 	const abstractReader = {
-		_byGlob: sinon.stub().resolves([])
+		_byGlob: sinon.stub().resolves([]),
 	};
 	const trace = {
-		collection: sinon.spy()
+		collection: sinon.spy(),
 	};
 	const readerCollection = new Link({
 		reader: abstractReader,
 		pathMapping: {
 			linkPath: `/`,
-			targetPath: `/resources/some/lib/`
-		}
+			targetPath: `/resources/some/lib/`,
+		},
 	});
 
 	const options = "options";
@@ -76,17 +76,17 @@ test("_byGlob: Complex pattern", async (t) => {
 
 test("_byGlob: Request prefixed with target path", async (t) => {
 	const abstractReader = {
-		_byGlob: sinon.stub().resolves([])
+		_byGlob: sinon.stub().resolves([]),
 	};
 	const trace = {
-		collection: sinon.spy()
+		collection: sinon.spy(),
 	};
 	const readerCollection = new Link({
 		reader: abstractReader,
 		pathMapping: {
 			linkPath: `/my/lib/`,
-			targetPath: `/some/lib/`
-		}
+			targetPath: `/some/lib/`,
+		},
 	});
 	const options = "options";
 	const resources = await readerCollection._byGlob("/some/lib/dir/**", options, trace);
@@ -104,17 +104,17 @@ test("_byGlob: Request prefixed with target path", async (t) => {
 
 test("_byGlob: Request prefixed with link path", async (t) => {
 	const abstractReader = {
-		_byGlob: sinon.stub().resolves([])
+		_byGlob: sinon.stub().resolves([]),
 	};
 	const trace = {
-		collection: sinon.spy()
+		collection: sinon.spy(),
 	};
 	const readerCollection = new Link({
 		reader: abstractReader,
 		pathMapping: {
 			linkPath: `/my/lib/`,
-			targetPath: `/some/lib/`
-		}
+			targetPath: `/some/lib/`,
+		},
 	});
 	const options = "options";
 	const resources = await readerCollection._byGlob("/my/lib/dir/**", options, trace);
@@ -132,20 +132,20 @@ test("_byGlob: Request prefixed with link path", async (t) => {
 
 test("_byPath: Basic Link", async (t) => {
 	const dummyResource = {
-		getPath: () => "/resources/some/lib/dir/File.js"
+		getPath: () => "/resources/some/lib/dir/File.js",
 	};
 	const abstractReader = {
-		_byPath: sinon.stub().resolves(dummyResource)
+		_byPath: sinon.stub().resolves(dummyResource),
 	};
 	const trace = {
-		collection: sinon.spy()
+		collection: sinon.spy(),
 	};
 	const readerCollection = new Link({
 		reader: abstractReader,
 		pathMapping: {
 			linkPath: `/`,
-			targetPath: `/resources/some/lib/`
-		}
+			targetPath: `/resources/some/lib/`,
+		},
 	});
 	const options = "options";
 	const resource = await readerCollection._byPath("/dir/File.js", options, trace);
@@ -165,20 +165,20 @@ test("_byPath: Basic Link", async (t) => {
 
 test("_byPath: Rewrite on same level", async (t) => {
 	const dummyResource = {
-		getPath: () => "/some/lib/dir/File.js"
+		getPath: () => "/some/lib/dir/File.js",
 	};
 	const abstractReader = {
-		_byPath: sinon.stub().resolves(dummyResource)
+		_byPath: sinon.stub().resolves(dummyResource),
 	};
 	const trace = {
-		collection: sinon.spy()
+		collection: sinon.spy(),
 	};
 	const readerCollection = new Link({
 		reader: abstractReader,
 		pathMapping: {
 			linkPath: `/my/lib/`,
-			targetPath: `/some/lib/`
-		}
+			targetPath: `/some/lib/`,
+		},
 	});
 	const options = "options";
 	const resource = await readerCollection._byPath("/my/lib/dir/File.js", options, trace);
@@ -198,17 +198,17 @@ test("_byPath: Rewrite on same level", async (t) => {
 
 test("_byPath: No resource found", async (t) => {
 	const abstractReader = {
-		_byPath: sinon.stub().resolves(null)
+		_byPath: sinon.stub().resolves(null),
 	};
 	const trace = {
-		collection: sinon.spy()
+		collection: sinon.spy(),
 	};
 	const readerCollection = new Link({
 		reader: abstractReader,
 		pathMapping: {
 			linkPath: `/`,
-			targetPath: `/some/lib/`
-		}
+			targetPath: `/some/lib/`,
+		},
 	});
 	const options = "options";
 	const resource = await readerCollection._byPath("/dir/File.js", options, trace);
@@ -226,17 +226,17 @@ test("_byPath: No resource found", async (t) => {
 
 test("_byPath: Request different prefix", async (t) => {
 	const abstractReader = {
-		_byPath: sinon.stub()
+		_byPath: sinon.stub(),
 	};
 	const trace = {
-		collection: sinon.spy()
+		collection: sinon.spy(),
 	};
 	const readerCollection = new Link({
 		reader: abstractReader,
 		pathMapping: {
 			linkPath: `/my/lib/`,
-			targetPath: `/some/lib/`
-		}
+			targetPath: `/some/lib/`,
+		},
 	});
 	const options = "options";
 	const resource = await readerCollection._byPath("/some/lib/dir/File.js", options, trace);
@@ -252,7 +252,7 @@ test("Missing attributes", (t) => {
 			pathMapping: {
 				linkPath: `/`,
 				targetPath: `/`,
-			}
+			},
 		});
 	});
 	t.is(err.message, `Missing parameter "reader"`,
@@ -260,7 +260,7 @@ test("Missing attributes", (t) => {
 
 	err = t.throws(() => {
 		new Link({
-			reader: abstractReader
+			reader: abstractReader,
 		});
 	});
 	t.is(err.message, `Missing parameter "pathMapping"`,
@@ -271,7 +271,7 @@ test("Missing attributes", (t) => {
 			reader: abstractReader,
 			pathMapping: {
 				targetPath: `/`,
-			}
+			},
 		});
 	});
 	t.is(err.message, `Path mapping is missing attribute "linkPath"`,
@@ -282,7 +282,7 @@ test("Missing attributes", (t) => {
 			reader: abstractReader,
 			pathMapping: {
 				linkPath: `/`,
-			}
+			},
 		});
 	});
 	t.is(err.message, `Path mapping is missing attribute "targetPath"`,
@@ -294,7 +294,7 @@ test("Missing attributes", (t) => {
 			pathMapping: {
 				linkPath: `/path`,
 				targetPath: `/`,
-			}
+			},
 		});
 	});
 	t.is(err.message, `Link path must end with a slash: /path`,
@@ -306,7 +306,7 @@ test("Missing attributes", (t) => {
 			pathMapping: {
 				linkPath: `/`,
 				targetPath: `/path`,
-			}
+			},
 		});
 	});
 	t.is(err.message, `Target path must end with a slash: /path`,

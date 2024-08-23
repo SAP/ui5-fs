@@ -6,8 +6,8 @@ test.beforeEach((t) => {
 	t.context.readerWriter = {
 		filesystem: new FsAdapter({
 			fsBasePath: "./test/fixtures/glob",
-			virBasePath: "/test-resources/"
-		})
+			virBasePath: "/test-resources/",
+		}),
 	};
 });
 
@@ -55,7 +55,7 @@ test("glob with virtual base path partially matching", async (t) => {
 
 	const adapter = new FsAdapter({
 		fsBasePath: "./test/fixtures/glob/application.a",
-		virBasePath: "/test-resources/application/a/"
+		virBasePath: "/test-resources/application/a/",
 	});
 
 	const resources = await adapter.byGlob("/test-resources/**/*.*");
@@ -106,7 +106,7 @@ test("glob with multiple patterns", async (t) => {
 		"/test-resources/application.b/webapp/i18n/i18n_de.properties",
 		"/test-resources/application.b/webapp/embedded/i18n/i18n_de.properties",
 		"/test-resources/application.b/ui5.yaml",
-		"/test-resources/application.a/ui5.yaml"
+		"/test-resources/application.a/ui5.yaml",
 	];
 
 	matchGlobResult(t, resources, expectedResources);
@@ -130,7 +130,7 @@ test("glob two specific filetype (yaml and js)", async (t) => {
 	const expectedResources = [
 		"/test-resources/application.a/webapp/test.js",
 		"/test-resources/application.b/ui5.yaml",
-		"/test-resources/application.a/ui5.yaml"
+		"/test-resources/application.a/ui5.yaml",
 	];
 
 	matchGlobResult(t, resources, expectedResources);
@@ -141,7 +141,7 @@ test("glob only a specific filetype (json) with exclude pattern", async (t) => {
 
 	const resources = await t.context.readerWriter.filesystem.byGlob([
 		"/**/*.json",
-		"!/**/*package.json"
+		"!/**/*package.json",
 	]);
 
 	resources.forEach((res) => {
@@ -155,7 +155,7 @@ test("glob only a specific filetype (json) with multiple exclude pattern", async
 	const resources = await t.context.readerWriter.filesystem.byGlob([
 		"/**/*.json",
 		"!/**/*package.json",
-		"!/**/embedded/manifest.json"
+		"!/**/embedded/manifest.json",
 	]);
 
 	matchGlobResult(t, resources, ["/test-resources/application.b/webapp/manifest.json"]);
@@ -203,14 +203,14 @@ test("glob with multiple patterns with static exclude", async (t) => {
 		virBasePath: "/test-resources/",
 		excludes: [
 			"/test-resources/application.b/**",
-			"!/test-resources/application.b/**/manifest.json"
-		]
+			"!/test-resources/application.b/**/manifest.json",
+		],
 	}).byGlob(["/**/*.yaml", "/test-resources/**/i18n_de.properties"]);
 
 	const expectedResources = [
 		"/test-resources/application.a/ui5.yaml",
 		"/test-resources/application.b/webapp/manifest.json",
-		"/test-resources/application.b/webapp/embedded/manifest.json"
+		"/test-resources/application.b/webapp/embedded/manifest.json",
 	];
 	matchGlobResult(t, resources, expectedResources);
 });
@@ -403,4 +403,3 @@ test("glob with multiple patterns with static exclude", async (t) => {
 // 	const matches = await glob([""], opt);
 // 	t.deepEqual(matches.length, 23, "Resources should match");
 // });
-

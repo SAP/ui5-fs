@@ -36,8 +36,8 @@ class DuplexCollection extends AbstractReaderWriter {
 			name: `${name} - ReaderCollectionPrioritized`,
 			readers: [
 				writer,
-				reader
-			]
+				reader,
+			],
 		});
 	}
 

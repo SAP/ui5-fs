@@ -3,18 +3,18 @@ import sinon from "sinon";
 import Resource from "../../lib/Resource.js";
 import ResourceFacade from "../../lib/ResourceFacade.js";
 
-test.afterEach.always( (t) => {
+test.afterEach.always((t) => {
 	sinon.restore();
 });
 
 test("Create instance", (t) => {
 	const resource = new Resource({
 		path: "/my/path/to/resource",
-		string: "my content"
+		string: "my content",
 	});
 	const resourceFacade = new ResourceFacade({
 		path: "/my/path",
-		resource
+		resource,
 	});
 	t.is(resourceFacade.getPath(), "/my/path", "Returns correct path");
 	t.is(resourceFacade.getName(), "path", "Returns correct name");
@@ -28,7 +28,7 @@ test("Create instance: Missing parameters", (t) => {
 		});
 	}, {
 		instanceOf: Error,
-		message: "Unable to create ResourceFacade: Missing parameter 'resource'"
+		message: "Unable to create ResourceFacade: Missing parameter 'resource'",
 	});
 	t.throws(() => {
 		new ResourceFacade({
@@ -36,18 +36,18 @@ test("Create instance: Missing parameters", (t) => {
 		});
 	}, {
 		instanceOf: Error,
-		message: "Unable to create ResourceFacade: Missing parameter 'path'"
+		message: "Unable to create ResourceFacade: Missing parameter 'path'",
 	});
 });
 
 test("ResourceFacade #clone", async (t) => {
 	const resource = new Resource({
 		path: "/my/path/to/resource",
-		string: "my content"
+		string: "my content",
 	});
 	const resourceFacade = new ResourceFacade({
 		path: "/my/path",
-		resource
+		resource,
 	});
 
 	const clone = await resourceFacade.clone();
@@ -58,11 +58,11 @@ test("ResourceFacade #clone", async (t) => {
 test("ResourceFacade #setPath", (t) => {
 	const resource = new Resource({
 		path: "/my/path/to/resource",
-		string: "my content"
+		string: "my content",
 	});
 	const resourceFacade = new ResourceFacade({
 		path: "/my/path",
-		resource
+		resource,
 	});
 
 	const err = t.throws(() => {
@@ -74,11 +74,11 @@ test("ResourceFacade #setPath", (t) => {
 test("ResourceFacade provides same public functions as Resource", (t) => {
 	const resource = new Resource({
 		path: "/my/path/to/resource",
-		string: "my content"
+		string: "my content",
 	});
 	const resourceFacade = new ResourceFacade({
 		path: "/my/path",
-		resource
+		resource,
 	});
 
 	const methods = Object.getOwnPropertyNames(Resource.prototype)

@@ -50,7 +50,7 @@ class Trace {
 			this._collections[name].calls++;
 		} else {
 			this._collections[name] = {
-				calls: 1
+				calls: 1,
 			};
 		}
 		summaryTrace.collection(name);

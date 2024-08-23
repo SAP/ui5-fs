@@ -4,11 +4,11 @@ import sinon from "sinon";
 
 test("glob resources from application.a w/ virtual base path prefix", async (t) => {
 	const dest = createAdapter({
-		virBasePath: "/app/"
+		virBasePath: "/app/",
 	});
 
 	const res = createResource({
-		path: "/app/index.html"
+		path: "/app/index.html",
 	});
 	await dest.write(res);
 	const resources = await dest.byGlob("/app/*.html");
@@ -18,11 +18,11 @@ test("glob resources from application.a w/ virtual base path prefix", async (t) 
 
 test("glob resources from application.a w/o virtual base path prefix", async (t) => {
 	const dest = createAdapter({
-		virBasePath: "/app/"
+		virBasePath: "/app/",
 	});
 
 	const res = createResource({
-		path: "/app/index.html"
+		path: "/app/index.html",
 	});
 	await dest.write(res);
 	const resources = await dest.byGlob("/**/*.html");
@@ -31,16 +31,16 @@ test("glob resources from application.a w/o virtual base path prefix", async (t)
 
 test("Write resource w/ virtual base path", async (t) => {
 	const readerWriter = createAdapter({
-		virBasePath: "/app/"
+		virBasePath: "/app/",
 	});
 
 	const res = createResource({
-		path: "/app/test.html"
+		path: "/app/test.html",
 	});
 	await readerWriter.write(res);
 
 	t.deepEqual(readerWriter._virFiles, {
-		"test.html": res
+		"test.html": res,
 	}, "Adapter added resource with correct path");
 
 	t.deepEqual(Object.keys(readerWriter._virDirs), [], "Adapter added correct virtual directories");
@@ -49,22 +49,22 @@ test("Write resource w/ virtual base path", async (t) => {
 
 test("Write resource w/o virtual base path", async (t) => {
 	const readerWriter = createAdapter({
-		virBasePath: "/"
+		virBasePath: "/",
 	});
 
 	const res = createResource({
-		path: "/one/two/three/test.html"
+		path: "/one/two/three/test.html",
 	});
 	await readerWriter.write(res);
 
 	t.deepEqual(readerWriter._virFiles, {
-		"one/two/three/test.html": res
+		"one/two/three/test.html": res,
 	}, "Adapter added resource with correct path");
 
 	t.deepEqual(Object.keys(readerWriter._virDirs), [
 		"one/two/three",
 		"one/two",
-		"one"
+		"one",
 	], "Adapter added correct virtual directories");
 
 	const dirRes = readerWriter._virDirs["one/two/three"];
@@ -74,22 +74,22 @@ test("Write resource w/o virtual base path", async (t) => {
 
 test("Write resource w/ deep virtual base path", async (t) => {
 	const readerWriter = createAdapter({
-		virBasePath: "/app/a/"
+		virBasePath: "/app/a/",
 	});
 
 	const res = createResource({
-		path: "/app/a/one/two/three/test.html"
+		path: "/app/a/one/two/three/test.html",
 	});
 	await readerWriter.write(res);
 
 	t.deepEqual(readerWriter._virFiles, {
-		"one/two/three/test.html": res
+		"one/two/three/test.html": res,
 	}, "Adapter added resource with correct path");
 
 	t.deepEqual(Object.keys(readerWriter._virDirs), [
 		"one/two/three",
 		"one/two",
-		"one"
+		"one",
 	], "Adapter added correct virtual directories");
 
 	const dirRes = readerWriter._virDirs["one/two/three"];
@@ -99,32 +99,32 @@ test("Write resource w/ deep virtual base path", async (t) => {
 
 test("Write resource w/ crazy virtual base path", async (t) => {
 	const readerWriter = createAdapter({
-		virBasePath: "/app/🐛/"
+		virBasePath: "/app/🐛/",
 	});
 
 	const res = createResource({
-		path: "/app/🐛/one\\/2/3️⃣/test"
+		path: "/app/🐛/one\\/2/3️⃣/test",
 	});
 	await readerWriter.write(res);
 
 	t.deepEqual(readerWriter._virFiles, {
-		"one\\/2/3️⃣/test": res
+		"one\\/2/3️⃣/test": res,
 	}, "Adapter added resource with correct path");
 
 	t.deepEqual(Object.keys(readerWriter._virDirs), [
 		"one\\/2/3️⃣",
 		"one\\/2",
-		"one\\"
+		"one\\",
 	], "Adapter added correct virtual directories");
 });
 
 test("Migration of resource is executed", async (t) => {
 	const writer = createAdapter({
-		virBasePath: "/"
+		virBasePath: "/",
 	});
 
 	const resource = createResource({
-		path: "/test.js"
+		path: "/test.js",
 	});
 
 	const migrateResourceWriterSpy = sinon.spy(writer, "_migrateResource");
@@ -134,12 +134,12 @@ test("Migration of resource is executed", async (t) => {
 
 test("Resource: Change instance after write", async (t) => {
 	const writer = createAdapter({
-		virBasePath: "/"
+		virBasePath: "/",
 	});
 
 	const resource = createResource({
 		path: "/test.js",
-		string: "MyInitialContent"
+		string: "MyInitialContent",
 	});
 
 	await writer.write(resource);

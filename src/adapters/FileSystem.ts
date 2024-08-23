@@ -35,7 +35,7 @@ class FileSystem extends AbstractAdapter {
 	 *   Whether to apply any excludes defined in an optional .gitignore in the given <code>fsBasePath</code> directory
 	 * @param {@ui5/project/specifications/Project} [parameters.project] Project this adapter belongs to (if any)
 	 */
-	constructor({virBasePath, project, fsBasePath, excludes, useGitignore=false}) {
+	constructor({virBasePath, project, fsBasePath, excludes, useGitignore = false}) {
 		super({virBasePath, project, excludes});
 
 		if (!fsBasePath) {
@@ -81,11 +81,11 @@ class FileSystem extends AbstractAdapter {
 							path: this._virBaseDir,
 							sourceMetadata: {
 								adapter: ADAPTER_NAME,
-								fsPath: this._fsBasePath
+								fsPath: this._fsBasePath,
 							},
 							createStream: () => {
 								return fs.createReadStream(this._fsBasePath);
-							}
+							},
 						}));
 					}
 				});
@@ -125,11 +125,11 @@ class FileSystem extends AbstractAdapter {
 								path: virPath,
 								sourceMetadata: {
 									adapter: ADAPTER_NAME,
-									fsPath: fsPath
+									fsPath: fsPath,
 								},
 								createStream: () => {
 									return fs.createReadStream(fsPath);
-								}
+								},
 							}));
 						}
 					});
@@ -162,11 +162,11 @@ class FileSystem extends AbstractAdapter {
 				return this._createResource({
 					project: this._project,
 					statInfo: { // TODO: make closer to fs stat info
-						isDirectory: function() {
+						isDirectory: function () {
 							return true;
-						}
+						},
 					},
-					path: virPath
+					path: virPath,
 				});
 			} else {
 				return null;
@@ -180,7 +180,7 @@ class FileSystem extends AbstractAdapter {
 		if (this._useGitignore) {
 			if (!this._isGitIgnored) {
 				this._isGitIgnored = await isGitIgnored({
-					cwd: this._fsBasePath
+					cwd: this._fsBasePath,
 				});
 			}
 			// Check whether path should be ignored
@@ -201,13 +201,13 @@ class FileSystem extends AbstractAdapter {
 				path: virPath,
 				sourceMetadata: {
 					adapter: ADAPTER_NAME,
-					fsPath
-				}
+					fsPath,
+				},
 			};
 
 			if (!statInfo.isDirectory()) {
 				// Add content as lazy stream
-				resourceOptions.createStream = function() {
+				resourceOptions.createStream = function () {
 					return fs.createReadStream(fsPath);
 				};
 			}
@@ -347,7 +347,7 @@ class FileSystem extends AbstractAdapter {
 			// This should be identical to buffering the resource content in memory, since the written file
 			// can not be modified.
 			// We chose this approach to be more memory efficient in scenarios where readOnly is used
-			resource.setStream(function() {
+			resource.setStream(function () {
 				return fs.createReadStream(fsPath);
 			});
 		}

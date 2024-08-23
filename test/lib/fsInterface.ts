@@ -39,7 +39,7 @@ function getPath() {
 
 test("MemAdapter: readFile", async (t) => {
 	const memAdapter = new MemAdapter({
-		virBasePath: "/"
+		virBasePath: "/",
 	});
 	const fs = fsInterface(memAdapter);
 	const readFile = promisify(fs.readFile);
@@ -47,7 +47,7 @@ test("MemAdapter: readFile", async (t) => {
 	const fsPath = path.join("/", "foo.txt");
 	await memAdapter.write(new Resource({
 		path: "/foo.txt",
-		string: `content of ${fsPath}`
+		string: `content of ${fsPath}`,
 	}));
 	`content of ${fsPath}`;
 	await assertReadFile(t, readFile, "", fsPath);
@@ -56,7 +56,7 @@ test("MemAdapter: readFile", async (t) => {
 test("FsAdapter: readFile with non-ASCII characters in path", async (t) => {
 	const fsAdapter = new FsAdapter({
 		virBasePath: "/",
-		fsBasePath: getPath()
+		fsBasePath: getPath(),
 	});
 	const fs = fsInterface(fsAdapter);
 	const readFile = promisify(fs.readFile);
@@ -84,7 +84,7 @@ const assertStat = async (t, stat, basepath, filepath) => {
 
 test("MemAdapter: stat", async (t) => {
 	const memAdapter = new MemAdapter({
-		virBasePath: "/"
+		virBasePath: "/",
 	});
 	const fs = fsInterface(memAdapter);
 	const stat = promisify(fs.stat);
@@ -92,7 +92,7 @@ test("MemAdapter: stat", async (t) => {
 	const fsPath = path.join("/", "foo.txt");
 	await memAdapter.write(new Resource({
 		path: "/foo.txt",
-		string: `content of ${fsPath}`
+		string: `content of ${fsPath}`,
 	}));
 	await assertStat(t, stat, "", fsPath);
 });
@@ -100,7 +100,7 @@ test("MemAdapter: stat", async (t) => {
 test("FsAdapter: stat", async (t) => {
 	const fsAdapter = new FsAdapter({
 		virBasePath: "/",
-		fsBasePath: getPath()
+		fsBasePath: getPath(),
 	});
 	const fs = fsInterface(fsAdapter);
 	const stat = promisify(fs.stat);
@@ -114,7 +114,7 @@ test("fs: stat", async (t) => {
 
 test("MemAdapter: mkdir", async (t) => {
 	const memAdapter = new MemAdapter({
-		virBasePath: "/"
+		virBasePath: "/",
 	});
 	const fs = fsInterface(memAdapter);
 	const mkdir = promisify(fs.mkdir);

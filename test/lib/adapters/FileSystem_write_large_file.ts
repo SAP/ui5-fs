@@ -16,14 +16,14 @@ test.serial("Stream a large file from source to target", async (t) => {
 
 	const fileSystem = new FileSystem({
 		fsBasePath,
-		virBasePath: "/"
+		virBasePath: "/",
 	});
 
 	const largeBuffer = Buffer.alloc(1048576); // 1MB
 
 	await fileSystem.write(new Resource({
 		path: "/large-file.txt",
-		buffer: largeBuffer
+		buffer: largeBuffer,
 	}));
 
 	t.deepEqual(await readFile(path.join(fsBasePath, "large-file.txt")), largeBuffer,

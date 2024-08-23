@@ -33,8 +33,8 @@ function fsInterface(reader) {
 			}
 			const posixPath = toPosix(fsPath);
 			reader.byPath(posixPath, {
-				nodir: false
-			}).then(function(resource) {
+				nodir: false,
+			}).then(function (resource) {
 				if (!resource) {
 					const error = new Error(`ENOENT: no such file or directory, open '${fsPath}'`);
 					error.code = "ENOENT"; // "File or directory does not exist"
@@ -42,10 +42,10 @@ function fsInterface(reader) {
 					return;
 				}
 
-				return resource.getBuffer().then(function(buffer) {
+				return resource.getBuffer().then(function (buffer) {
 					let res;
 
-					if (options && options.encoding) {
+					if (options?.encoding) {
 						res = buffer.toString(options.encoding);
 					} else {
 						res = buffer;
@@ -58,8 +58,8 @@ function fsInterface(reader) {
 		stat(fsPath, callback) {
 			const posixPath = toPosix(fsPath);
 			reader.byPath(posixPath, {
-				nodir: false
-			}).then(function(resource) {
+				nodir: false,
+			}).then(function (resource) {
 				if (!resource) {
 					const error = new Error(`ENOENT: no such file or directory, stat '${fsPath}'`);
 					error.code = "ENOENT"; // "File or directory does not exist"
@@ -76,7 +76,7 @@ function fsInterface(reader) {
 				posixPath += "/";
 			}
 			reader.byGlob(posixPath + "*", {
-				nodir: false
+				nodir: false,
 			}).then((resources) => {
 				const files = resources.map((resource) => {
 					return resource.getName();
@@ -86,7 +86,7 @@ function fsInterface(reader) {
 		},
 		mkdir(fsPath, callback) {
 			setTimeout(callback, 0);
-		}
+		},
 	};
 }
 export default fsInterface;

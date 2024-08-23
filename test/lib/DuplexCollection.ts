@@ -8,7 +8,7 @@ test("DuplexCollection: constructor", (t) => {
 	const duplexCollection = new DuplexCollection({
 		name: "myCollection",
 		reader: {},
-		writer: {}
+		writer: {},
 	});
 
 	t.deepEqual(duplexCollection._reader, {}, "reader assigned");
@@ -21,7 +21,7 @@ test("DuplexCollection: constructor", (t) => {
 test("DuplexCollection: constructor with setting default name of an empty string", (t) => {
 	const duplexCollection = new DuplexCollection({
 		reader: {},
-		writer: {}
+		writer: {},
 	});
 
 	t.deepEqual(duplexCollection._reader, {}, "reader assigned");
@@ -35,15 +35,15 @@ test("DuplexCollection: _byGlob w/o finding a resource", async (t) => {
 	t.plan(3);
 
 	const abstractReader = {
-		_byGlob: sinon.stub().returns(Promise.resolve([]))
+		_byGlob: sinon.stub().returns(Promise.resolve([])),
 	};
 	const duplexCollection = new DuplexCollection({
 		name: "myCollection",
 		reader: abstractReader,
-		writer: abstractReader
+		writer: abstractReader,
 	});
 	const trace = {
-		collection: sinon.spy()
+		collection: sinon.spy(),
 	};
 	const comboSpy = sinon.spy(duplexCollection._combo, "_byGlob");
 
@@ -60,18 +60,18 @@ test("DuplexCollection: _byGlob", async (t) => {
 
 	const resource = new Resource({
 		path: "/my/path",
-		buffer: Buffer.from("content")
+		buffer: Buffer.from("content"),
 	});
 	const abstractReader = {
-		_byGlob: sinon.stub().returns(Promise.resolve([resource]))
+		_byGlob: sinon.stub().returns(Promise.resolve([resource])),
 	};
 	const duplexCollection = new DuplexCollection({
 		name: "myCollection",
 		reader: abstractReader,
-		writer: abstractReader
+		writer: abstractReader,
 	});
 	const trace = {
-		collection: sinon.spy()
+		collection: sinon.spy(),
 	};
 	const comboSpy = sinon.spy(duplexCollection._combo, "_byGlob");
 	const resources = await duplexCollection._byGlob("anyPattern", {someOption: true}, trace);
@@ -90,19 +90,19 @@ test("DuplexCollection: _byPath with reader finding a resource", async (t) => {
 
 	const resource = new Resource({
 		path: "/path",
-		buffer: Buffer.from("content")
+		buffer: Buffer.from("content"),
 	});
 	const pushCollectionSpy = sinon.spy(resource, "pushCollection");
 	const abstractReader = {
-		_byPath: sinon.stub().returns(Promise.resolve(resource))
+		_byPath: sinon.stub().returns(Promise.resolve(resource)),
 	};
 	const trace = {
-		collection: sinon.spy()
+		collection: sinon.spy(),
 	};
 	const duplexCollection = new DuplexCollection({
 		name: "myCollection",
 		reader: abstractReader,
-		writer: abstractReader
+		writer: abstractReader,
 	});
 	const comboSpy = sinon.spy(duplexCollection._combo, "_byPath");
 	const readResource = await duplexCollection._byPath("anyVirtualPath", {someOption: true}, trace);
@@ -119,18 +119,18 @@ test("DuplexCollection: _byPath with two readers both finding no resource", asyn
 	t.plan(3);
 
 	const abstractReaderOne = {
-		_byPath: sinon.stub().returns(Promise.resolve())
+		_byPath: sinon.stub().returns(Promise.resolve()),
 	};
 	const abstractReaderTwo = {
-		_byPath: sinon.stub().returns(Promise.resolve())
+		_byPath: sinon.stub().returns(Promise.resolve()),
 	};
 	const trace = {
-		collection: sinon.stub()
+		collection: sinon.stub(),
 	};
 	const duplexCollection = new DuplexCollection({
 		name: "myCollection",
 		reader: abstractReaderOne,
-		writer: abstractReaderTwo
+		writer: abstractReaderTwo,
 	});
 	const readResource = await duplexCollection._byPath("anyVirtualPath", {someOption: true}, trace);
 
@@ -146,14 +146,14 @@ test("DuplexCollection: _write successful", async (t) => {
 
 	const resource = new Resource({
 		path: "/my/path",
-		buffer: Buffer.from("content")
+		buffer: Buffer.from("content"),
 	});
 	const duplexCollection = new DuplexCollection({
 		name: "myCollection",
 		reader: {},
 		writer: {
-			write: sinon.stub().returns(Promise.resolve())
-		}
+			write: sinon.stub().returns(Promise.resolve()),
+		},
 	});
 	await duplexCollection._write(resource);
 
@@ -164,10 +164,10 @@ test("DuplexCollection: Throws for empty reader", (t) => {
 	t.throws(() => {
 		new DuplexCollection({
 			name: "myReader",
-			writer: {}
+			writer: {},
 		});
 	}, {
-		message: "Cannot create DuplexCollection myReader: No reader provided"
+		message: "Cannot create DuplexCollection myReader: No reader provided",
 	});
 });
 
@@ -175,9 +175,9 @@ test("DuplexCollection: Throws for empty writer", (t) => {
 	t.throws(() => {
 		new DuplexCollection({
 			name: "myReader",
-			reader: {}
+			reader: {},
 		});
 	}, {
-		message: "Cannot create DuplexCollection myReader: No writer provided"
+		message: "Cannot create DuplexCollection myReader: No writer provided",
 	});
 });

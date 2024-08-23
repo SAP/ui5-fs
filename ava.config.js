@@ -5,17 +5,17 @@ const nodeArguments = [
 ];
 
 export default {
-	"extensions": {
+	extensions: {
 		ts: "module",
 	},
-	"files": [
-		"test/lib/**/*.ts"
+	files: [
+		"test/lib/**/*.ts",
 	],
-	"watchMode": {
-		"ignoreChanges": [
-			"test/tmp/**"
-		]
+	watchMode: {
+		ignoreChanges: [
+			"test/tmp/**",
+		],
 	},
 	nodeArguments,
-	"workerThreads": false
+	workerThreads: false,
 };

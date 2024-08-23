@@ -11,7 +11,7 @@ test("Constructor: Path mapping regex", (t) => {
 			"/": myWriter,
 			"/my/path/": myWriter,
 			"/my/": myWriter,
-		}
+		},
 	});
 	t.is(writer._basePathRegex.toString(), "^((?:/)??(?:/my/)??(?:/my/path/)??)+.*?$",
 		"Created correct path mapping regular expression");
@@ -25,7 +25,7 @@ test("Constructor: Path mapping regex has correct escaping", (t) => {
 			"/My\\Weird.Path/": myWriter,
 			"/my/pa$h/": myWriter,
 			"/my/": myWriter,
-		}
+		},
 	});
 	t.is(writer._basePathRegex.toString(), "^((?:/My\\\\Weird\\.Path/)??(?:/my/)??(?:/my/pa\\$h/)??)+.*?$",
 		"Created correct path mapping regular expression");
@@ -34,7 +34,7 @@ test("Constructor: Path mapping regex has correct escaping", (t) => {
 test("Constructor: Throws for missing path mapping", (t) => {
 	const err = t.throws(() => {
 		new WriterCollection({
-			name: "myCollection"
+			name: "myCollection",
 		});
 	});
 	t.is(err.message, "Cannot create WriterCollection myCollection: Missing parameter 'writerMapping'",
@@ -45,7 +45,7 @@ test("Constructor: Throws for empty path mapping", (t) => {
 	const err = t.throws(() => {
 		new WriterCollection({
 			name: "myCollection",
-			writerMapping: {}
+			writerMapping: {},
 		});
 	});
 	t.is(err.message, "Cannot create WriterCollection myCollection: Empty parameter 'writerMapping'",
@@ -54,14 +54,14 @@ test("Constructor: Throws for empty path mapping", (t) => {
 
 test("Constructor: Throws for empty path", (t) => {
 	const myWriter = {
-		_write: sinon.stub()
+		_write: sinon.stub(),
 	};
 	const err = t.throws(() => {
 		new WriterCollection({
 			name: "myCollection",
 			writerMapping: {
-				"": myWriter
-			}
+				"": myWriter,
+			},
 		});
 	});
 	t.is(err.message, "Empty path in path mapping of WriterCollection myCollection",
@@ -70,14 +70,14 @@ test("Constructor: Throws for empty path", (t) => {
 
 test("Constructor: Throws for missing leading slash", (t) => {
 	const myWriter = {
-		_write: sinon.stub()
+		_write: sinon.stub(),
 	};
 	const err = t.throws(() => {
 		new WriterCollection({
 			name: "myCollection",
 			writerMapping: {
-				"my/path/": myWriter
-			}
+				"my/path/": myWriter,
+			},
 		});
 	});
 	t.is(err.message, "Missing leading slash in path mapping 'my/path/' of WriterCollection myCollection",
@@ -86,14 +86,14 @@ test("Constructor: Throws for missing leading slash", (t) => {
 
 test("Constructor: Throws for missing trailing slash", (t) => {
 	const myWriter = {
-		_write: sinon.stub()
+		_write: sinon.stub(),
 	};
 	const err = t.throws(() => {
 		new WriterCollection({
 			name: "myCollection",
 			writerMapping: {
-				"/my/path": myWriter
-			}
+				"/my/path": myWriter,
+			},
 		});
 	});
 	t.is(err.message, "Missing trailing slash in path mapping '/my/path' of WriterCollection myCollection",
@@ -102,34 +102,34 @@ test("Constructor: Throws for missing trailing slash", (t) => {
 
 test("Write", async (t) => {
 	const myPathWriter = {
-		_write: sinon.stub()
+		_write: sinon.stub(),
 	};
 	const myWriter = {
-		_write: sinon.stub()
+		_write: sinon.stub(),
 	};
 	const generalWriter = {
-		_write: sinon.stub()
+		_write: sinon.stub(),
 	};
 	const writerCollection = new WriterCollection({
 		name: "myCollection",
 		writerMapping: {
 			"/my/path/": myPathWriter,
 			"/my/": myWriter,
-			"/": generalWriter
-		}
+			"/": generalWriter,
+		},
 	});
 
 	const myPathResource = new Resource({
 		path: "/my/path/resource.res",
-		string: "content"
+		string: "content",
 	});
 	const myResource = new Resource({
 		path: "/my/resource.res",
-		string: "content"
+		string: "content",
 	});
 	const resource = new Resource({
 		path: "/resource.res",
-		string: "content"
+		string: "content",
 	});
 
 	await writerCollection.write(myPathResource, "options 1");
@@ -150,21 +150,21 @@ test("Write", async (t) => {
 
 test("byGlob", async (t) => {
 	const myPathWriter = {
-		_byGlob: sinon.stub().resolves([])
+		_byGlob: sinon.stub().resolves([]),
 	};
 	const myWriter = {
-		_byGlob: sinon.stub().resolves([])
+		_byGlob: sinon.stub().resolves([]),
 	};
 	const generalWriter = {
-		_byGlob: sinon.stub().resolves([])
+		_byGlob: sinon.stub().resolves([]),
 	};
 	const writerCollection = new WriterCollection({
 		name: "myCollection",
 		writerMapping: {
 			"/my/path/": myPathWriter,
 			"/my/": myWriter,
-			"/": generalWriter
-		}
+			"/": generalWriter,
+		},
 	});
 
 	await writerCollection.byGlob("/**");
@@ -180,21 +180,21 @@ test("byGlob", async (t) => {
 
 test("byPath", async (t) => {
 	const myPathWriter = {
-		_byPath: sinon.stub().resolves(null)
+		_byPath: sinon.stub().resolves(null),
 	};
 	const myWriter = {
-		_byPath: sinon.stub().resolves(null)
+		_byPath: sinon.stub().resolves(null),
 	};
 	const generalWriter = {
-		_byPath: sinon.stub().resolves(null)
+		_byPath: sinon.stub().resolves(null),
 	};
 	const writerCollection = new WriterCollection({
 		name: "myCollection",
 		writerMapping: {
 			"/my/path/": myPathWriter,
 			"/my/": myWriter,
-			"/": generalWriter
-		}
+			"/": generalWriter,
+		},
 	});
 
 	await writerCollection.byPath("/my/resource.res");

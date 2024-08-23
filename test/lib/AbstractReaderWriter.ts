@@ -6,7 +6,7 @@ test("AbstractReaderWriter: constructor throws an error", (t) => {
 		new AbstractReaderWriter();
 	}, {
 		instanceOf: TypeError,
-		message: "Class 'AbstractReaderWriter' is abstract"
+		message: "Class 'AbstractReaderWriter' is abstract",
 	});
 });
 
@@ -19,7 +19,6 @@ test("Incomplete AbstractReaderWriter subclass: Abstract functions throw error",
 		instance._write();
 	}, {
 		instanceOf: Error,
-		message: "Not implemented"
+		message: "Not implemented",
 	});
 });
-

@@ -2,17 +2,17 @@ import test from "ava";
 import sinon from "sinon";
 import esmock from "esmock";
 
-async function createMock(t, isLevelEnabled=true) {
+async function createMock(t, isLevelEnabled = true) {
 	t.context.loggerStub = {
 		silly: sinon.stub(),
 		isLevelEnabled: () => {
 			return isLevelEnabled;
-		}
+		},
 	};
 	t.context.traceSummary = await esmock("../../../lib/tracing/traceSummary.js", {
 		"@ui5/logger": {
-			getLogger: sinon.stub().returns(t.context.loggerStub)
-		}
+			getLogger: sinon.stub().returns(t.context.loggerStub),
+		},
 	});
 	return t.context;
 }

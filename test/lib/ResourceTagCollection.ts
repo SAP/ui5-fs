@@ -9,10 +9,10 @@ test.afterEach.always((t) => {
 
 test("setTag", (t) => {
 	const resource = new Resource({
-		path: "/some/path"
+		path: "/some/path",
 	});
 	const tagCollection = new ResourceTagCollection({
-		allowedTags: ["abc:MyTag"]
+		allowedTags: ["abc:MyTag"],
 	});
 
 	const validateResourceSpy = sinon.spy(tagCollection, "_getPath");
@@ -23,8 +23,8 @@ test("setTag", (t) => {
 
 	t.deepEqual(tagCollection._pathTags, {
 		"/some/path": {
-			"abc:MyTag": "my value"
-		}
+			"abc:MyTag": "my value",
+		},
 	}, "Tag correctly stored");
 
 	t.is(validateResourceSpy.callCount, 1, "_getPath called once");
@@ -42,26 +42,26 @@ test("setTag", (t) => {
 
 test("setTag: Value defaults to true", (t) => {
 	const resource = new Resource({
-		path: "/some/path"
+		path: "/some/path",
 	});
 	const tagCollection = new ResourceTagCollection({
-		allowedTags: ["abc:MyTag"]
+		allowedTags: ["abc:MyTag"],
 	});
 	tagCollection.setTag(resource, "abc:MyTag");
 
 	t.deepEqual(tagCollection._pathTags, {
 		"/some/path": {
-			"abc:MyTag": true
-		}
+			"abc:MyTag": true,
+		},
 	}, "Tag correctly stored");
 });
 
 test("getTag", (t) => {
 	const resource = new Resource({
-		path: "/some/path"
+		path: "/some/path",
 	});
 	const tagCollection = new ResourceTagCollection({
-		allowedTags: ["abc:MyTag"]
+		allowedTags: ["abc:MyTag"],
 	});
 	tagCollection.setTag(resource, "abc:MyTag", 123);
 
@@ -83,15 +83,15 @@ test("getTag", (t) => {
 
 test("getTag with prefilled tags", (t) => {
 	const resource = new Resource({
-		path: "/some/path"
+		path: "/some/path",
 	});
 	const tagCollection = new ResourceTagCollection({
 		allowedTags: ["abc:MyTag"],
 		tags: {
 			"/some/path": {
-				"abc:MyTag": 123
-			}
-		}
+				"abc:MyTag": 123,
+			},
+		},
 	});
 
 	const validateResourceSpy = sinon.spy(tagCollection, "_getPath");
@@ -112,10 +112,10 @@ test("getTag with prefilled tags", (t) => {
 
 test("clearTag", (t) => {
 	const resource = new Resource({
-		path: "/some/path"
+		path: "/some/path",
 	});
 	const tagCollection = new ResourceTagCollection({
-		allowedTags: ["abc:MyTag"]
+		allowedTags: ["abc:MyTag"],
 	});
 
 	tagCollection.setTag(resource, "abc:MyTag", 123);
@@ -127,8 +127,8 @@ test("clearTag", (t) => {
 
 	t.deepEqual(tagCollection._pathTags, {
 		"/some/path": {
-			"abc:MyTag": undefined
-		}
+			"abc:MyTag": undefined,
+		},
 	}, "Tag value set to undefined");
 
 	t.is(validateResourceSpy.callCount, 1, "_getPath called once");
@@ -142,130 +142,130 @@ test("clearTag", (t) => {
 
 test("_validateTag: Not in list of allowed tags", (t) => {
 	const tagCollection = new ResourceTagCollection({
-		allowedTags: ["abc:MyTag"]
+		allowedTags: ["abc:MyTag"],
 	});
 	t.throws(() => {
 		tagCollection._validateTag("abc:MyOtherTag");
 	}, {
 		instanceOf: Error,
 		message: `Tag "abc:MyOtherTag" not accepted by this collection. ` +
-			`Accepted tags are: abc:MyTag. Accepted namespaces are: *none*`
+		`Accepted tags are: abc:MyTag. Accepted namespaces are: *none*`,
 	});
 });
 
 test("_validateTag: Empty list of tags and namespaces", (t) => {
 	const tagCollection = new ResourceTagCollection({
 		allowedTags: [],
-		allowedNamespaces: []
+		allowedNamespaces: [],
 	});
 	t.throws(() => {
 		tagCollection._validateTag("abc:MyOtherTag");
 	}, {
 		instanceOf: Error,
 		message: `Tag "abc:MyOtherTag" not accepted by this collection. ` +
-			`Accepted tags are: *none*. Accepted namespaces are: *none*`
+		`Accepted tags are: *none*. Accepted namespaces are: *none*`,
 	});
 });
 
 test("_validateTag: Missing colon", (t) => {
 	const tagCollection = new ResourceTagCollection({
-		allowedTags: ["aBcMyTag"]
+		allowedTags: ["aBcMyTag"],
 	});
 	t.throws(() => {
 		tagCollection._validateTag("aBcMyTag");
 	}, {
 		instanceOf: Error,
-		message: `Invalid Tag "aBcMyTag": Colon required after namespace`
+		message: `Invalid Tag "aBcMyTag": Colon required after namespace`,
 	});
 });
 
 test("_validateTag: Too many colons", (t) => {
 	const tagCollection = new ResourceTagCollection({
-		allowedTags: ["aBc:My:Tag"]
+		allowedTags: ["aBc:My:Tag"],
 	});
 	t.throws(() => {
 		tagCollection._validateTag("aBc:My:Tag");
 	}, {
 		instanceOf: Error,
-		message: `Invalid Tag "aBc:My:Tag": Expected exactly one colon but found 2`
+		message: `Invalid Tag "aBc:My:Tag": Expected exactly one colon but found 2`,
 	});
 });
 
 test("_validateTag: Invalid namespace with uppercase letter", (t) => {
 	const tagCollection = new ResourceTagCollection({
-		allowedTags: ["aBc:MyTag"]
+		allowedTags: ["aBc:MyTag"],
 	});
 	t.throws(() => {
 		tagCollection._validateTag("aBc:MyTag");
 	}, {
 		instanceOf: Error,
-		message: `Invalid Tag "aBc:MyTag": Namespace part must be alphanumeric, lowercase and start with a letter`
+		message: `Invalid Tag "aBc:MyTag": Namespace part must be alphanumeric, lowercase and start with a letter`,
 	});
 });
 
 test("_validateTag: Invalid namespace starting with number", (t) => {
 	const tagCollection = new ResourceTagCollection({
-		allowedTags: ["0abc:MyTag"]
+		allowedTags: ["0abc:MyTag"],
 	});
 	t.throws(() => {
 		tagCollection._validateTag("0abc:MyTag");
 	}, {
 		instanceOf: Error,
-		message: `Invalid Tag "0abc:MyTag": Namespace part must be alphanumeric, lowercase and start with a letter`
+		message: `Invalid Tag "0abc:MyTag": Namespace part must be alphanumeric, lowercase and start with a letter`,
 	});
 });
 
 test("_validateTag: Invalid namespace containing an illegal character", (t) => {
 	const tagCollection = new ResourceTagCollection({
-		allowedTags: ["a🦦c:MyTag"]
+		allowedTags: ["a🦦c:MyTag"],
 	});
 	t.throws(() => {
 		tagCollection._validateTag("a🦦c:MyTag");
 	}, {
 		instanceOf: Error,
-		message: `Invalid Tag "a🦦c:MyTag": Namespace part must be alphanumeric, lowercase and start with a letter`
+		message: `Invalid Tag "a🦦c:MyTag": Namespace part must be alphanumeric, lowercase and start with a letter`,
 	});
 });
 
 test("_validateTag: Invalid tag name starting with number", (t) => {
 	const tagCollection = new ResourceTagCollection({
-		allowedTags: ["abc:0MyTag"]
+		allowedTags: ["abc:0MyTag"],
 	});
 	t.throws(() => {
 		tagCollection._validateTag("abc:0MyTag");
 	}, {
 		instanceOf: Error,
-		message: `Invalid Tag "abc:0MyTag": Name part must be alphanumeric and start with a capital letter`
+		message: `Invalid Tag "abc:0MyTag": Name part must be alphanumeric and start with a capital letter`,
 	});
 });
 
 test("_validateTag: Invalid tag name starting with lowercase letter", (t) => {
 	const tagCollection = new ResourceTagCollection({
-		allowedTags: ["abc:myTag"]
+		allowedTags: ["abc:myTag"],
 	});
 	t.throws(() => {
 		tagCollection._validateTag("abc:myTag");
 	}, {
 		instanceOf: Error,
-		message: `Invalid Tag "abc:myTag": Name part must be alphanumeric and start with a capital letter`
+		message: `Invalid Tag "abc:myTag": Name part must be alphanumeric and start with a capital letter`,
 	});
 });
 
 test("_validateTag: Invalid tag name containing an illegal character", (t) => {
 	const tagCollection = new ResourceTagCollection({
-		allowedTags: ["abc:My/Tag"]
+		allowedTags: ["abc:My/Tag"],
 	});
 	t.throws(() => {
 		tagCollection._validateTag("abc:My/Tag");
 	}, {
 		instanceOf: Error,
-		message: `Invalid Tag "abc:My/Tag": Name part must be alphanumeric and start with a capital letter`
+		message: `Invalid Tag "abc:My/Tag": Name part must be alphanumeric and start with a capital letter`,
 	});
 });
 
 test("_validateValue: Valid values", (t) => {
 	const tagCollection = new ResourceTagCollection({
-		allowedTags: ["abc:MyTag"]
+		allowedTags: ["abc:MyTag"],
 	});
 	tagCollection._validateValue("bla");
 	tagCollection._validateValue("");
@@ -279,50 +279,50 @@ test("_validateValue: Valid values", (t) => {
 
 test("_validateValue: Invalid value of type object", (t) => {
 	const tagCollection = new ResourceTagCollection({
-		allowedTags: ["abc:MyTag"]
+		allowedTags: ["abc:MyTag"],
 	});
 	t.throws(() => {
 		tagCollection._validateValue({foo: "bar"});
 	}, {
 		instanceOf: Error,
-		message: "Invalid Tag Value: Must be of type string, number or boolean but is object"
+		message: "Invalid Tag Value: Must be of type string, number or boolean but is object",
 	});
 });
 
 test("_validateValue: Invalid value undefined", (t) => {
 	const tagCollection = new ResourceTagCollection({
-		allowedTags: ["abc:MyTag"]
+		allowedTags: ["abc:MyTag"],
 	});
 	t.throws(() => {
 		tagCollection._validateValue(undefined);
 	}, {
 		instanceOf: Error,
-		message: "Invalid Tag Value: Must be of type string, number or boolean but is undefined"
+		message: "Invalid Tag Value: Must be of type string, number or boolean but is undefined",
 	});
 });
 
 test("_validateValue: Invalid value null", (t) => {
 	const tagCollection = new ResourceTagCollection({
-		allowedTags: ["abc:MyTag"]
+		allowedTags: ["abc:MyTag"],
 	});
 	t.throws(() => {
 		tagCollection._validateValue(null);
 	}, {
 		instanceOf: Error,
-		message: "Invalid Tag Value: Must be of type string, number or boolean but is object"
+		message: "Invalid Tag Value: Must be of type string, number or boolean but is object",
 	});
 });
 
 test("_getPath: Empty path", (t) => {
 	const tagCollection = new ResourceTagCollection({
-		allowedTags: ["abc:MyTag"]
+		allowedTags: ["abc:MyTag"],
 	});
 	t.throws(() => {
 		tagCollection._getPath({
-			getPath: () => ""
+			getPath: () => "",
 		});
 	}, {
 		instanceOf: Error,
-		message: "Invalid Resource: Resource path must not be empty"
+		message: "Invalid Resource: Resource path must not be empty",
 	});
 });

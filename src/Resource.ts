@@ -63,7 +63,7 @@ class Resource {
 			throw new Error("Unable to create Resource: Missing parameter 'path'");
 		}
 		if (buffer && createStream || buffer && string || string && createStream || buffer && stream ||
-				string && stream || createStream && stream) {
+			string && stream || createStream && stream) {
 			throw new Error("Unable to create Resource: Please set only one content parameter. " +
 				"'buffer', 'string', 'stream' or 'createStream'");
 		}
@@ -73,7 +73,6 @@ class Resource {
 				throw new Error(`Parameter 'sourceMetadata' must be of type "object"`);
 			}
 
-			/* eslint-disable-next-line guard-for-in */
 			for (const metadataKey in sourceMetadata) { // Also check prototype
 				if (!ALLOWED_SOURCE_METADATA_KEYS.includes(metadataKey)) {
 					throw new Error(`Parameter 'sourceMetadata' contains an illegal attribute: ${metadataKey}`);
@@ -115,7 +114,7 @@ class Resource {
 			atime: new Date(),
 			mtime: new Date(),
 			ctime: new Date(),
-			birthtime: new Date()
+			birthtime: new Date(),
 		};
 
 		if (createStream) {
@@ -357,7 +356,7 @@ class Resource {
 		const options = {
 			path: this.#path,
 			statInfo: clone(this.#statInfo),
-			sourceMetadata: clone(this.#sourceMetadata)
+			sourceMetadata: clone(this.#sourceMetadata),
 		};
 
 		if (this.#stream) {

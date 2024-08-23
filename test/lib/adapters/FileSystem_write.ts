@@ -33,12 +33,12 @@ test.beforeEach(async (t) => {
 	t.context.readerWriters = {
 		source: createAdapter({
 			fsBasePath: "./test/fixtures/application.a/webapp",
-			virBasePath: "/app/"
+			virBasePath: "/app/",
 		}),
 		dest: createAdapter({
 			fsBasePath: "./test/tmp/adapters/FileSystemWrite/" + tmpDirName,
-			virBasePath: "/app/"
-		})
+			virBasePath: "/app/",
+		}),
 	};
 });
 
@@ -127,7 +127,7 @@ test("Write with readOnly and drain options set should fail", async (t) => {
 	// Write resource content to another readerWriter
 	await t.throwsAsync(readerWriters.dest.write(resource, {readOnly: true, drain: true}), {
 		message: "Error while writing resource /app/index.html: " +
-			"Do not use options 'drain' and 'readOnly' at the same time."
+		"Do not use options 'drain' and 'readOnly' at the same time.",
 	});
 });
 
