@@ -2,11 +2,18 @@ import {getLogger} from "@ui5/logger";
 const log = getLogger("resources:tracing:total");
 
 import prettyHrtime from "pretty-hrtime";
-const hasOwnProperty = Object.prototype.hasOwnProperty;
-let timeoutId;
+let timeoutId: NodeJS.Timeout;
 let active = false;
 let tracesRunning = 0;
-let traceData;
+type CollectionsType<T> = T & Record<string, T>;
+let traceData: null | {
+	startTime: [number, number];
+	pathCalls: number;
+	globCalls: number;
+	collections: CollectionsType<object>;
+	traceCalls: number;
+	timeDiff?: [number, number];
+};
 
 function init() {
 	traceData = {
@@ -26,7 +33,12 @@ function reset() {
 
 function report() {
 	let report = "";
-	const time = prettyHrtime(traceData.timeDiff);
+
+	if (!traceData) {
+		return;
+	}
+
+	const time = prettyHrtime(traceData.timeDiff!);
 	const colCount = Object.keys(traceData.collections).length;
 
 	report += "==========================\n[=> TRACE SUMMARY:\n";
@@ -41,7 +53,7 @@ function report() {
 	report += `  ${colCount} rl-collections involed:\n`;
 
 	for (const coll in traceData.collections) {
-		if (hasOwnProperty.call(traceData.collections, coll)) {
+		if (Object.prototype.hasOwnProperty.call(traceData.collections, coll)) {
 			report += `      ${traceData.collections[coll].calls}x ${coll}\n`;
 		}
 	}
@@ -57,15 +69,15 @@ function someTraceStarted() {
 		init();
 	}
 	tracesRunning++;
-	traceData.traceCalls++;
+	traceData!.traceCalls++;
 
 	if (timeoutId) {
 		clearTimeout(timeoutId);
 	}
 }
 
-function someTraceEnded() {
-	return new Promise(function (resolve, reject) {
+function someTraceEnded(): Promise<void> {
+	return new Promise(function (resolve) {
 		if (!active) {
 			resolve();
 			return;
@@ -79,7 +91,7 @@ function someTraceEnded() {
 		if (timeoutId) {
 			clearTimeout(timeoutId);
 		}
-		traceData.timeDiff = process.hrtime(traceData.startTime);
+		traceData!.timeDiff = process.hrtime(traceData!.startTime);
 		timeoutId = setTimeout(function () {
 			report();
 			reset();
@@ -92,17 +104,22 @@ function pathCall() {
 	if (!active) {
 		return;
 	}
-	traceData.pathCalls++;
+	if (traceData) {
+		traceData.pathCalls++;
+	}
 }
 
 function globCall() {
 	if (!active) {
 		return;
 	}
-	traceData.globCalls++;
+
+	if (traceData) {
+		traceData.globCalls++;
+	}
 }
 
-function collection(name) {
+function collection(name: string) {
 	if (!active) {
 		return;
 	}

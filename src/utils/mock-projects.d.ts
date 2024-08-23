@@ -7,3 +7,12 @@ declare module "@ui5/project/specifications/Project" {
 		getName: () => string;
 	}
 }
+
+declare module "@ui5/logger" {
+	interface logger {
+		silly(x: string): void
+		isLevelEnabled(x:string): boolean
+	}
+
+	export function getLogger(x: string): logger
+}
