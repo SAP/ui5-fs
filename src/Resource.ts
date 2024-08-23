@@ -1,10 +1,42 @@
 import stream from "node:stream";
 import clone from "clone";
 import posixPath from "node:path/posix";
+import {Buffer} from "node:buffer";
+import type {Stats} from "node:fs";
+import type {Project} from "@ui5/project/specifications/Project";
+import {isString} from "./utils/tsUtils.js";
 
 const fnTrue = () => true;
 const fnFalse = () => false;
-const ALLOWED_SOURCE_METADATA_KEYS = ["adapter", "fsPath", "contentModified"];
+
+enum ALLOWED_SOURCE_METADATA_KEYS {
+	ADAPTER = "adapter",
+	FS_PATH = "fsPath",
+	CONTENT_MODIFIED = "contentModified",
+};
+
+/**
+ * Function for dynamic creation of content streams
+ *
+ * @public
+ * @callback @ui5/fs/Resource~createStream
+ * @returns {stream.Readable} A readable stream of a resources content
+ */
+type Resource_CreateReadableStream = () => stream.Readable;
+
+type Resource_sourceMetadata = Partial<Record<ALLOWED_SOURCE_METADATA_KEYS, string | boolean>>;
+
+interface Resource_Options {
+	path: string;
+	statInfo: Stats;
+	buffer?: Buffer;
+	string?: string;
+	createStream?: Resource_CreateReadableStream;
+	stream?: stream.Readable;
+	project?: Project; sourceMetadata: Resource_sourceMetadata;
+};
+
+interface Tree {[x: string]: object | Tree};
 
 /**
  * Resource. UI5 Tooling specific representation of a file's content and metadata
@@ -15,26 +47,18 @@ const ALLOWED_SOURCE_METADATA_KEYS = ["adapter", "fsPath", "contentModified"];
  */
 class Resource {
 	#project;
-	#buffer;
-	#buffering;
-	#collections;
-	#contentDrained;
-	#createStream;
-	#name;
-	#path;
-	#sourceMetadata;
-	#statInfo;
-	#stream;
-	#streamDrained;
-	#isModified;
-
-	/**
-	* Function for dynamic creation of content streams
-	*
-	* @public
-	* @callback @ui5/fs/Resource~createStream
-	* @returns {stream.Readable} A readable stream of a resources content
-	*/
+	#buffer: Buffer | null | undefined;
+	#buffering: Promise<Buffer> | null | undefined;
+	#collections: string[];
+	#contentDrained: boolean | undefined;
+	#createStream: Resource_CreateReadableStream | null | undefined;
+	#name!: string;
+	#path!: string;
+	#sourceMetadata: Resource_sourceMetadata;
+	#statInfo: Stats;
+	#stream: stream.Readable | null | undefined;
+	#streamDrained: boolean | undefined;
+	#isModified: boolean;
 
 	/**
 	 *
@@ -58,12 +82,13 @@ class Resource {
 	 * 	Some information may be set by an adapter to store information for later retrieval. Also keeps track of whether
 	 *  a resource content has been modified since it has been read from a source
 	 */
-	constructor({path, statInfo, buffer, string, createStream, stream, project, sourceMetadata}) {
+	constructor({path, statInfo, buffer, string, createStream, stream, project, sourceMetadata}: Resource_Options
+	) {
 		if (!path) {
 			throw new Error("Unable to create Resource: Missing parameter 'path'");
 		}
-		if (buffer && createStream || buffer && string || string && createStream || buffer && stream ||
-			string && stream || createStream && stream) {
+		if ((buffer && createStream) || (buffer && string) || (string && createStream) || (buffer && stream) ||
+			(string && stream) || (createStream && stream)) {
 			throw new Error("Unable to create Resource: Please set only one content parameter. " +
 				"'buffer', 'string', 'stream' or 'createStream'");
 		}
@@ -74,13 +99,8 @@ class Resource {
 			}
 
 			for (const metadataKey in sourceMetadata) { // Also check prototype
-				if (!ALLOWED_SOURCE_METADATA_KEYS.includes(metadataKey)) {
+				if (!(metadataKey in ALLOWED_SOURCE_METADATA_KEYS)) {
 					throw new Error(`Parameter 'sourceMetadata' contains an illegal attribute: ${metadataKey}`);
-				}
-				if (!["string", "boolean"].includes(typeof sourceMetadata[metadataKey])) {
-					throw new Error(
-						`Attribute '${metadataKey}' of parameter 'sourceMetadata' ` +
-						`must be of type "string" or "boolean"`);
 				}
 			}
 		}
@@ -124,7 +144,7 @@ class Resource {
 		} else if (buffer) {
 			// Use private setter, not to accidentally set any modified flags
 			this.#setBuffer(buffer);
-		} else if (typeof string === "string" || string instanceof String) {
+		} else if (isString(string)) {
 			// Use private setter, not to accidentally set any modified flags
 			this.#setBuffer(Buffer.from(string, "utf8"));
 		}
@@ -139,7 +159,7 @@ class Resource {
 	 * @public
 	 * @returns {Promise<Buffer>} Promise resolving with a buffer of the resource content.
 	 */
-	async getBuffer() {
+	async getBuffer(): Promise<Buffer> {
 		if (this.#contentDrained) {
 			throw new Error(`Content of Resource ${this.#path} has been drained. ` +
 				"This might be caused by requesting resource content after a content stream has been " +
@@ -160,13 +180,13 @@ class Resource {
 	 * @public
 	 * @param {Buffer} buffer Buffer instance
 	 */
-	setBuffer(buffer) {
+	setBuffer(buffer: Buffer) {
 		this.#sourceMetadata.contentModified = true;
 		this.#isModified = true;
 		this.#setBuffer(buffer);
 	}
 
-	#setBuffer(buffer) {
+	#setBuffer(buffer: Buffer) {
 		this.#createStream = null;
 		// if (this.#stream) { // TODO this may cause strange issues
 		// 	this.#stream.destroy();
@@ -183,7 +203,7 @@ class Resource {
 	 * @public
 	 * @returns {Promise<string>} Promise resolving with the resource content.
 	 */
-	getString() {
+	getString(): Promise<string> {
 		if (this.#contentDrained) {
 			return Promise.reject(new Error(`Content of Resource ${this.#path} has been drained. ` +
 				"This might be caused by requesting resource content after a content stream has been " +
@@ -198,7 +218,7 @@ class Resource {
 	 * @public
 	 * @param {string} string Resource content
 	 */
-	setString(string) {
+	setString(string: string) {
 		this.setBuffer(Buffer.from(string, "utf8"));
 	}
 
@@ -213,7 +233,7 @@ class Resource {
 	 * @public
 	 * @returns {stream.Readable} Readable stream for the resource content.
 	 */
-	getStream() {
+	getStream(): stream.Readable {
 		if (this.#contentDrained) {
 			throw new Error(`Content of Resource ${this.#path} has been drained. ` +
 				"This might be caused by requesting resource content after a content stream has been " +
@@ -249,7 +269,7 @@ class Resource {
 	 * @param {stream.Readable|@ui5/fs/Resource~createStream} stream Readable stream of the resource content or
 	 														callback for dynamic creation of a readable stream
 	 */
-	setStream(stream) {
+	setStream(stream: stream.Readable | Resource_CreateReadableStream) {
 		this.#isModified = true;
 		this.#sourceMetadata.contentModified = true;
 
@@ -274,8 +294,8 @@ class Resource {
 	 * @public
 	 * @returns {string} Virtual path of the resource
 	 */
-	getPath() {
-		return this.#path;
+	getPath(): string {
+		return this.#path ?? "";
 	}
 
 	/**
@@ -284,7 +304,7 @@ class Resource {
 	 * @public
 	 * @param {string} path Absolute virtual path of the resource
 	 */
-	setPath(path) {
+	setPath(path: string) {
 		path = posixPath.normalize(path);
 		if (!posixPath.isAbsolute(path)) {
 			throw new Error(`Unable to set resource path: Path must be absolute: ${path}`);
@@ -299,7 +319,7 @@ class Resource {
 	 * @public
 	 * @returns {string} Name of the resource
 	 */
-	getName() {
+	getName(): string {
 		return this.#name;
 	}
 
@@ -313,7 +333,7 @@ class Resource {
 	 * @returns {fs.Stats|object} Instance of [fs.Stats]{@link https://nodejs.org/api/fs.html#fs_class_fs_stats}
 	 *								or similar object
 	 */
-	getStatInfo() {
+	getStatInfo(): Stats {
 		return this.#statInfo;
 	}
 
@@ -323,7 +343,7 @@ class Resource {
 	 * @see {TypedArray#byteLength}
 	 * @returns {Promise<number>} size in bytes, <code>0</code> if there is no content yet
 	 */
-	async getSize() {
+	async getSize(): Promise<number> {
 		// if resource does not have any content it should have 0 bytes
 		if (!this.#buffer && !this.#createStream && !this.#stream) {
 			return 0;
@@ -337,7 +357,7 @@ class Resource {
 	 *
 	 * @param {string} name Resource collection name
 	 */
-	pushCollection(name) {
+	pushCollection(name: string) {
 		this.#collections.push(name);
 	}
 
@@ -347,13 +367,13 @@ class Resource {
 	 * @public
 	 * @returns {Promise<@ui5/fs/Resource>} Promise resolving with the clone
 	 */
-	async clone() {
+	async clone(): Promise<Resource> {
 		const options = await this.#getCloneOptions();
 		return new Resource(options);
 	}
 
-	async #getCloneOptions() {
-		const options = {
+	async #getCloneOptions(): Promise<Resource_Options> {
+		const options: Resource_Options = {
 			path: this.#path,
 			statInfo: clone(this.#statInfo),
 			sourceMetadata: clone(this.#sourceMetadata),
@@ -381,9 +401,9 @@ class Resource {
 	 * return a Specification Version-compatible Project interface.
 	 *
 	 * @public
-	 * @returns {@ui5/project/specifications/Project} Project this resource is associated with
+	 * @returns {@ui5/project/specifications/Project|undefined} Project this resource is associated with
 	 */
-	getProject() {
+	getProject(): Project | undefined {
 		return this.#project;
 	}
 
@@ -393,10 +413,10 @@ class Resource {
 	 * @public
 	 * @param {@ui5/project/specifications/Project} project Project this resource is associated with
 	 */
-	setProject(project) {
+	setProject(project: Project) {
 		if (this.#project) {
 			throw new Error(`Unable to assign project ${project.getName()} to resource ${this.#path}: ` +
-				`Resource is already associated to project ${this.#project}`);
+				`Resource is already associated to project ${this.#project.getName()}`);
 		}
 		this.#project = project;
 	}
@@ -407,7 +427,7 @@ class Resource {
 	 * @public
 	 * @returns {boolean} True if the resource is associated with a project
 	 */
-	hasProject() {
+	hasProject(): boolean {
 		return !!this.#project;
 	}
 
@@ -417,7 +437,7 @@ class Resource {
 	 * @public
 	 * @returns {boolean} True if the resource's content has been changed
 	 */
-	isModified() {
+	isModified(): boolean {
 		return this.#isModified;
 	}
 
@@ -426,13 +446,13 @@ class Resource {
 	 *
 	 * @returns {object} Trace tree
 	 */
-	getPathTree() {
-		const tree = Object.create(null);
+	getPathTree(): Tree {
+		const tree = Object.create(null) as Tree;
 
-		let pointer = tree[this.#path] = Object.create(null);
+		let pointer = tree[this.#path] = Object.create(null) as Tree;
 
 		for (let i = this.#collections.length - 1; i >= 0; i--) {
-			pointer = pointer[this.#collections[i]] = Object.create(null);
+			pointer = pointer[this.#collections[i]] = Object.create(null) as Tree;
 		}
 
 		return tree;
@@ -444,7 +464,7 @@ class Resource {
 	 *
 	 * @returns {object}
 	 */
-	getSourceMetadata() {
+	getSourceMetadata(): Resource_sourceMetadata {
 		return this.#sourceMetadata;
 	}
 
@@ -454,7 +474,7 @@ class Resource {
 	 * @private
 	 * @returns {stream.Readable} Readable stream
 	 */
-	#getStream() {
+	#getStream(): stream.Readable {
 		if (this.#streamDrained) {
 			throw new Error(`Content stream of Resource ${this.#path} is flagged as drained.`);
 		}
@@ -462,7 +482,7 @@ class Resource {
 			return this.#createStream();
 		}
 		this.#streamDrained = true;
-		return this.#stream;
+		return this.#stream!;
 	}
 
 	/**
@@ -471,14 +491,15 @@ class Resource {
 	 * @private
 	 * @returns {Promise<Buffer>} Promise resolving with buffer.
 	 */
-	#getBufferFromStream() {
+	#getBufferFromStream(): Promise<Buffer> {
 		if (this.#buffering) { // Prevent simultaneous buffering, causing unexpected access to drained stream
 			return this.#buffering;
 		}
 		return this.#buffering = new Promise((resolve, reject) => {
 			const contentStream = this.#getStream();
-			const buffers = [];
-			contentStream.on("data", (data) => {
+			const buffers: Buffer[] = [];
+
+			contentStream.on("data", (data: Buffer) => {
 				buffers.push(data);
 			});
 			contentStream.on("error", (err) => {
