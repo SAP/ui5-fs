@@ -80,7 +80,7 @@ class Resource {
 	#name!: string;
 	#path!: string;
 	#sourceMetadata: Resource_sourceMetadata;
-	#statInfo: Stats;
+	#statInfo: Partial<Stats>;
 	#stream: stream.Readable | null | undefined;
 	#streamDrained: boolean | undefined;
 	#isModified: boolean;
@@ -358,7 +358,7 @@ class Resource {
 	 * @returns {fs.Stats|object} Instance of [fs.Stats]{@link https://nodejs.org/api/fs.html#fs_class_fs_stats}
 	 *								or similar object
 	 */
-	getStatInfo(): Stats {
+	getStatInfo(): Partial<Stats> {
 		return this.#statInfo;
 	}
 
