@@ -128,6 +128,7 @@
 		"@istanbuljs/esm-loader-hook": "^0.2.0",
 		"@istanbuljs/nyc-config-typescript": "^1.0.2",
 		"@stylistic/eslint-plugin": "^2.6.4",
+		"@types/clone": "^2.1.4",
 		"@types/micromatch": "^4.0.9",
 		"@types/node": "^20.11.0",
 		"@types/pretty-hrtime": "^1.0.3",
