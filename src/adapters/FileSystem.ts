@@ -2,9 +2,7 @@ import {getLogger} from "@ui5/logger";
 const log = getLogger("resources:adapters:FileSystem");
 import path from "node:path";
 import {promisify} from "node:util";
-// import fs from "graceful-fs";
-// TODO: Migrate to "graceful-fs"
-import fs from "node:fs";
+import fs from "graceful-fs";
 const copyFile = promisify(fs.copyFile);
 const chmod = promisify(fs.chmod);
 const mkdir = promisify(fs.mkdir);
