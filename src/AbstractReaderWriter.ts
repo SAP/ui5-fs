@@ -17,7 +17,7 @@ class AbstractReaderWriter extends AbstractReader {
 	 * @public
 	 * @param {string} name Name of the reader/writer. Typically used for tracing purposes
 	 */
-	constructor(name: string | undefined) {
+	constructor(name?: string) {
 		if (new.target === AbstractReaderWriter) {
 			throw new TypeError("Class 'AbstractReaderWriter' is abstract");
 		}

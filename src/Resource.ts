@@ -26,17 +26,38 @@ type Resource_CreateReadableStream = () => stream.Readable;
 
 type Resource_sourceMetadata = Partial<Record<ALLOWED_SOURCE_METADATA_KEYS, string | boolean>>;
 
-interface Resource_Options {
+// TODO: Validate these options.
+// Some might be required while others can be optional.
+// Different combinations can be ok.
+export interface Resource_Options {
 	path: string;
-	statInfo: Stats;
+	// It could be a real Stats, but also a Stats like object
+	statInfo: Partial<Stats>;
 	buffer?: Buffer;
 	string?: string;
 	createStream?: Resource_CreateReadableStream;
 	stream?: stream.Readable;
-	project?: Project; sourceMetadata: Resource_sourceMetadata;
+	project?: Project;
+	sourceMetadata?: Resource_sourceMetadata;
+	source?: {
+		adapter?: "Abstract";
+	};
 };
 
 interface Tree {[x: string]: object | Tree};
+
+export interface LegacyResource {
+	_path: string;
+	// It could be a real Stats, but also a Stats like object
+	_statInfo?: Partial<Stats>;
+	_source?: {
+		adapter?: "Abstract";
+	};
+	_createStream?: Resource_CreateReadableStream;
+	_stream?: stream.Readable;
+	_buffer?: Buffer;
+	_getBufferFromStream: () => Promise<Buffer>;
+}
 
 /**
  * Resource. UI5 Tooling specific representation of a file's content and metadata

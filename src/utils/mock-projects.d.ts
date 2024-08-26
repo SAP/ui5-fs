@@ -11,6 +11,7 @@ declare module "@ui5/project/specifications/Project" {
 declare module "@ui5/logger" {
 	interface logger {
 		silly(x: string): void;
+		verbose(x: string): void;
 		isLevelEnabled(x: string): boolean;
 	}
 

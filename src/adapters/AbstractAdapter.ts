@@ -4,7 +4,10 @@ const log = getLogger("resources:adapters:AbstractAdapter");
 import {minimatch} from "minimatch";
 import micromatch from "micromatch";
 import AbstractReaderWriter from "../AbstractReaderWriter.js";
-import Resource from "../Resource.js";
+import Resource, {Resource_Options, LegacyResource} from "../Resource.js";
+import type {Project} from "@ui5/project/specifications/Project";
+import Trace from "../tracing/Trace.js";
+import {isLegacyResource} from "../utils/tsUtils.js";
 
 /**
  * Abstract Resource Adapter
@@ -16,6 +19,12 @@ import Resource from "../Resource.js";
  * @extends @ui5/fs/AbstractReaderWriter
  */
 class AbstractAdapter extends AbstractReaderWriter {
+	_virBasePath: string;
+	_virBaseDir: string;
+	_excludes: string[];
+	_excludesNegated: string[];
+	_project: Project;
+
 	/**
 	 * The constructor
 	 *
@@ -26,7 +35,8 @@ class AbstractAdapter extends AbstractReaderWriter {
 	 * @param {string[]} [parameters.excludes] List of glob patterns to exclude
 	 * @param {object} [parameters.project] Experimental, internal parameter. Do not use
 	 */
-	constructor({virBasePath, excludes = [], project}) {
+	constructor({virBasePath, excludes = [], project}:
+		{virBasePath: string; excludes: string[]; project: Project}) {
 		if (new.target === AbstractAdapter) {
 			throw new TypeError("Class 'AbstractAdapter' is abstract");
 		}
@@ -61,7 +71,7 @@ class AbstractAdapter extends AbstractReaderWriter {
 	 * @param {@ui5/fs/tracing.Trace} trace Trace instance
 	 * @returns {Promise<@ui5/fs/Resource[]>} Promise resolving to list of resources
 	 */
-	async _byGlob(virPattern, options = {nodir: true}, trace) {
+	async _byGlob(virPattern: string | string[], options = {nodir: true}, trace: Trace): Promise<Resource[]> {
 		const excludes = this._excludesNegated;
 
 		if (!(virPattern instanceof Array)) {
@@ -70,8 +80,8 @@ class AbstractAdapter extends AbstractReaderWriter {
 
 		// Append static exclude patterns
 		virPattern = Array.prototype.concat.apply(virPattern, excludes);
-		let patterns = virPattern.map(this._normalizePattern, this);
-		patterns = Array.prototype.concat.apply([], patterns);
+		const normalizedPatterns = virPattern.map(this._normalizePattern.bind(this));
+		const patterns = Array.prototype.concat.apply([], normalizedPatterns) as string[];
 		if (patterns.length === 0) {
 			return [];
 		}
@@ -103,10 +113,10 @@ class AbstractAdapter extends AbstractReaderWriter {
 	/**
 	 * Validate if virtual path should be excluded
 	 *
-	 * @param {string} virPath Virtual Path
+	 * @param {string[]} virPath Virtual Path
 	 * @returns {boolean} True if path is excluded, otherwise false
 	 */
-	_isPathExcluded(virPath) {
+	_isPathExcluded(virPath: string[]) {
 		return micromatch(virPath, this._excludes).length > 0;
 	}
 
@@ -118,7 +128,7 @@ class AbstractAdapter extends AbstractReaderWriter {
 	 * @param {string} virPath Virtual Path
 	 * @returns {boolean} True if path should be handled
 	 */
-	_isPathHandled(virPath) {
+	_isPathHandled(virPath: string) {
 		// Check whether path starts with base path, or equals base directory
 		return virPath.startsWith(this._virBasePath) || virPath === this._virBaseDir;
 	}
@@ -130,22 +140,21 @@ class AbstractAdapter extends AbstractReaderWriter {
 	 * @param {string} virPattern glob pattern for virtual directory structure
 	 * @returns {string[]} A list of normalized glob patterns
 	 */
-	_normalizePattern(virPattern) {
-		const that = this;
+	_normalizePattern(virPattern: string) {
 		const mm = new minimatch.Minimatch(virPattern);
 
 		const basePathParts = this._virBaseDir.split("/");
 
-		function matchSubset(subset) {
+		const matchSubset = (subset: (string | typeof minimatch.GLOBSTAR | RegExp | undefined)[]) => {
 			let i;
 			for (i = 0; i < basePathParts.length; i++) {
 				const globPart = subset[i];
 				if (globPart === undefined) {
 					log.verbose("Ran out of glob parts to match (this should not happen):");
-					if (that._project) { // project is optional
-						log.verbose(`Project: ${that._project.getName()}`);
+					if (this._project) { // project is optional
+						log.verbose(`Project: ${this._project.getName()}`);
 					}
-					log.verbose(`Virtual base path: ${that._virBaseDir}`);
+					log.verbose(`Virtual base path: ${this._virBaseDir}`);
 					log.verbose(`Pattern to match: ${virPattern}`);
 					log.verbose(`Current subset (tried index ${i}):`);
 					log.verbose(subset);
@@ -172,9 +181,9 @@ class AbstractAdapter extends AbstractReaderWriter {
 				return {rootMatch: true};
 			}
 			return {idx: i};
-		}
+		};
 
-		const resultGlobs = [];
+		const resultGlobs: string[] = [];
 		for (let i = 0; i < mm.set.length; i++) {
 			const match = matchSubset(mm.set[i]);
 			if (match) {
@@ -198,32 +207,32 @@ class AbstractAdapter extends AbstractReaderWriter {
 		return resultGlobs;
 	}
 
-	_createResource(parameters) {
+	_createResource(parameters: Resource_Options) {
 		if (this._project) {
 			parameters.project = this._project;
 		}
 		return new Resource(parameters);
 	}
 
-	_migrateResource(resource) {
+	_migrateResource(resource: LegacyResource | Resource) {
 		// This function only returns a promise if a migration is necessary.
 		// Since this is rarely the case, we therefore reduce the amount of
 		// created Promises by making this differentiation
 
 		// Check if its a fs/Resource v3, function 'hasProject' was
 		// introduced with v3 therefore take it as the indicator
-		if (resource.hasProject) {
+		if (isLegacyResource(resource)) {
 			return resource;
 		}
 		return this._createFromLegacyResource(resource);
 	}
 
-	async _createFromLegacyResource(resource) {
+	async _createFromLegacyResource(resource: LegacyResource) {
 		const options = {
 			path: resource._path,
 			statInfo: resource._statInfo,
 			source: resource._source,
-		};
+		} as Resource_Options;
 
 		if (resource._stream) {
 			options.buffer = await resource._getBufferFromStream();
@@ -235,14 +244,14 @@ class AbstractAdapter extends AbstractReaderWriter {
 		return new Resource(options);
 	}
 
-	_assignProjectToResource(resource) {
+	_assignProjectToResource(resource: Resource) {
 		if (this._project) {
 			// Assign project to resource if necessary
 			if (resource.hasProject()) {
 				if (resource.getProject() !== this._project) {
 					throw new Error(
 						`Unable to write resource associated with project ` +
-						`${resource.getProject().getName()} into adapter of project ${this._project.getName()}: ` +
+						`${resource.getProject()?.getName()} into adapter of project ${this._project.getName()}: ` +
 						resource.getPath());
 				}
 				return;
@@ -252,7 +261,7 @@ class AbstractAdapter extends AbstractReaderWriter {
 		}
 	}
 
-	_resolveVirtualPathToBase(inputVirPath, writeMode = false) {
+	_resolveVirtualPathToBase(inputVirPath: string, writeMode = false) {
 		if (!path.isAbsolute(inputVirPath)) {
 			throw new Error(`Failed to resolve virtual path '${inputVirPath}': Path must be absolute`);
 		}
