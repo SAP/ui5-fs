@@ -113,7 +113,7 @@ class AbstractReader {
 	 * @param {@ui5/fs/tracing.Trace} trace Trace instance
 	 * @returns {Promise<@ui5/fs/Resource[]>} Promise resolving to list of resources
 	 */
-	_runGlob(_pattern: string | string[], _options: object, _trace: Trace): Promise<Resource[]> {
+	_runGlob(_pattern: string | string[], _options: {nodir: boolean}, _trace: Trace): Promise<Resource[]> {
 		throw new Error("Function '_runGlob' is not implemented");
 	}
 
@@ -127,7 +127,7 @@ class AbstractReader {
 	 * @param {@ui5/fs/tracing.Trace} trace Trace instance
 	 * @returns {Promise<@ui5/fs/Resource>} Promise resolving to a single resource
 	 */
-	_byPath(_virPath: string, _options: object, _trace: Trace): Promise<Resource[]> {
+	_byPath(_virPath: string, _options: object, _trace: Trace): Promise<Resource | null> {
 		throw new Error("Function '_byPath' is not implemented");
 	}
 }

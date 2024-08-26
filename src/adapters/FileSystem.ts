@@ -2,14 +2,19 @@ import {getLogger} from "@ui5/logger";
 const log = getLogger("resources:adapters:FileSystem");
 import path from "node:path";
 import {promisify} from "node:util";
-import fs from "graceful-fs";
+// import fs from "graceful-fs";
+// TODO: Migrate to "graceful-fs"
+import fs from "node:fs";
 const copyFile = promisify(fs.copyFile);
 const chmod = promisify(fs.chmod);
 const mkdir = promisify(fs.mkdir);
 const stat = promisify(fs.stat);
-import {globby, isGitIgnored} from "globby";
+import {globby, GlobbyFilterFunction, isGitIgnored} from "globby";
 import {PassThrough} from "node:stream";
 import AbstractAdapter from "./AbstractAdapter.js";
+import type {Project} from "@ui5/project/specifications/Project";
+import Trace from "../tracing/Trace.js";
+import Resource, {LegacyResource, Resource_Options} from "../Resource.js";
 
 const READ_ONLY_MODE = 0o444;
 const ADAPTER_NAME = "FileSystem";
@@ -22,6 +27,10 @@ const ADAPTER_NAME = "FileSystem";
  * @extends @ui5/fs/adapters/AbstractAdapter
  */
 class FileSystem extends AbstractAdapter {
+	_fsBasePath: string;
+	_useGitignore: boolean;
+	_isGitIgnored!: GlobbyFilterFunction;
+
 	/**
 	 * The Constructor.
 	 *
@@ -35,7 +44,9 @@ class FileSystem extends AbstractAdapter {
 	 *   Whether to apply any excludes defined in an optional .gitignore in the given <code>fsBasePath</code> directory
 	 * @param {@ui5/project/specifications/Project} [parameters.project] Project this adapter belongs to (if any)
 	 */
-	constructor({virBasePath, project, fsBasePath, excludes, useGitignore = false}) {
+	constructor({virBasePath, project, fsBasePath, excludes, useGitignore = false}:
+		{virBasePath: string; project: Project; fsBasePath: string; excludes: string[]; useGitignore: boolean}
+	) {
 		super({virBasePath, project, excludes});
 
 		if (!fsBasePath) {
@@ -58,7 +69,7 @@ class FileSystem extends AbstractAdapter {
 	 * @param {@ui5/fs/tracing.Trace} trace Trace instance
 	 * @returns {Promise<@ui5/fs/Resource[]>} Promise resolving to list of resources
 	 */
-	async _runGlob(patterns, options = {nodir: true}, trace) {
+	async _runGlob(patterns: string[], options = {nodir: true}, trace: Trace) {
 		const opt = {
 			cwd: this._fsBasePath,
 			dot: true,
@@ -68,7 +79,7 @@ class FileSystem extends AbstractAdapter {
 		};
 		trace.globCall();
 
-		const promises = [];
+		const promises: Promise<Resource | null>[] = [];
 		if (!opt.onlyFiles && patterns.includes("")) { // Match physical root directory
 			promises.push(new Promise((resolve, reject) => {
 				fs.stat(this._fsBasePath, (err, stat) => {
@@ -112,7 +123,7 @@ class FileSystem extends AbstractAdapter {
 							`the configured virtual base path of the adapter. Base path: '${this._virBasePath}'`);
 						resolve(null);
 					}
-					const fsPath = this._resolveToFileSystem(relPath);
+					const fsPath = this._resolveToFileSystem(relPath ?? "");
 
 					// Workaround for not getting the stat from the glob
 					fs.stat(fsPath, (err, stat) => {
@@ -139,7 +150,7 @@ class FileSystem extends AbstractAdapter {
 		const results = await Promise.all(promises);
 
 		// Flatten results
-		return Array.prototype.concat.apply([], results).filter(($) => $);
+		return Array.prototype.concat.apply([], results).filter(($) => $) as Resource[];
 	}
 
 	/**
@@ -151,7 +162,7 @@ class FileSystem extends AbstractAdapter {
 	 * @param {@ui5/fs/tracing.Trace} trace Trace instance
 	 * @returns {Promise<@ui5/fs/Resource>} Promise resolving to a single resource or null if not found
 	 */
-	async _byPath(virPath, options, trace) {
+	async _byPath(virPath: string, options: {nodir: boolean}, trace: Trace) {
 		const relPath = this._resolveVirtualPathToBase(virPath);
 
 		if (relPath === null) {
@@ -195,7 +206,7 @@ class FileSystem extends AbstractAdapter {
 			if (options.nodir && statInfo.isDirectory()) {
 				return null;
 			}
-			const resourceOptions = {
+			const resourceOptions: Resource_Options = {
 				project: this._project,
 				statInfo,
 				path: virPath,
@@ -240,12 +251,15 @@ class FileSystem extends AbstractAdapter {
 	 *						E.g. the final write of a resource after all processing is finished.
 	 * @returns {Promise<undefined>} Promise resolving once data has been written
 	 */
-	async _write(resource, {drain, readOnly}) {
-		resource = this._migrateResource(resource);
-		if (resource instanceof Promise) {
+	async _write(anyResource: LegacyResource | Resource, {drain, readOnly}: {drain: boolean; readOnly: boolean}) {
+		const potentialResourceP = this._migrateResource(anyResource);
+		let resource: Resource;
+		if (potentialResourceP instanceof Promise) {
 			// Only await if the migrate function returned a promise
 			// Otherwise await would automatically create a Promise, causing unwanted overhead
-			resource = await resource;
+			resource = await potentialResourceP;
+		} else {
+			resource = potentialResourceP;
 		}
 		this._assignProjectToResource(resource);
 		if (drain && readOnly) {
@@ -253,7 +267,7 @@ class FileSystem extends AbstractAdapter {
 				"Do not use options 'drain' and 'readOnly' at the same time.");
 		}
 
-		const relPath = this._resolveVirtualPathToBase(resource.getPath(), true);
+		const relPath = this._resolveVirtualPathToBase(resource.getPath(), true) ?? "";
 		const fsPath = this._resolveToFileSystem(relPath);
 		const dirPath = path.dirname(fsPath);
 
@@ -307,11 +321,11 @@ class FileSystem extends AbstractAdapter {
 			} else {
 				// Transform stream into buffer before writing
 				contentStream = new PassThrough();
-				const buffers = [];
+				const buffers: Buffer[] = [];
 				contentStream.on("error", (err) => {
 					reject(err);
 				});
-				contentStream.on("data", (data) => {
+				contentStream.on("data", (data: Buffer) => {
 					buffers.push(data);
 				});
 				contentStream.on("end", () => {
@@ -321,7 +335,7 @@ class FileSystem extends AbstractAdapter {
 				resource.getStream().pipe(contentStream);
 			}
 
-			const writeOptions = {};
+			const writeOptions: {mode?: number} = {};
 			if (readOnly) {
 				writeOptions.mode = READ_ONLY_MODE;
 			}
@@ -330,8 +344,8 @@ class FileSystem extends AbstractAdapter {
 			write.on("error", (err) => {
 				reject(err);
 			});
-			write.on("close", (ex) => {
-				resolve();
+			write.on("close", () => {
+				resolve(undefined);
 			});
 			contentStream.pipe(write);
 		});
@@ -353,7 +367,7 @@ class FileSystem extends AbstractAdapter {
 		}
 	}
 
-	_resolveToFileSystem(relPath) {
+	_resolveToFileSystem(relPath: string) {
 		const fsPath = path.join(this._fsBasePath, relPath);
 
 		if (!fsPath.startsWith(this._fsBasePath)) {

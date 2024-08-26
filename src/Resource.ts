@@ -24,7 +24,11 @@ enum ALLOWED_SOURCE_METADATA_KEYS {
  */
 type Resource_CreateReadableStream = () => stream.Readable;
 
-type Resource_sourceMetadata = Partial<Record<ALLOWED_SOURCE_METADATA_KEYS, string | boolean>>;
+interface Resource_sourceMetadata {
+	[ALLOWED_SOURCE_METADATA_KEYS.ADAPTER]?: string;
+	[ALLOWED_SOURCE_METADATA_KEYS.FS_PATH]?: string;
+	[ALLOWED_SOURCE_METADATA_KEYS.CONTENT_MODIFIED]?: boolean;
+};
 
 // TODO: Validate these options.
 // Some might be required while others can be optional.
@@ -128,7 +132,7 @@ class Resource {
 
 		this.setPath(path);
 
-		this.#sourceMetadata = sourceMetadata || {};
+		this.#sourceMetadata = sourceMetadata ?? {};
 
 		// This flag indicates whether a resource has changed from its original source.
 		// resource.isModified() is not sufficient, since it only reflects the modification state of the

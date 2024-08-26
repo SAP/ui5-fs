@@ -5,6 +5,7 @@ declare module "@ui5/project/specifications/Project" {
 
 	export interface Project {
 		getName: () => string;
+		getType: () => "project" | "application" | "library";
 	}
 }
 
