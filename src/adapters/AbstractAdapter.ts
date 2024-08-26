@@ -261,7 +261,7 @@ class AbstractAdapter extends AbstractReaderWriter {
 		}
 	}
 
-	_resolveVirtualPathToBase(inputVirPath: string, writeMode = false) {
+	_resolveVirtualPathToBase(inputVirPath: string, writeMode = false): string {
 		if (!path.isAbsolute(inputVirPath)) {
 			throw new Error(`Failed to resolve virtual path '${inputVirPath}': Path must be absolute`);
 		}
