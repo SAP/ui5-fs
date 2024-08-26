@@ -97,7 +97,7 @@ class AbstractReader {
 	 */
 	_byGlob(_virPattern: string | string[],
 		_options: {
-			nodir: boolean
+			nodir: boolean;
 		},
 		_trace: Trace): Promise<Resource[]> {
 		throw new Error("Function '_byGlob' is not implemented");

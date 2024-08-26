@@ -1,5 +1,8 @@
+import AbstractReader from "./AbstractReader.js";
 import AbstractReaderWriter from "./AbstractReaderWriter.js";
 import ReaderCollectionPrioritized from "./ReaderCollectionPrioritized.js";
+import Resource from "./Resource.js";
+import Trace from "./tracing/Trace.js";
 
 /**
  * Wrapper to keep readers and writers together
@@ -10,6 +13,10 @@ import ReaderCollectionPrioritized from "./ReaderCollectionPrioritized.js";
  * @extends @ui5/fs/AbstractReaderWriter
  */
 class DuplexCollection extends AbstractReaderWriter {
+	_reader: AbstractReader;
+	_writer: AbstractReaderWriter;
+	_combo: ReaderCollectionPrioritized;
+
 	/**
 	 * The Constructor.
 	 *
@@ -19,7 +26,7 @@ class DuplexCollection extends AbstractReaderWriter {
 	 *			A ReaderWriter instance which is only used for writing files
 	 * @param {string} [parameters.name=""] The collection name
 	 */
-	constructor({reader, writer, name = ""}) {
+	constructor({reader, writer, name = ""}: {reader: AbstractReader; writer: AbstractReaderWriter; name: string}) {
 		super(name);
 
 		if (!reader) {
@@ -51,7 +58,7 @@ class DuplexCollection extends AbstractReaderWriter {
 	 * @param {@ui5/fs/tracing.Trace} trace Trace instance
 	 * @returns {Promise<@ui5/fs/Resource[]>} Promise resolving with a list of resources
 	 */
-	_byGlob(virPattern, options, trace) {
+	_byGlob(virPattern: string | string[], options: {nodir: boolean}, trace: Trace) {
 		return this._combo._byGlob(virPattern, options, trace);
 	}
 
@@ -65,7 +72,7 @@ class DuplexCollection extends AbstractReaderWriter {
 	 * @returns {Promise<@ui5/fs/Resource|null>}
 	 *   Promise resolving to a single resource or <code>null</code> if no resource is found
 	 */
-	_byPath(virPath, options, trace) {
+	_byPath(virPath: string, options: {nodir: boolean}, trace: Trace) {
 		return this._combo._byPath(virPath, options, trace);
 	}
 
@@ -76,7 +83,7 @@ class DuplexCollection extends AbstractReaderWriter {
 	 * @param {@ui5/fs/Resource} resource The Resource to write
 	 * @returns {Promise<undefined>} Promise resolving once data has been written
 	 */
-	_write(resource) {
+	_write(resource: Resource) {
 		return this._writer.write(resource);
 	}
 }

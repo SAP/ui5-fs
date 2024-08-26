@@ -1,4 +1,6 @@
 import AbstractReader from "./AbstractReader.js";
+import Resource from "./Resource.js";
+import Trace from "./tracing/Trace.js";
 
 /**
  * Prioritized Resource Locator Collection
@@ -9,6 +11,8 @@ import AbstractReader from "./AbstractReader.js";
  * @extends @ui5/fs/AbstractReader
  */
 class ReaderCollectionPrioritized extends AbstractReader {
+	_readers: AbstractReader[];
+
 	/**
 	 * The constructor.
 	 *
@@ -18,7 +22,7 @@ class ReaderCollectionPrioritized extends AbstractReader {
 	 *   Prioritized list of resource readers (tried in the order provided).
 	 *   If none are provided, the collection will never return any results.
 	 */
-	constructor({readers, name}) {
+	constructor({readers, name}: {readers: AbstractReader[]; name: string}) {
 		super(name);
 
 		// Remove any undefined (empty) readers from array
@@ -35,14 +39,16 @@ class ReaderCollectionPrioritized extends AbstractReader {
 	 * @param {@ui5/fs/tracing.Trace} trace Trace instance
 	 * @returns {Promise<@ui5/fs/Resource[]>} Promise resolving to list of resources
 	 */
-	_byGlob(pattern, options, trace) {
+	_byGlob(pattern: string | string[], options: {nodir: boolean}, trace: Trace) {
 		return Promise.all(this._readers.map(function (resourceLocator) {
 			return resourceLocator._byGlob(pattern, options, trace);
 		})).then((result) => {
-			const files = Object.create(null);
+			const files = Object.create(null) as Record<string, boolean>;
 			const resources = [];
 			// Prefer files found in preceding resource locators
+			// eslint-disable-next-line @typescript-eslint/prefer-for-of
 			for (let i = 0; i < result.length; i++) {
+				// eslint-disable-next-line @typescript-eslint/prefer-for-of
 				for (let j = 0; j < result[i].length; j++) {
 					const resource = result[i][j];
 					const path = resource.getPath();
@@ -53,7 +59,7 @@ class ReaderCollectionPrioritized extends AbstractReader {
 				}
 			}
 
-			trace.collection(this._name);
+			trace.collection(this._name!);
 			return resources;
 		});
 	}
@@ -68,21 +74,23 @@ class ReaderCollectionPrioritized extends AbstractReader {
 	 * @returns {Promise<@ui5/fs/Resource|null>}
 	 *   Promise resolving to a single resource or <code>null</code> if no resource is found
 	 */
-	_byPath(virPath, options, trace) {
-		const that = this;
-		const byPath = (i) => {
+	_byPath(virPath: string, options: {nodir: boolean}, trace: Trace) {
+		// const that = this;
+		const byPath = (i: number) => {
 			if (i > this._readers.length - 1) {
-				return null;
+				return Promise.resolve(null);
 			}
-			return this._readers[i]._byPath(virPath, options, trace).then((resource) => {
-				if (resource) {
-					resource.pushCollection(that._name);
-					return resource;
-				} else {
-					return byPath(++i);
-				}
-			});
+			return this._readers[i]._byPath(virPath, options, trace)
+				.then((resource: Resource | null): Resource | Promise<Resource | null> => {
+					if (resource) {
+						resource.pushCollection(this._name!);
+						return resource;
+					} else {
+						return byPath(++i);
+					}
+				});
 		};
+
 		return byPath(0);
 	}
 }
