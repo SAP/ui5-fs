@@ -234,7 +234,7 @@ class AbstractAdapter extends AbstractReaderWriter {
 			source: resource._source,
 		} as Resource_Options;
 
-		if (resource._stream) {
+		if (resource._stream && resource._getBufferFromStream) {
 			options.buffer = await resource._getBufferFromStream();
 		} else if (resource._createStream) {
 			options.createStream = resource._createStream;
