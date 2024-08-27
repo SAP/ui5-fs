@@ -145,7 +145,8 @@ class Resource implements ResourceInterface {
 			}
 
 			for (const metadataKey in sourceMetadata) { // Also check prototype
-				if (!Object.values(ALLOWED_SOURCE_METADATA_KEYS).includes(metadataKey)) {
+				if (!Object.values(ALLOWED_SOURCE_METADATA_KEYS)
+					.includes(metadataKey as ALLOWED_SOURCE_METADATA_KEYS)) {
 					throw new Error(`Parameter 'sourceMetadata' contains an illegal attribute: ${metadataKey}`);
 				}
 			}
