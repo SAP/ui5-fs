@@ -144,12 +144,16 @@ class Resource implements ResourceInterface {
 				throw new Error(`Parameter 'sourceMetadata' must be of type "object"`);
 			}
 
+			// TODO: TS Those checks are completely redundant, but some tests
+			// and maybe runtime code would rely on them. A major refactoring 
+			// would be needed
 			for (const metadataKey in sourceMetadata) { // Also check prototype
 				if (!Object.values(ALLOWED_SOURCE_METADATA_KEYS)
 					.includes(metadataKey as ALLOWED_SOURCE_METADATA_KEYS)) {
 					throw new Error(`Parameter 'sourceMetadata' contains an illegal attribute: ${metadataKey}`);
 				}
-				if (!["string", "boolean"].includes(typeof sourceMetadata[metadataKey])) {
+				if (!["string", "boolean"]
+					.includes(typeof sourceMetadata[metadataKey as ALLOWED_SOURCE_METADATA_KEYS])) {
 					throw new Error(
 						`Attribute '${metadataKey}' of parameter 'sourceMetadata' ` +
 						`must be of type "string" or "boolean"`);
