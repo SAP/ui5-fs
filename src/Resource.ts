@@ -149,6 +149,11 @@ class Resource implements ResourceInterface {
 					.includes(metadataKey as ALLOWED_SOURCE_METADATA_KEYS)) {
 					throw new Error(`Parameter 'sourceMetadata' contains an illegal attribute: ${metadataKey}`);
 				}
+				if (!["string", "boolean"].includes(typeof sourceMetadata[metadataKey])) {
+					throw new Error(
+						`Attribute '${metadataKey}' of parameter 'sourceMetadata' ` +
+						`must be of type "string" or "boolean"`);
+				}
 			}
 		}
 

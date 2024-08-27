@@ -1,7 +1,7 @@
 import Resource from "../Resource.js";
 
 export function isString(testString: unknown): testString is string {
-	return testString instanceof String;
+	return testString instanceof String || String(testString) === testString;
 }
 
 export function isLegacyResource(resource: unknown): resource is Resource {

@@ -651,7 +651,7 @@ test("Resource: reassign with setProject", (t) => {
 	const project = {getName: () => "New Mock Project"};
 	const error = t.throws(() => resource.setProject(project));
 	t.is(error.message, "Unable to assign project New Mock Project to resource /my/path/to/resource: " +
-	"Resource is already associated to project " + project);
+	"Resource is already associated to project Mock Project");
 });
 
 test("Resource: constructor with stream", async (t) => {
