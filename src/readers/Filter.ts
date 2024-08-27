@@ -1,4 +1,6 @@
 import AbstractReader from "../AbstractReader.js";
+import Resource from "../Resource.js";
+import Trace from "../tracing/Trace.js";
 
 /**
  * A reader that allows dynamic filtering of resources passed through it
@@ -9,6 +11,9 @@ import AbstractReader from "../AbstractReader.js";
  * @extends @ui5/fs/AbstractReader
  */
 class Filter extends AbstractReader {
+	_reader: AbstractReader;
+	_callback: (resource: Resource) => boolean;
+
 	/**
 	* Filter callback
 	*
@@ -21,13 +26,13 @@ class Filter extends AbstractReader {
 	/**
 	 * Constructor
 	 *
- 	 * @public
+	 * @public
 	 * @param {object} parameters Parameters
 	 * @param {@ui5/fs/AbstractReader} parameters.reader The resource reader or collection to wrap
 	 * @param {@ui5/fs/readers/Filter~callback} parameters.callback
 	 * 				Filter function. Will be called for every resource read through this reader.
 	 */
-	constructor({reader, callback}) {
+	constructor({reader, callback}: {reader: AbstractReader; callback: (resource: Resource) => boolean}) {
 		super();
 		if (!reader) {
 			throw new Error(`Missing parameter "reader"`);
@@ -49,7 +54,7 @@ class Filter extends AbstractReader {
 	 * @param {@ui5/fs/tracing/Trace} trace Trace instance
 	 * @returns {Promise<@ui5/fs/Resource[]>} Promise resolving to list of resources
 	 */
-	async _byGlob(pattern, options, trace) {
+	async _byGlob(pattern: string | string[], options: {nodir: boolean}, trace: Trace) {
 		const result = await this._reader._byGlob(pattern, options, trace);
 		return result.filter(this._callback);
 	}
@@ -63,7 +68,7 @@ class Filter extends AbstractReader {
 	 * @param {@ui5/fs/tracing/Trace} trace Trace instance
 	 * @returns {Promise<@ui5/fs/Resource>} Promise resolving to a single resource
 	 */
-	async _byPath(virPath, options, trace) {
+	async _byPath(virPath: string, options: {nodir: boolean}, trace: Trace): Promise<Resource | null> {
 		const result = await this._reader._byPath(virPath, options, trace);
 		if (result && !this._callback(result)) {
 			return null;
