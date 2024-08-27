@@ -1,6 +1,14 @@
 const tagNamespaceRegExp = /^[a-z][a-z0-9]+$/; // part before the colon
 const tagNameRegExp = /^[A-Z][A-Za-z0-9]+$/; // part after the colon
+import Resource from "./Resource.js";
 import ResourceFacade from "./ResourceFacade.js";
+
+interface PathTagsInterface {
+	[key: string]: string | number | boolean | undefined | PathTagsInterface;
+};
+export function isPathTagsInterface(elem: unknown): elem is PathTagsInterface {
+	return typeof elem === "object";
+}
 
 /**
  * A ResourceTagCollection
@@ -10,7 +18,13 @@ import ResourceFacade from "./ResourceFacade.js";
  * @alias @ui5/fs/internal/ResourceTagCollection
  */
 class ResourceTagCollection {
-	constructor({allowedTags = [], allowedNamespaces = [], tags}) {
+	_allowedTags: string[];
+	_allowedNamespaces: string[];
+	_pathTags: PathTagsInterface;
+	_allowedNamespacesRegExp: null | RegExp;
+
+	constructor({allowedTags = [], allowedNamespaces = [], tags}:
+		{allowedTags: string[]; allowedNamespaces: string[]; tags: PathTagsInterface}) {
 		this._allowedTags = allowedTags; // Allowed tags are validated during use
 		this._allowedNamespaces = allowedNamespaces;
 
@@ -32,32 +46,38 @@ class ResourceTagCollection {
 		this._pathTags = tags || Object.create(null);
 	}
 
-	setTag(resourcePath, tag, value = true) {
+	setTag(resourcePath: string, tag: string, value: string | number | boolean = true) {
 		resourcePath = this._getPath(resourcePath);
 		this._validateTag(tag);
 		this._validateValue(value);
 
 		if (!this._pathTags[resourcePath]) {
-			this._pathTags[resourcePath] = Object.create(null);
+			this._pathTags[resourcePath] = Object.create(null) as PathTagsInterface;
 		}
-		this._pathTags[resourcePath][tag] = value;
-	}
 
-	clearTag(resourcePath, tag) {
-		resourcePath = this._getPath(resourcePath);
-		this._validateTag(tag);
-
-		if (this._pathTags[resourcePath]) {
-			this._pathTags[resourcePath][tag] = undefined;
+		const pointer = this._pathTags[resourcePath];
+		if (isPathTagsInterface(pointer)) {
+			pointer[tag] = value;
 		}
 	}
 
-	getTag(resourcePath, tag) {
+	clearTag(resourcePath: string, tag: string) {
 		resourcePath = this._getPath(resourcePath);
 		this._validateTag(tag);
 
-		if (this._pathTags[resourcePath]) {
-			return this._pathTags[resourcePath][tag];
+		const pointer = this._pathTags[resourcePath];
+		if (isPathTagsInterface(pointer)) {
+			pointer[tag] = undefined;
+		}
+	}
+
+	getTag(resourcePath: string, tag: string): string | number | boolean | undefined | PathTagsInterface {
+		resourcePath = this._getPath(resourcePath);
+		this._validateTag(tag);
+
+		const pointer = this._pathTags[resourcePath];
+		if (isPathTagsInterface(pointer)) {
+			return pointer[tag];
 		}
 	}
 
@@ -65,14 +85,14 @@ class ResourceTagCollection {
 		return this._pathTags;
 	}
 
-	acceptsTag(tag) {
+	acceptsTag(tag: string) {
 		if (this._allowedTags.includes(tag) || this._allowedNamespacesRegExp?.test(tag)) {
 			return true;
 		}
 		return false;
 	}
 
-	_getPath(resourcePath) {
+	_getPath(resourcePath: ResourceFacade | Resource | string): string {
 		if (typeof resourcePath !== "string") {
 			if (resourcePath instanceof ResourceFacade) {
 				resourcePath = resourcePath.getConcealedResource().getPath();
@@ -86,7 +106,7 @@ class ResourceTagCollection {
 		return resourcePath;
 	}
 
-	_validateTag(tag) {
+	_validateTag(tag: string) {
 		if (!tag.includes(":")) {
 			throw new Error(`Invalid Tag "${tag}": Colon required after namespace`);
 		}
@@ -112,7 +132,7 @@ class ResourceTagCollection {
 		}
 	}
 
-	_validateValue(value) {
+	_validateValue(value: string | number | boolean) {
 		const type = typeof value;
 		if (!["string", "number", "boolean"].includes(type)) {
 			throw new Error(
