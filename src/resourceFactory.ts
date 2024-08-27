@@ -7,7 +7,7 @@ import ReaderCollection from "./ReaderCollection.js";
 import ReaderCollectionPrioritized from "./ReaderCollectionPrioritized.js";
 import Resource, {Resource_Options} from "./Resource.js";
 import WriterCollection from "./WriterCollection.js";
-import Filter from "./readers/Filter.js";
+import Filter, {Filter_Params} from "./readers/Filter.js";
 import Link from "./readers/Link.js";
 import {getLogger} from "@ui5/logger";
 import {Project} from "@ui5/project/specifications/Project";
@@ -210,7 +210,7 @@ export function createWorkspace({reader, writer, virBasePath = "/", name = "work
  * 				Filter function. Will be called for every resource passed through this reader.
  * @returns {@ui5/fs/readers/Filter} Reader instance
  */
-export function createFilterReader(parameters) {
+export function createFilterReader(parameters: Filter_Params) {
 	return new Filter(parameters);
 }
 

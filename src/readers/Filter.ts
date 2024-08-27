@@ -2,6 +2,11 @@ import AbstractReader from "../AbstractReader.js";
 import Resource from "../Resource.js";
 import Trace from "../tracing/Trace.js";
 
+export interface Filter_Params {
+	reader: AbstractReader;
+	callback: (resource: Resource) => boolean;
+};
+
 /**
  * A reader that allows dynamic filtering of resources passed through it
  *
@@ -32,7 +37,7 @@ class Filter extends AbstractReader {
 	 * @param {@ui5/fs/readers/Filter~callback} parameters.callback
 	 * 				Filter function. Will be called for every resource read through this reader.
 	 */
-	constructor({reader, callback}: {reader: AbstractReader; callback: (resource: Resource) => boolean}) {
+	constructor({reader, callback}: Filter_Params) {
 		super();
 		if (!reader) {
 			throw new Error(`Missing parameter "reader"`);
