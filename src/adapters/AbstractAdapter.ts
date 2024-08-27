@@ -7,7 +7,7 @@ import AbstractReaderWriter from "../AbstractReaderWriter.js";
 import Resource, {Resource_Options, LegacyResource} from "../Resource.js";
 import type {Project} from "@ui5/project/specifications/Project";
 import Trace from "../tracing/Trace.js";
-import {isLegacyResource} from "../utils/tsUtils.js";
+import {isMigratedResource} from "../utils/tsUtils.js";
 
 /**
  * Abstract Resource Adapter
@@ -221,7 +221,7 @@ class AbstractAdapter extends AbstractReaderWriter {
 
 		// Check if its a fs/Resource v3, function 'hasProject' was
 		// introduced with v3 therefore take it as the indicator
-		if (isLegacyResource(resource)) {
+		if (isMigratedResource(resource)) {
 			return resource;
 		}
 		return this._createFromLegacyResource(resource);

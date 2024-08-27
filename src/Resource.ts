@@ -60,7 +60,7 @@ export interface LegacyResource {
 	_createStream?: Resource_CreateReadableStream;
 	_stream?: stream.Readable;
 	_buffer?: Buffer;
-	_getBufferFromStream: () => Promise<Buffer>;
+	_getBufferFromStream?: () => Promise<Buffer>;
 }
 
 export interface ResourceInterface {

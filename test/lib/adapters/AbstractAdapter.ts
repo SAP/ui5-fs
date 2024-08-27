@@ -1,6 +1,7 @@
 import test from "ava";
 import AbstractAdapter from "../../../src/adapters/AbstractAdapter.js";
 import {createResource} from "../../../src/resourceFactory.js";
+import { LegacyResource } from "../../../src/Resource.js";
 
 class MyAbstractAdapter extends AbstractAdapter { }
 
@@ -34,7 +35,7 @@ test("virBasePath must end with a slash", (t) => {
 
 test("_migrateResource", async (t) => {
 	// Any JS object which might be a kind of resource
-	const resource = {
+	const resource: LegacyResource = {
 		_path: "/test.js",
 	};
 
