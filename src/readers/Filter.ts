@@ -1,10 +1,10 @@
 import AbstractReader from "../AbstractReader.js";
-import Resource from "../Resource.js";
+import {ResourceInterface} from "../Resource.js";
 import Trace from "../tracing/Trace.js";
 
 export interface Filter_Params {
 	reader: AbstractReader;
-	callback: (resource: Resource) => boolean;
+	callback: (resource: ResourceInterface) => boolean;
 };
 
 /**
@@ -17,7 +17,7 @@ export interface Filter_Params {
  */
 class Filter extends AbstractReader {
 	_reader: AbstractReader;
-	_callback: (resource: Resource) => boolean;
+	_callback: (resource: ResourceInterface) => boolean;
 
 	/**
 	* Filter callback
@@ -73,7 +73,7 @@ class Filter extends AbstractReader {
 	 * @param {@ui5/fs/tracing/Trace} trace Trace instance
 	 * @returns {Promise<@ui5/fs/Resource>} Promise resolving to a single resource
 	 */
-	async _byPath(virPath: string, options: {nodir: boolean}, trace: Trace): Promise<Resource | null> {
+	async _byPath(virPath: string, options: {nodir: boolean}, trace: Trace) {
 		const result = await this._reader._byPath(virPath, options, trace);
 		if (result && !this._callback(result)) {
 			return null;

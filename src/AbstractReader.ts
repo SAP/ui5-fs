@@ -1,6 +1,6 @@
 import randomInt from "random-int";
 import Trace from "./tracing/Trace.js";
-import Resource from "./Resource.js";
+import {ResourceInterface} from "./Resource.js";
 
 /**
  * Abstract resource locator implementing the general API for <b>reading</b> resources
@@ -49,12 +49,12 @@ class AbstractReader {
 	 * @param {boolean} [options.nodir=true] Do not match directories
 	 * @returns {Promise<@ui5/fs/Resource[]>} Promise resolving to list of resources
 	 */
-	byGlob(virPattern: string, options = {nodir: true}): Promise<Resource[]> {
+	byGlob(virPattern: string, options = {nodir: true}): Promise<ResourceInterface[]> {
 		const trace = new Trace(virPattern);
-		return this._byGlob(virPattern, options, trace).then(function (result: Resource[]) {
+		return this._byGlob(virPattern, options, trace).then(function (result: ResourceInterface[]) {
 			trace.printReport();
 			return result;
-		}).then((resources: Resource[]) => {
+		}).then((resources: ResourceInterface[]) => {
 			if (resources.length > 1) {
 				// Pseudo randomize result order to prevent consumers from relying on it:
 				// Swap the first object with a randomly chosen one
@@ -74,9 +74,9 @@ class AbstractReader {
 	 * @param {string} virPath Virtual path
 	 * @param {object} [options] Options
 	 * @param {boolean} [options.nodir=true] Do not match directories
-	 * @returns {Promise<@ui5/fs/Resource>} Promise resolving to a single resource
+	 * @returns {Promise<@ui5/fs/ResourceInterface>} Promise resolving to a single resource
 	 */
-	byPath(virPath: string, options = {nodir: true}): Promise<Resource | null> {
+	byPath(virPath: string, options = {nodir: true}): Promise<ResourceInterface | null> {
 		const trace = new Trace(virPath);
 		return this._byPath(virPath, options, trace).then(function (resource) {
 			trace.printReport();
@@ -93,13 +93,13 @@ class AbstractReader {
 	 *         glob patterns for virtual directory structure
 	 * @param {object} options glob options
 	 * @param {@ui5/fs/tracing.Trace} trace Trace instance
-	 * @returns {Promise<@ui5/fs/Resource[]>} Promise resolving to list of resources
+	 * @returns {Promise<@ui5/fs/ResourceInterface[]>} Promise resolving to list of resources
 	 */
 	_byGlob(_virPattern: string | string[],
 		_options: {
 			nodir: boolean;
 		},
-		_trace: Trace): Promise<Resource[]> {
+		_trace: Trace): Promise<ResourceInterface[]> {
 		throw new Error("Function '_byGlob' is not implemented");
 	}
 
@@ -111,9 +111,9 @@ class AbstractReader {
 	 * @param {string|string[]} pattern glob pattern
 	 * @param {object} options glob options
 	 * @param {@ui5/fs/tracing.Trace} trace Trace instance
-	 * @returns {Promise<@ui5/fs/Resource[]>} Promise resolving to list of resources
+	 * @returns {Promise<@ui5/fs/ResourceInterface[]>} Promise resolving to list of resources
 	 */
-	_runGlob(_pattern: string | string[], _options: {nodir: boolean}, _trace: Trace): Promise<Resource[]> {
+	_runGlob(_pattern: string | string[], _options: {nodir: boolean}, _trace: Trace): Promise<ResourceInterface[]> {
 		throw new Error("Function '_runGlob' is not implemented");
 	}
 
@@ -125,9 +125,9 @@ class AbstractReader {
 	 * @param {string} virPath Virtual path
 	 * @param {object} options Options
 	 * @param {@ui5/fs/tracing.Trace} trace Trace instance
-	 * @returns {Promise<@ui5/fs/Resource>} Promise resolving to a single resource
+	 * @returns {Promise<@ui5/fs/ResourceInterface>} Promise resolving to a single resource
 	 */
-	_byPath(_virPath: string, _options: object, _trace: Trace): Promise<Resource | null> {
+	_byPath(_virPath: string, _options: object, _trace: Trace): Promise<ResourceInterface | null> {
 		throw new Error("Function '_byPath' is not implemented");
 	}
 }

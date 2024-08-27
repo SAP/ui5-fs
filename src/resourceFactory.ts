@@ -273,7 +273,7 @@ export function createFlatReader({reader, namespace}: {reader: AbstractReader; n
  * @param {string} virBaseDir virtual base directory path to prefix the given patterns with
  * @returns {string[]} A list of normalized glob patterns
  */
-export function prefixGlobPattern(virPattern: string, virBaseDir: string) {
+export function prefixGlobPattern(virPattern: string, virBaseDir: string): string[] {
 	const mm = new minimatch.Minimatch(virPattern);
 
 	const resultGlobs = [];

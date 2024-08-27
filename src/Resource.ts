@@ -63,6 +63,27 @@ export interface LegacyResource {
 	_getBufferFromStream: () => Promise<Buffer>;
 }
 
+export interface ResourceInterface {
+	clone(): Promise<Resource>;
+	getBuffer(): Promise<Buffer>;
+	getName(): string;
+	getPath(): string;
+	getPathTree(): Tree;
+	getProject(): Project | undefined;
+	getSourceMetadata(): Resource_sourceMetadata;
+	getSize(): Promise<number>;
+	getStatInfo(): Partial<Stats>;
+	getStream(): stream.Readable;
+	getString(): Promise<string>;
+	hasProject(): boolean;
+	isModified(): boolean;
+	pushCollection(name: string): void;
+	setBuffer(buffer: Buffer): void;
+	setPath(path: string): void;
+	setProject(project: Project): void;
+	setStream(stream: stream.Readable | Resource_CreateReadableStream): void;
+	setString(string: string): void;
+}
 /**
  * Resource. UI5 Tooling specific representation of a file's content and metadata
  *
@@ -70,7 +91,7 @@ export interface LegacyResource {
  * @class
  * @alias @ui5/fs/Resource
  */
-class Resource {
+class Resource implements ResourceInterface {
 	#project;
 	#buffer: Buffer | null | undefined;
 	#buffering: Promise<Buffer> | null | undefined;

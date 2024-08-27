@@ -3,6 +3,7 @@ import ResourceFacade from "../ResourceFacade.js";
 import {prefixGlobPattern} from "../resourceFactory.js";
 import {getLogger} from "@ui5/logger";
 const log = getLogger("resources:readers:Link");
+import Trace from "../tracing/Trace.js";
 
 /**
  * A reader that allows for rewriting paths segments of all resources passed through it.
@@ -27,6 +28,8 @@ const log = getLogger("resources:readers:Link");
  * @extends @ui5/fs/AbstractReader
  */
 class Link extends AbstractReader {
+	_reader: AbstractReader;
+	_pathMapping: {linkPath: string; targetPath: string};
 	/**
 	 * Path mapping for a [Link]{@link @ui5/fs/readers/Link}
 	 *
@@ -44,7 +47,7 @@ class Link extends AbstractReader {
 	 * @param {@ui5/fs/AbstractReader} parameters.reader The resource reader or collection to wrap
 	 * @param {@ui5/fs/readers/Link/PathMapping} parameters.pathMapping
 	 */
-	constructor({reader, pathMapping}) {
+	constructor({reader, pathMapping}: {reader: AbstractReader; pathMapping: {linkPath: string; targetPath: string}}) {
 		super();
 		if (!reader) {
 			throw new Error(`Missing parameter "reader"`);
@@ -61,17 +64,18 @@ class Link extends AbstractReader {
 	 * Locates resources by glob.
 	 *
 	 * @private
-	 * @param {string|string[]} patterns glob pattern as string or an array of
+	 * @param {string|string[]} pattern glob pattern as string or an array of
 	 *         glob patterns for virtual directory structure
 	 * @param {object} options glob options
 	 * @param {@ui5/fs/tracing/Trace} trace Trace instance
 	 * @returns {Promise<@ui5/fs/Resource[]>} Promise resolving to list of resources
 	 */
-	async _byGlob(patterns, options, trace) {
-		if (!(patterns instanceof Array)) {
-			patterns = [patterns];
+	async _byGlob(pattern: string | string[], options: {nodir: boolean}, trace: Trace) {
+		if (!(pattern instanceof Array)) {
+			pattern = [pattern];
 		}
-		patterns = patterns.map((pattern) => {
+
+		pattern = pattern.flatMap((pattern) => {
 			if (pattern.startsWith(this._pathMapping.linkPath)) {
 				pattern = pattern.substr(this._pathMapping.linkPath.length);
 			}
@@ -79,19 +83,22 @@ class Link extends AbstractReader {
 		});
 
 		// Flatten prefixed patterns
-		patterns = Array.prototype.concat.apply([], patterns);
+		pattern = Array.prototype.concat.apply([], pattern);
 
 		// Keep resource's internal path unchanged for now
-		const resources = await this._reader._byGlob(patterns, options, trace);
-		return resources.map((resource) => {
-			const resourcePath = resource.getPath();
-			if (resourcePath.startsWith(this._pathMapping.targetPath)) {
-				return new ResourceFacade({
-					resource,
-					path: this._pathMapping.linkPath + resourcePath.substr(this._pathMapping.targetPath.length),
-				});
-			}
-		});
+		const resources = await this._reader._byGlob(pattern, options, trace);
+
+		return resources
+			.map((resource) => {
+				const resourcePath = resource.getPath();
+				if (resourcePath.startsWith(this._pathMapping.targetPath)) {
+					return new ResourceFacade({
+						resource,
+						path: this._pathMapping.linkPath + resourcePath.substr(this._pathMapping.targetPath.length),
+					});
+				}
+			})
+			.filter((resource) => resource !== undefined);
 	}
 
 	/**
@@ -103,7 +110,7 @@ class Link extends AbstractReader {
 	 * @param {@ui5/fs/tracing/Trace} trace Trace instance
 	 * @returns {Promise<@ui5/fs/Resource>} Promise resolving to a single resource
 	 */
-	async _byPath(virPath, options, trace) {
+	async _byPath(virPath: string, options: {nodir: boolean}, trace: Trace) {
 		if (!virPath.startsWith(this._pathMapping.linkPath)) {
 			return null;
 		}
@@ -120,7 +127,7 @@ class Link extends AbstractReader {
 		return null;
 	}
 
-	static _validatePathMapping({linkPath, targetPath}) {
+	static _validatePathMapping({linkPath, targetPath}: {linkPath: string; targetPath: string}) {
 		if (!linkPath) {
 			throw new Error(`Path mapping is missing attribute "linkPath"`);
 		}

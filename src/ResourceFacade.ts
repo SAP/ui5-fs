@@ -1,5 +1,5 @@
 import posixPath from "node:path/posix";
-import Resource from "./Resource.js";
+import {ResourceInterface} from "./Resource.js";
 import {Buffer} from "node:buffer";
 import stream from "node:stream";
 import {Resource_CreateReadableStream} from "./Resource.js";
@@ -12,7 +12,7 @@ import {Project} from "@ui5/project/specifications/Project";
  * @class
  * @alias @ui5/fs/ResourceFacade
  */
-class ResourceFacade {
+class ResourceFacade implements ResourceInterface {
 	#path;
 	#name;
 	#resource;
@@ -22,9 +22,9 @@ class ResourceFacade {
 	 * @public
 	 * @param {object} parameters Parameters
 	 * @param {string} parameters.path Virtual path of the facade resource
-	 * @param {@ui5/fs/Resource} parameters.resource Resource to conceal
+	 * @param parameters.resource Resource to conceal
 	 */
-	constructor({path, resource}: {path: string; resource: Resource}) {
+	constructor({path, resource}: {path: string; resource: ResourceInterface}) {
 		if (!path) {
 			throw new Error("Unable to create ResourceFacade: Missing parameter 'path'");
 		}
@@ -175,7 +175,7 @@ class ResourceFacade {
 	 * @see {TypedArray#byteLength}
 	 * @returns {Promise<number>} size in bytes, <code>0</code> if there is no content yet
 	 */
-	async getSize() {
+	getSize() {
 		return this.#resource.getSize();
 	}
 
