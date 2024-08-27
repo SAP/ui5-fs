@@ -30,7 +30,7 @@ class Memory extends AbstractAdapter {
 	 * @param {string[]} [parameters.excludes] List of glob patterns to exclude
 	 * @param {@ui5/project/specifications/Project} [parameters.project] Project this adapter belongs to (if any)
 	 */
-	constructor({virBasePath, project, excludes}: {virBasePath: string; project: Project; excludes: string[]}) {
+	constructor({virBasePath, project, excludes}: {virBasePath: string; project?: Project; excludes?: string[]}) {
 		super({virBasePath, project, excludes});
 		this._virFiles = Object.create(null) as Record<string, Resource>; // map full of files
 		this._virDirs = Object.create(null) as Record<string, Resource>; // map full of directories

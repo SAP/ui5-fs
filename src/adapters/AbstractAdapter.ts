@@ -23,7 +23,7 @@ class AbstractAdapter extends AbstractReaderWriter {
 	_virBaseDir: string;
 	_excludes: string[];
 	_excludesNegated: string[];
-	_project: Project;
+	_project?: Project;
 
 	/**
 	 * The constructor
@@ -36,7 +36,7 @@ class AbstractAdapter extends AbstractReaderWriter {
 	 * @param {object} [parameters.project] Experimental, internal parameter. Do not use
 	 */
 	constructor({virBasePath, excludes = [], project}:
-		{virBasePath: string; excludes: string[]; project: Project}) {
+		{virBasePath: string; excludes?: string[]; project?: Project}) {
 		if (new.target === AbstractAdapter) {
 			throw new TypeError("Class 'AbstractAdapter' is abstract");
 		}
@@ -261,7 +261,7 @@ class AbstractAdapter extends AbstractReaderWriter {
 		}
 	}
 
-	_resolveVirtualPathToBase(inputVirPath: string, writeMode = false): string {
+	_resolveVirtualPathToBase(inputVirPath: string, writeMode = false): string | null {
 		if (!path.isAbsolute(inputVirPath)) {
 			throw new Error(`Failed to resolve virtual path '${inputVirPath}': Path must be absolute`);
 		}

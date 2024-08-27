@@ -5,11 +5,14 @@ import FsAdapter from "./adapters/FileSystem.js";
 import MemAdapter from "./adapters/Memory.js";
 import ReaderCollection from "./ReaderCollection.js";
 import ReaderCollectionPrioritized from "./ReaderCollectionPrioritized.js";
-import Resource from "./Resource.js";
+import Resource, {Resource_Options} from "./Resource.js";
 import WriterCollection from "./WriterCollection.js";
 import Filter from "./readers/Filter.js";
 import Link from "./readers/Link.js";
 import {getLogger} from "@ui5/logger";
+import {Project} from "@ui5/project/specifications/Project";
+import AbstractReader from "./AbstractReader.js";
+import AbstractReaderWriter from "./AbstractReaderWriter.js";
 const log = getLogger("resources:resourceFactory");
 
 /**
@@ -38,7 +41,9 @@ const log = getLogger("resources:resourceFactory");
  * @param {@ui5/project/specifications/Project} [parameters.project] Project this adapter belongs to (if any)
  * @returns {@ui5/fs/adapters/FileSystem|@ui5/fs/adapters/Memory} File System- or Virtual Adapter
  */
-export function createAdapter({fsBasePath, virBasePath, project, excludes, useGitignore}) {
+export function createAdapter({fsBasePath, virBasePath, project, excludes, useGitignore}:
+{fsBasePath: string; virBasePath: string; project: Project; excludes: string[]; useGitignore: boolean}
+) {
 	if (fsBasePath) {
 		return new FsAdapter({fsBasePath, virBasePath, project, excludes, useGitignore});
 	} else {
@@ -59,7 +64,9 @@ export function createAdapter({fsBasePath, virBasePath, project, excludes, useGi
  * @param {string} [parameters.name] Name for the reader collection
  * @returns {@ui5/fs/ReaderCollection} Reader collection wrapping an adapter
  */
-export function createReader({fsBasePath, virBasePath, project, excludes = [], name}) {
+export function createReader({fsBasePath, virBasePath, project, excludes = [], name}:
+{fsBasePath: string; virBasePath: string; project: Project; excludes: string[]; name: string}
+) {
 	if (!fsBasePath) {
 		// Creating a reader with a memory adapter seems pointless right now
 		// since there would be no way to fill the adapter with resources
@@ -73,7 +80,7 @@ export function createReader({fsBasePath, virBasePath, project, excludes = [], n
 	// ui5 runtime path of the excluded resources. Therefore, only allow paths like /resources/<namespace>/test
 	// starting with specVersion 4.0
 	if (excludes.length && project && project.getType() === "application") {
-		normalizedExcludes = excludes.map((pattern) => {
+		const nestedNormalizedExcludes = excludes.map((pattern) => {
 			if (pattern.startsWith(virBasePath) || pattern.startsWith("!" + virBasePath)) {
 				return pattern;
 			}
@@ -82,7 +89,7 @@ export function createReader({fsBasePath, virBasePath, project, excludes = [], n
 			return prefixGlobPattern(pattern, virBasePath);
 		});
 		// Flatten list of patterns
-		normalizedExcludes = Array.prototype.concat.apply([], normalizedExcludes);
+		normalizedExcludes = Array.prototype.concat.apply([], nestedNormalizedExcludes) as string[];
 		log.verbose(`Effective exclude patterns for application project ${project.getName()}:\n` +
 		normalizedExcludes.join(", "));
 	}
@@ -106,7 +113,7 @@ export function createReader({fsBasePath, virBasePath, project, excludes = [], n
  * @param {@ui5/fs/AbstractReader[]} parameters.readers List of resource readers (all tried in parallel)
  * @returns {@ui5/fs/ReaderCollection} Reader collection wrapping provided readers
  */
-export function createReaderCollection({name, readers}) {
+export function createReaderCollection({name, readers}: {name: string; readers: AbstractReader[]}) {
 	return new ReaderCollection({
 		name,
 		readers,
@@ -123,7 +130,7 @@ export function createReaderCollection({name, readers}) {
  * 																(first is tried first)
  * @returns {@ui5/fs/ReaderCollectionPrioritized} Reader collection wrapping provided readers
  */
-export function createReaderCollectionPrioritized({name, readers}) {
+export function createReaderCollectionPrioritized({name, readers}: {name: string; readers: AbstractReader[]}) {
 	return new ReaderCollectionPrioritized({
 		name,
 		readers,
@@ -140,7 +147,7 @@ export function createReaderCollectionPrioritized({name, readers}) {
  * 	paths to writers. Path are matched greedy
  * @returns {@ui5/fs/WriterCollection} Writer collection wrapping provided writers
  */
-export function createWriterCollection({name, writerMapping}) {
+export function createWriterCollection({name, writerMapping}: {name: string; writerMapping: AbstractReaderWriter[]}) {
 	return new WriterCollection({
 		name,
 		writerMapping,
@@ -155,7 +162,7 @@ export function createWriterCollection({name, writerMapping}) {
  * @param {object} parameters Parameters to be passed to the resource constructor
  * @returns {@ui5/fs/Resource} Resource
  */
-export function createResource(parameters) {
+export function createResource(parameters: Resource_Options) {
 	return new Resource(parameters);
 }
 
@@ -175,7 +182,9 @@ export function createResource(parameters) {
  * @param {string} [parameters.virBasePath="/"] Virtual base path
  * @returns {@ui5/fs/DuplexCollection} DuplexCollection which wraps the provided resource locators
  */
-export function createWorkspace({reader, writer, virBasePath = "/", name = "workspace"}) {
+export function createWorkspace({reader, writer, virBasePath = "/", name = "workspace"}:
+{reader: AbstractReader; writer: AbstractReaderWriter; virBasePath: string; name: string}
+) {
 	if (!writer) {
 		writer = new MemAdapter({
 			virBasePath,
@@ -246,7 +255,7 @@ export function createLinkReader(parameters) {
  * @param {string} parameters.namespace Project namespace
  * @returns {@ui5/fs/readers/Link} Reader instance
  */
-export function createFlatReader({reader, namespace}) {
+export function createFlatReader({reader, namespace}: {reader: AbstractReader; namespace: string}) {
 	return new Link({
 		reader: reader,
 		pathMapping: {
@@ -264,10 +273,11 @@ export function createFlatReader({reader, namespace}) {
  * @param {string} virBaseDir virtual base directory path to prefix the given patterns with
  * @returns {string[]} A list of normalized glob patterns
  */
-export function prefixGlobPattern(virPattern, virBaseDir) {
+export function prefixGlobPattern(virPattern: string, virBaseDir: string) {
 	const mm = new minimatch.Minimatch(virPattern);
 
 	const resultGlobs = [];
+	// eslint-disable-next-line @typescript-eslint/prefer-for-of
 	for (let i = 0; i < mm.globSet.length; i++) {
 		let resultPattern = path.posix.join(virBaseDir, mm.globSet[i]);
 
