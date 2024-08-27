@@ -38,7 +38,7 @@ class ReaderCollection extends AbstractReader {
 	 * @param {@ui5/fs/tracing.Trace} trace Trace instance
 	 * @returns {Promise<@ui5/fs/Resource[]>} Promise resolving to list of resources
 	 */
-	_byGlob(pattern: string[], options: {nodir: boolean}, trace: Trace) {
+	_byGlob(pattern: string | string[], options: {nodir: boolean}, trace: Trace) {
 		return Promise.all(this._readers.map(function (resourceLocator) {
 			return resourceLocator._byGlob(pattern, options, trace);
 		})).then((result) => {

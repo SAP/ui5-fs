@@ -1,6 +1,8 @@
 import AbstractReaderWriter from "./AbstractReaderWriter.js";
 import ReaderCollection from "./ReaderCollection.js";
 import escapeStringRegExp from "escape-string-regexp";
+import Trace from "./tracing/Trace.js";
+import Resource from "./Resource.js";
 
 /**
  * Resource Locator WriterCollection
@@ -11,6 +13,10 @@ import escapeStringRegExp from "escape-string-regexp";
  * @extends @ui5/fs/AbstractReaderWriter
  */
 class WriterCollection extends AbstractReaderWriter {
+	_basePathRegex: string;
+	_writerMapping: Record<string, AbstractReaderWriter>;
+	_readerCollection: ReaderCollection;
+
 	/**
 	 * The constructor.
 	 *
@@ -28,7 +34,7 @@ class WriterCollection extends AbstractReaderWriter {
 	 *     }
 	 * });
 	 */
-	constructor({name, writerMapping}) {
+	constructor({name, writerMapping}: {name: string; writerMapping: Record<string, AbstractReaderWriter>}) {
 		super(name);
 
 		if (!writerMapping) {
@@ -41,7 +47,7 @@ class WriterCollection extends AbstractReaderWriter {
 
 		// Create a regular expression (which is greedy by nature) from all paths to easily
 		//	find the correct writer for any given resource path
-		this._basePathRegex = basePaths.sort().reduce((regex, basePath, idx) => {
+		this._basePathRegex = basePaths.sort().reduce((regex, basePath) => {
 			// Validate base path
 			if (!basePath) {
 				throw new Error(`Empty path in path mapping of WriterCollection ${this._name}`);
@@ -75,7 +81,7 @@ class WriterCollection extends AbstractReaderWriter {
 	 * @param {@ui5/fs/tracing.Trace} trace Trace instance
 	 * @returns {Promise<@ui5/fs/Resource[]>} Promise resolving to list of resources
 	 */
-	_byGlob(pattern, options, trace) {
+	_byGlob(pattern: string | string[], options: {nodir: boolean}, trace: Trace) {
 		return this._readerCollection._byGlob(pattern, options, trace);
 	}
 
@@ -88,7 +94,7 @@ class WriterCollection extends AbstractReaderWriter {
 	 * @param {@ui5/fs/tracing.Trace} trace Trace instance
 	 * @returns {Promise<@ui5/fs/Resource>} Promise resolving to a single resource
 	 */
-	_byPath(virPath, options, trace) {
+	_byPath(virPath: string, options: {nodir: boolean}, trace: Trace) {
 		return this._readerCollection._byPath(virPath, options, trace);
 	}
 
@@ -100,7 +106,7 @@ class WriterCollection extends AbstractReaderWriter {
 	 * @param {object} [options] Write options, see above
 	 * @returns {Promise<undefined>} Promise resolving once data has been written
 	 */
-	_write(resource, options) {
+	_write(resource: Resource, options: object) {
 		const resourcePath = resource.getPath();
 
 		const basePathMatch = resourcePath.match(this._basePathRegex);
