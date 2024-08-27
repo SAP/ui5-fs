@@ -49,7 +49,7 @@ test("MemAdapter: readFile", async (t) => {
 		path: "/foo.txt",
 		string: `content of ${fsPath}`,
 	}));
-	`content of ${fsPath}`;
+	// `content of ${fsPath}`;
 	await assertReadFile(t, readFile, "", fsPath);
 });
 

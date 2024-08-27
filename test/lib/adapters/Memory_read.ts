@@ -20,6 +20,7 @@ function matchGlobResult(t, resources, expectedResources) {
 		return resource.getPath();
 	});
 
+	// eslint-disable-next-line @typescript-eslint/prefer-for-of
 	for (let i = 0; i < expectedResources.length; i++) {
 		const expectedResource = expectedResources[i];
 		t.true(

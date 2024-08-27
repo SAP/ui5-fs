@@ -17,7 +17,7 @@ async function createMock(t, isLevelEnabled = true) {
 	return t.context;
 }
 
-test.afterEach.always((t) => {
+test.afterEach.always((_t) => {
 	sinon.restore();
 });
 

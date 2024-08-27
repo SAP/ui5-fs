@@ -5,7 +5,7 @@ import {readFile} from "node:fs/promises";
 import {createAdapter, createFilterReader,
 	createFlatReader, createLinkReader, createResource} from "../../lib/resourceFactory.js";
 
-test.afterEach.always((t) => {
+test.afterEach.always((_t) => {
 	sinon.restore();
 });
 
