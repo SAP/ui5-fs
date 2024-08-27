@@ -1,15 +1,24 @@
-import test from "ava";
-import sinon from "sinon";
-import esmock from "esmock";
+import anyTest, {TestFn, ExecutionContext} from "ava";
+import sinon, {SinonStub} from "sinon";
+import esmock, {MockFunction} from "esmock";
 
-async function createMock(t, isLevelEnabled = true) {
+interface avaContext {
+	loggerStub: {
+		silly: SinonStub;
+		isLevelEnabled: (arg: boolean) => boolean;
+	};
+	traceSummary: MockFunction;
+}
+const test = anyTest as TestFn<avaContext>;
+
+async function createMock(t: ExecutionContext<avaContext>, isLevelEnabled = true) {
 	t.context.loggerStub = {
 		silly: sinon.stub(),
 		isLevelEnabled: () => {
 			return isLevelEnabled;
 		},
 	};
-	t.context.traceSummary = await esmock("../../../lib/tracing/traceSummary.js", {
+	t.context.traceSummary = await esmock("../../../src/tracing/traceSummary.js", {
 		"@ui5/logger": {
 			getLogger: sinon.stub().returns(t.context.loggerStub),
 		},

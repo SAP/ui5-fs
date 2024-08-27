@@ -1,7 +1,7 @@
 import test from "ava";
 import sinon from "sinon";
-import Link from "../../../lib/readers/Link.js";
-import ResourceFacade from "../../../lib/ResourceFacade.js";
+import Link from "../../../src/readers/Link.js";
+import ResourceFacade from "../../../src/ResourceFacade.js";
 
 test("_byGlob: Basic Link", async (t) => {
 	const dummyResourceA = {

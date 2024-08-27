@@ -6,10 +6,10 @@ import {fileURLToPath} from "node:url";
 import fsSync from "node:fs";
 const stat = promisify(fsSync.stat);
 import {readFile} from "node:fs/promises";
-import fsInterface from "../../lib/fsInterface.js";
-import MemAdapter from "../../lib/adapters/Memory.js";
-import FsAdapter from "../../lib/adapters/FileSystem.js";
-import Resource from "../../lib/Resource.js";
+import fsInterface from "../../src/fsInterface.js";
+import MemAdapter from "../../src/adapters/Memory.js";
+import FsAdapter from "../../src/adapters/FileSystem.js";
+import Resource from "../../src/Resource.js";
 
 const assertReadFile = async (t, readFile, basepath, filepath, content) => {
 	content = content || "content of " + filepath;

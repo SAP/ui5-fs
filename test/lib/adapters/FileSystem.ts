@@ -1,6 +1,6 @@
 import test from "ava";
 
-import FileSystem from "../../../lib/adapters/FileSystem.js";
+import FileSystem from "../../../src/adapters/FileSystem.js";
 
 test.serial("Missing parameter: fsBasePath", (t) => {
 	t.throws(() => {

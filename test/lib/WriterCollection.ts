@@ -1,7 +1,7 @@
 import test from "ava";
 import sinon from "sinon";
-import WriterCollection from "../../lib/WriterCollection.js";
-import Resource from "../../lib/Resource.js";
+import WriterCollection from "../../src/WriterCollection.js";
+import Resource from "../../src/Resource.js";
 
 test("Constructor: Path mapping regex", (t) => {
 	const myWriter = {};

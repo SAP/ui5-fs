@@ -1,5 +1,5 @@
 import test from "ava";
-import {createAdapter, createResource} from "../../../lib/resourceFactory.js";
+import {createAdapter, createResource} from "../../../src/resourceFactory.js";
 
 async function fillFromFs(readerWriter, {fsBasePath = "./test/fixtures/glob", virBasePath = "/app/"} = {}) {
 	const fsReader = createAdapter({

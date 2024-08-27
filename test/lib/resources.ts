@@ -3,7 +3,7 @@ import sinon from "sinon";
 import {readFile} from "node:fs/promises";
 
 import {createAdapter, createFilterReader,
-	createFlatReader, createLinkReader, createResource} from "../../lib/resourceFactory.js";
+	createFlatReader, createLinkReader, createResource} from "../../src/resourceFactory.js";
 
 test.afterEach.always((_t) => {
 	sinon.restore();

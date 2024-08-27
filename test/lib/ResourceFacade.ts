@@ -1,7 +1,7 @@
 import test from "ava";
 import sinon from "sinon";
-import Resource from "../../lib/Resource.js";
-import ResourceFacade from "../../lib/ResourceFacade.js";
+import Resource from "../../src/Resource.js";
+import ResourceFacade from "../../src/ResourceFacade.js";
 
 test.afterEach.always((t) => {
 	sinon.restore();

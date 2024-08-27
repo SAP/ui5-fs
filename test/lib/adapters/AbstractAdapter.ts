@@ -1,6 +1,6 @@
 import test from "ava";
-import AbstractAdapter from "../../../lib/adapters/AbstractAdapter.js";
-import {createResource} from "../../../lib/resourceFactory.js";
+import AbstractAdapter from "../../../src/adapters/AbstractAdapter.js";
+import {createResource} from "../../../src/resourceFactory.js";
 
 class MyAbstractAdapter extends AbstractAdapter { }
 

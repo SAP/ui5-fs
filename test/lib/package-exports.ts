@@ -19,60 +19,60 @@ test("check number of exports", (t) => {
 [
 	{
 		exportedSpecifier: "@ui5/fs/adapters/AbstractAdapter",
-		mappedModule: "../../lib/adapters/AbstractAdapter.js",
+		mappedModule: "../../src/adapters/AbstractAdapter.js",
 	},
 	{
 		exportedSpecifier: "@ui5/fs/adapters/FileSystem",
-		mappedModule: "../../lib/adapters/FileSystem.js",
+		mappedModule: "../../src/adapters/FileSystem.js",
 	},
 	{
 		exportedSpecifier: "@ui5/fs/adapters/Memory",
-		mappedModule: "../../lib/adapters/Memory.js",
+		mappedModule: "../../src/adapters/Memory.js",
 	},
 	{
 		exportedSpecifier: "@ui5/fs/AbstractReader",
-		mappedModule: "../../lib/AbstractReader.js",
+		mappedModule: "../../src/AbstractReader.js",
 	},
 	{
 		exportedSpecifier: "@ui5/fs/AbstractReaderWriter",
-		mappedModule: "../../lib/AbstractReaderWriter.js",
+		mappedModule: "../../src/AbstractReaderWriter.js",
 	},
 	{
 		exportedSpecifier: "@ui5/fs/DuplexCollection",
-		mappedModule: "../../lib/DuplexCollection.js",
+		mappedModule: "../../src/DuplexCollection.js",
 	},
 	{
 		exportedSpecifier: "@ui5/fs/fsInterface",
-		mappedModule: "../../lib/fsInterface.js",
+		mappedModule: "../../src/fsInterface.js",
 	},
 	{
 		exportedSpecifier: "@ui5/fs/ReaderCollection",
-		mappedModule: "../../lib/ReaderCollection.js",
+		mappedModule: "../../src/ReaderCollection.js",
 	},
 	{
 		exportedSpecifier: "@ui5/fs/ReaderCollectionPrioritized",
-		mappedModule: "../../lib/ReaderCollectionPrioritized.js",
+		mappedModule: "../../src/ReaderCollectionPrioritized.js",
 	},
 	{
 		exportedSpecifier: "@ui5/fs/readers/Filter",
-		mappedModule: "../../lib/readers/Filter.js",
+		mappedModule: "../../src/readers/Filter.js",
 	},
 	{
 		exportedSpecifier: "@ui5/fs/readers/Link",
-		mappedModule: "../../lib/readers/Link.js",
+		mappedModule: "../../src/readers/Link.js",
 	},
 	{
 		exportedSpecifier: "@ui5/fs/Resource",
-		mappedModule: "../../lib/Resource.js",
+		mappedModule: "../../src/Resource.js",
 	},
 	{
 		exportedSpecifier: "@ui5/fs/resourceFactory",
-		mappedModule: "../../lib/resourceFactory.js",
+		mappedModule: "../../src/resourceFactory.js",
 	},
 	// Internal modules (only to be used by @ui5/* packages)
 	{
 		exportedSpecifier: "@ui5/fs/internal/ResourceTagCollection",
-		mappedModule: "../../lib/ResourceTagCollection.js",
+		mappedModule: "../../src/ResourceTagCollection.js",
 	},
 ].forEach(({exportedSpecifier, mappedModule}) => {
 	test(`${exportedSpecifier}`, async (t) => {

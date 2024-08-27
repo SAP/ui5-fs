@@ -36,7 +36,7 @@ interface Resource_sourceMetadata {
 export interface Resource_Options {
 	path: string;
 	// It could be a real Stats, but also a Stats like object
-	statInfo: Partial<Stats>;
+	statInfo?: Partial<Stats>;
 	buffer?: Buffer;
 	string?: string;
 	createStream?: Resource_CreateReadableStream;
@@ -124,7 +124,7 @@ class Resource {
 			}
 
 			for (const metadataKey in sourceMetadata) { // Also check prototype
-				if (!(metadataKey in ALLOWED_SOURCE_METADATA_KEYS)) {
+				if (!Object.values(ALLOWED_SOURCE_METADATA_KEYS).includes(metadataKey)) {
 					throw new Error(`Parameter 'sourceMetadata' contains an illegal attribute: ${metadataKey}`);
 				}
 			}
@@ -144,7 +144,7 @@ class Resource {
 
 		this.#project = project;
 
-		this.#statInfo = statInfo || { // TODO
+		this.#statInfo = statInfo ?? { // TODO
 			isFile: fnTrue,
 			isDirectory: fnFalse,
 			isBlockDevice: fnFalse,

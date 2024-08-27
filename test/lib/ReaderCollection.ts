@@ -1,7 +1,7 @@
 import test from "ava";
 import sinon from "sinon";
-import ReaderCollection from "../../lib/ReaderCollection.js";
-import Resource from "../../lib/Resource.js";
+import ReaderCollection from "../../src/ReaderCollection.js";
+import Resource from "../../src/Resource.js";
 
 test("ReaderCollection: constructor", (t) => {
 	const readerCollection = new ReaderCollection({

@@ -6,7 +6,7 @@ import test from "ava";
 import {rimraf} from "rimraf";
 import sinon from "sinon";
 
-import {createAdapter, createResource} from "../../../lib/resourceFactory.js";
+import {createAdapter, createResource} from "../../../src/resourceFactory.js";
 
 function getFileContent(path) {
 	return readFile(path, "utf8");

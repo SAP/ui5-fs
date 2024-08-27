@@ -1,5 +1,5 @@
 import test from "ava";
-import FsAdapter from "../../lib/adapters/FileSystem.js";
+import FsAdapter from "../../src/adapters/FileSystem.js";
 
 // Create readerWriter before running tests
 test.beforeEach((t) => {

@@ -1,10 +1,10 @@
 import test from "ava";
 import {
 	createAdapter, createReader, createReaderCollection, createReaderCollectionPrioritized,
-	createResource, createWriterCollection, createWorkspace, prefixGlobPattern} from "../../lib/resourceFactory.js";
-import FileSystem from "../../lib/adapters/FileSystem.js";
-import Memory from "../../lib/adapters/Memory.js";
-import ReaderCollection from "../../lib/ReaderCollection.js";
+	createResource, createWriterCollection, createWorkspace, prefixGlobPattern} from "../../src/resourceFactory.js";
+import FileSystem from "../../src/adapters/FileSystem.js";
+import Memory from "../../src/adapters/Memory.js";
+import ReaderCollection from "../../src/ReaderCollection.js";
 import {setLogLevel} from "@ui5/logger";
 
 // Set log level to silly to activate tracing
@@ -230,7 +230,7 @@ test("createReaderCollection", async (t) => {
 });
 
 test("createReaderCollectionPrioritized", async (t) => {
-	const {default: ReaderCollectionPrioritized} = await import("../../lib/ReaderCollectionPrioritized.js");
+	const {default: ReaderCollectionPrioritized} = await import("../../src/ReaderCollectionPrioritized.js");
 	const adapter = createAdapter({
 		virBasePath: "/resources/app/",
 		project: {
@@ -260,7 +260,7 @@ test("createReaderCollectionPrioritized", async (t) => {
 });
 
 test("createWriterCollection", async (t) => {
-	const {default: WriterCollection} = await import("../../lib/WriterCollection.js");
+	const {default: WriterCollection} = await import("../../src/WriterCollection.js");
 	const adapter1 = createAdapter({
 		virBasePath: "/",
 		project: {
@@ -300,7 +300,7 @@ test("createWriterCollection", async (t) => {
 });
 
 test("createWorkspace", async (t) => {
-	const {default: DuplexCollection} = await import("../../lib/DuplexCollection.js");
+	const {default: DuplexCollection} = await import("../../src/DuplexCollection.js");
 	const reader = createAdapter({
 		fsBasePath: "./test/fixtures/application.a/webapp",
 		virBasePath: "/resources/app/",
@@ -333,8 +333,8 @@ test("createWorkspace", async (t) => {
 });
 
 test("createWorkspace: Without writer", async (t) => {
-	const {default: DuplexCollection} = await import("../../lib/DuplexCollection.js");
-	const {default: Memory} = await import("../../lib/adapters/Memory.js");
+	const {default: DuplexCollection} = await import("../../src/DuplexCollection.js");
+	const {default: Memory} = await import("../../src/adapters/Memory.js");
 	const reader = createAdapter({
 		fsBasePath: "./test/fixtures/application.a/webapp",
 		virBasePath: "/resources/app/",

@@ -1,5 +1,5 @@
 import test from "ava";
-import {createAdapter, createResource} from "../../../lib/resourceFactory.js";
+import {createAdapter, createResource} from "../../../src/resourceFactory.js";
 import sinon from "sinon";
 
 test("glob resources from application.a w/ virtual base path prefix", async (t) => {

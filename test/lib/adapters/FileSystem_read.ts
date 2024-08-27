@@ -2,7 +2,7 @@ import test from "ava";
 import sinon from "sinon";
 import esmock from "esmock";
 import path from "node:path";
-import {createAdapter} from "../../../lib/resourceFactory.js";
+import {createAdapter} from "../../../src/resourceFactory.js";
 
 test("glob resources from application.a w/ virtual base path prefix", async (t) => {
 	const readerWriter = createAdapter({
@@ -553,7 +553,7 @@ test("byPath with useGitignore: true", async (t) => {
 	const {isGitIgnored} = await import("globby");
 	const isGitIgnoredSpy = sinon.stub().callsFake(isGitIgnored);
 
-	const FileSystem = await esmock("../../../lib/adapters/FileSystem.js", {
+	const FileSystem = await esmock("../../../src/adapters/FileSystem.js", {
 		globby: {
 			isGitIgnored: isGitIgnoredSpy,
 		},

@@ -2,7 +2,7 @@ import test from "ava";
 import {Stream, Transform} from "node:stream";
 import {promises as fs, createReadStream} from "node:fs";
 import path from "node:path";
-import Resource from "../../lib/Resource.js";
+import Resource from "../../src/Resource.js";
 
 function createBasicResource() {
 	const fsPath = path.join("test", "fixtures", "application.a", "webapp", "index.html");

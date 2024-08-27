@@ -3,8 +3,8 @@ import {fileURLToPath} from "node:url";
 import {Buffer} from "node:buffer";
 import {readFile} from "node:fs/promises";
 
-import FileSystem from "../../../lib/adapters/FileSystem.js";
-import Resource from "../../../lib/Resource.js";
+import FileSystem from "../../../src/adapters/FileSystem.js";
+import Resource from "../../../src/Resource.js";
 import path from "node:path";
 
 test.serial("Stream a large file from source to target", async (t) => {

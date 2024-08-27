@@ -1,6 +1,6 @@
 import test from "ava";
 import sinon from "sinon";
-import Filter from "../../../lib/readers/Filter.js";
+import Filter from "../../../src/readers/Filter.js";
 
 test("_byGlob: Basic filter", async (t) => {
 	const abstractReader = {

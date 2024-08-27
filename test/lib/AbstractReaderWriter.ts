@@ -1,5 +1,5 @@
 import test from "ava";
-import AbstractReaderWriter from "../../lib/AbstractReaderWriter.js";
+import AbstractReaderWriter from "../../src/AbstractReaderWriter.js";
 
 test("AbstractReaderWriter: constructor throws an error", (t) => {
 	t.throws(() => {

@@ -1,8 +1,8 @@
 import test from "ava";
 import sinon from "sinon";
-import DuplexCollection from "../../lib/DuplexCollection.js";
-import ReaderCollectionPrioritized from "../../lib/ReaderCollectionPrioritized.js";
-import Resource from "../../lib/Resource.js";
+import DuplexCollection from "../../src/DuplexCollection.js";
+import ReaderCollectionPrioritized from "../../src/ReaderCollectionPrioritized.js";
+import Resource from "../../src/Resource.js";
 
 test("DuplexCollection: constructor", (t) => {
 	const duplexCollection = new DuplexCollection({
