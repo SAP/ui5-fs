@@ -1,4 +1,9 @@
 import posixPath from "node:path/posix";
+import Resource from "./Resource.js";
+import {Buffer} from "node:buffer";
+import stream from "node:stream";
+import {Resource_CreateReadableStream} from "./Resource.js";
+import {Project} from "@ui5/project/specifications/Project";
 
 /**
  * A {@link @ui5/fs/Resource Resource} with a different path than it's original
@@ -19,7 +24,7 @@ class ResourceFacade {
 	 * @param {string} parameters.path Virtual path of the facade resource
 	 * @param {@ui5/fs/Resource} parameters.resource Resource to conceal
 	 */
-	constructor({path, resource}) {
+	constructor({path, resource}: {path: string; resource: Resource}) {
 		if (!path) {
 			throw new Error("Unable to create ResourceFacade: Missing parameter 'path'");
 		}
@@ -61,7 +66,7 @@ class ResourceFacade {
 	 * @public
 	 * @param {string} path (Virtual) path of the resource
 	 */
-	setPath(path) {
+	setPath(_path: string) {
 		throw new Error(`The path of a ResourceFacade can't be changed`);
 	}
 
@@ -100,7 +105,7 @@ class ResourceFacade {
 	 * @public
 	 * @param {Buffer} buffer Buffer instance
 	 */
-	setBuffer(buffer) {
+	setBuffer(buffer: Buffer) {
 		return this.#resource.setBuffer(buffer);
 	}
 
@@ -120,7 +125,7 @@ class ResourceFacade {
 	 * @public
 	 * @param {string} string Resource content
 	 */
-	setString(string) {
+	setString(string: string) {
 		return this.#resource.setString(string);
 	}
 
@@ -146,7 +151,7 @@ class ResourceFacade {
 	 * @param {stream.Readable|@ui5/fs/Resource~createStream} stream Readable stream of the resource content or
 															callback for dynamic creation of a readable stream
 	 */
-	setStream(stream) {
+	setStream(stream: stream.Readable | Resource_CreateReadableStream) {
 		return this.#resource.setStream(stream);
 	}
 
@@ -179,7 +184,7 @@ class ResourceFacade {
 	 *
 	 * @param {string} name Resource collection name
 	 */
-	pushCollection(name) {
+	pushCollection(name: string) {
 		return this.#resource.pushCollection(name);
 	}
 
@@ -215,7 +220,7 @@ class ResourceFacade {
 	 * @public
 	 * @param {@ui5/project/specifications/Project} project Project this resource is associated with
 	 */
-	setProject(project) {
+	setProject(project: Project) {
 		return this.#resource.setProject(project);
 	}
 

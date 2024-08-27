@@ -22,7 +22,7 @@ enum ALLOWED_SOURCE_METADATA_KEYS {
  * @callback @ui5/fs/Resource~createStream
  * @returns {stream.Readable} A readable stream of a resources content
  */
-type Resource_CreateReadableStream = () => stream.Readable;
+export type Resource_CreateReadableStream = () => stream.Readable;
 
 interface Resource_sourceMetadata {
 	[ALLOWED_SOURCE_METADATA_KEYS.ADAPTER]?: string;
