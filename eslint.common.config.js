@@ -1,6 +1,8 @@
 import eslint from "@eslint/js";
 import tseslint from "typescript-eslint";
 import stylistic from "@stylistic/eslint-plugin";
+import ava from "eslint-plugin-ava";
+import jsdoc from "eslint-plugin-jsdoc";
 
 export default tseslint.config(
 	{
@@ -10,6 +12,8 @@ export default tseslint.config(
 			".github/*",
 			".reuse/*",
 			"coverage/*",
+			"**/docs/",
+			"**/jsdocs/",
 
 			// Exclude test files
 			"test/tmp/*",
@@ -29,7 +33,8 @@ export default tseslint.config(
 		arrowParens: true,
 		braceStyle: "1tbs",
 		blockSpacing: false,
-	}), {
+	}),
+	ava.configs["flat/recommended"], {
 		// Lint all JS files using the eslint parser
 		files: ["**/*.js"],
 		languageOptions: {
@@ -113,6 +118,22 @@ export default tseslint.config(
 			],
 			"no-console": "error",
 			"no-eval": "error",
+
+			"valid-jsdoc": 0,
+		},
+	}, {
+		// JSdoc only applying to sources
+		files: ["src/**/*.ts"],
+		...jsdoc.configs["flat/recommended-typescript-error"],
+	}, {
+		// Overwriting JSDoc rules in a separate config with the same files pattern
+		files: ["src/**/*.ts"],
+		rules: {
+			"jsdoc/require-returns": 0,
+			"jsdoc/require-returns-description": 0,
+			"jsdoc/tag-lines": [2, "any", {
+				startLines: 1,
+			}],
 		},
 	}
 );
