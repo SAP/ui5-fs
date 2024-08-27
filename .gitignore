@@ -66,3 +66,4 @@ jsdocs/
 
 # Generated code
 lib/
+!test/lib/
