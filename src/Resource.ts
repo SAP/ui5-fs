@@ -145,7 +145,7 @@ class Resource implements ResourceInterface {
 			}
 
 			// TODO: TS Those checks are completely redundant, but some tests
-			// and maybe runtime code would rely on them. A major refactoring 
+			// and maybe runtime code would rely on them. A major refactoring
 			// would be needed
 			for (const metadataKey in sourceMetadata) { // Also check prototype
 				if (!Object.values(ALLOWED_SOURCE_METADATA_KEYS)
