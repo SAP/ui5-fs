@@ -76,7 +76,7 @@ class AbstractReader {
 	 * @param {boolean} [options.nodir=true] Do not match directories
 	 * @returns {Promise<@ui5/fs/Resource>} Promise resolving to a single resource
 	 */
-	byPath(virPath: string, options = {nodir: true}): Promise<Resource> {
+	byPath(virPath: string, options = {nodir: true}): Promise<Resource | null> {
 		const trace = new Trace(virPath);
 		return this._byPath(virPath, options, trace).then(function (resource) {
 			trace.printReport();
@@ -127,7 +127,7 @@ class AbstractReader {
 	 * @param {@ui5/fs/tracing.Trace} trace Trace instance
 	 * @returns {Promise<@ui5/fs/Resource>} Promise resolving to a single resource
 	 */
-	_byPath(_virPath: string, _options: object, _trace: Trace): Promise<Resource> {
+	_byPath(_virPath: string, _options: object, _trace: Trace): Promise<Resource | null> {
 		throw new Error("Function '_byPath' is not implemented");
 	}
 }

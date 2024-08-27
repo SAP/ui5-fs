@@ -1,4 +1,6 @@
 import AbstractReader from "./AbstractReader.js";
+import Resource from "./Resource.js";
+import Trace from "./tracing/Trace.js";
 
 /**
  * Resource Locator ReaderCollection
@@ -9,6 +11,7 @@ import AbstractReader from "./AbstractReader.js";
  * @extends @ui5/fs/AbstractReader
  */
 class ReaderCollection extends AbstractReader {
+	_readers: AbstractReader[];
 	/**
 	 * The constructor.
 	 *
@@ -18,7 +21,7 @@ class ReaderCollection extends AbstractReader {
 	 *   List of resource readers (all tried in parallel).
 	 *   If none are provided, the collection will never return any results.
 	 */
-	constructor({name, readers}) {
+	constructor({name, readers}: {name: string; readers: AbstractReader[]}) {
 		super(name);
 
 		// Remove any undefined (empty) readers from array
@@ -35,12 +38,12 @@ class ReaderCollection extends AbstractReader {
 	 * @param {@ui5/fs/tracing.Trace} trace Trace instance
 	 * @returns {Promise<@ui5/fs/Resource[]>} Promise resolving to list of resources
 	 */
-	_byGlob(pattern, options, trace) {
+	_byGlob(pattern: string[], options: {nodir: boolean}, trace: Trace) {
 		return Promise.all(this._readers.map(function (resourceLocator) {
 			return resourceLocator._byGlob(pattern, options, trace);
 		})).then((result) => {
-			trace.collection(this._name);
-			return Array.prototype.concat.apply([], result);
+			trace.collection(this._name!);
+			return Array.prototype.concat.apply([], result) as Resource[]; // Flatten array
 		});
 	}
 
@@ -54,25 +57,24 @@ class ReaderCollection extends AbstractReader {
 	 * @returns {Promise<@ui5/fs/Resource|null>}
 	 *   Promise resolving to a single resource or <code>null</code> if no resource is found
 	 */
-	_byPath(virPath, options, trace) {
-		const that = this;
+	_byPath(virPath: string, options: {nodir: boolean}, trace: Trace) {
 		const resourceLocatorCount = this._readers.length;
 		let resolveCount = 0;
 
 		if (resourceLocatorCount === 0) {
 			// Short-circuit if there are no readers (Promise.race does not settle for empty arrays)
-			trace.collection(that._name);
+			trace.collection(this._name!);
 			return Promise.resolve(null);
 		}
 
 		// Using Promise.race to deliver files that can be found as fast as possible
-		return Promise.race(this._readers.map(function (resourceLocator) {
-			return resourceLocator._byPath(virPath, options, trace).then(function (resource) {
-				return new Promise(function (resolve, reject) {
-					trace.collection(that._name);
+		return Promise.race(this._readers.map((resourceLocator) => {
+			return resourceLocator._byPath(virPath, options, trace).then((resource) => {
+				return new Promise((resolve) => {
+					trace.collection(this._name!);
 					resolveCount++;
 					if (resource) {
-						resource.pushCollection(that._name);
+						resource.pushCollection(this._name!);
 						resolve(resource);
 					} else if (resolveCount === resourceLocatorCount) {
 						resolve(null);
