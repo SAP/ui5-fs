@@ -43,7 +43,7 @@ class AbstractReader {
 	 * @returns Promise resolving to list of resources
 	 */
 	byGlob(virPattern: string | string[], options = {nodir: true}): Promise<ResourceInterface[]> {
-		const trace = new Trace(virPattern);
+		const trace = new Trace(Array.isArray(virPattern) ? virPattern.join("") : virPattern);
 		return this._byGlob(virPattern, options, trace).then(function (result: ResourceInterface[]) {
 			trace.printReport();
 			return result;

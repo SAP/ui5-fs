@@ -147,7 +147,7 @@ class AbstractAdapter extends AbstractReaderWriter {
 					log.verbose(`Virtual base path: ${this._virBaseDir}`);
 					log.verbose(`Pattern to match: ${virPattern}`);
 					log.verbose(`Current subset (tried index ${i}):`);
-					log.verbose(subset);
+					log.verbose(String(subset));
 					return {idx: i, virtualMatch: true};
 				}
 				const basePathPart = basePathParts[i];
@@ -270,7 +270,7 @@ class AbstractAdapter extends AbstractReaderWriter {
 				}
 				return null;
 			}
-			if (this._isPathExcluded(virPath)) {
+			if (this._isPathExcluded(Array.isArray(virPath) ? virPath : [virPath])) {
 				if (log.isLevelEnabled("silly")) {
 					log.silly(`Failed to resolve virtual path '${inputVirPath}': ` +
 					`Resolved path is excluded by configuration of adapter with base path '${this._virBasePath}'`);
