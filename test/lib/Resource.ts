@@ -1,8 +1,9 @@
 import test from "ava";
-import {Stream, Transform} from "node:stream";
+import {Stream, Transform, Readable} from "node:stream";
 import {promises as fs, createReadStream} from "node:fs";
 import path from "node:path";
 import Resource from "../../src/Resource.js";
+import {Project} from "@ui5/project/specifications/Project";
 
 function createBasicResource() {
 	const fsPath = path.join("test", "fixtures", "application.a", "webapp", "index.html");
@@ -11,9 +12,8 @@ function createBasicResource() {
 		createStream: function () {
 			return createReadStream(fsPath);
 		},
-		project: {},
+		project: {} as Project,
 		statInfo: {},
-		fsPath,
 	});
 	return resource;
 }
@@ -24,16 +24,16 @@ function createBasicResource() {
  * @param {stream.Readable} readableStream readable stream
  * @returns {Promise<string>} resolves with the read string
  */
-const readStream = (readableStream) => {
+const readStream = (readableStream: Readable) => {
 	return new Promise((resolve, reject) => {
 		let streamedResult = "";
-		readableStream.on("data", (chunk) => {
+		readableStream.on("data", (chunk: string) => {
 			streamedResult += chunk;
 		});
 		readableStream.on("end", () => {
 			resolve(streamedResult);
 		});
-		readableStream.on("error", (err) => {
+		readableStream.on("error", (err: Error) => {
 			reject(err);
 		});
 	});
@@ -41,6 +41,7 @@ const readStream = (readableStream) => {
 
 test("Resource: constructor with missing path parameter", (t) => {
 	t.throws(() => {
+		// @ts-expect-error testing missing arguments
 		new Resource({});
 	}, {
 		instanceOf: Error,
@@ -175,6 +176,7 @@ test("Resource: Illegal source metadata attribute", (t) => {
 			sourceMetadata: {
 				adapter: "My Adapter",
 				fsPath: "/some/path",
+				// @ts-expect-error testing invalid value
 				pony: "🦄",
 			},
 		});
@@ -188,6 +190,7 @@ test("Resource: Illegal source metadata value", (t) => {
 		new Resource({
 			path: "/my/path",
 			string: "Content",
+			// @ts-expect-error testing invalid value
 			sourceMetadata: {
 				adapter: "My Adapter",
 				fsPath: {
@@ -287,7 +290,7 @@ test("Resource: getStream for empty string instance", async (t) => {
 	const resource = new Resource({
 		path: "/my/path/to/resource",
 
-		string: new String(""),
+		string: new String("") as string,
 	});
 
 	const result = await readStream(resource.getStream());
@@ -385,6 +388,7 @@ test("Resource: size modification", async (t) => {
 		path: "/my/path/to/resource",
 	});
 	const stream = new Stream.Readable();
+	// eslint-disable-next-line @typescript-eslint/no-empty-function
 	stream._read = function () {};
 	stream.push("I am a ");
 	stream.push("readable ");
@@ -411,6 +415,7 @@ test("Resource: setStream (Stream)", async (t) => {
 	t.false(resource.isModified(), "Resource is not modified");
 
 	const stream = new Stream.Readable();
+	// eslint-disable-next-line @typescript-eslint/no-empty-function
 	stream._read = function () {};
 	stream.push("I am a ");
 	stream.push("readable ");
@@ -437,6 +442,7 @@ test("Resource: setStream (Create stream callback)", async (t) => {
 
 	resource.setStream(() => {
 		const stream = new Stream.Readable();
+		// eslint-disable-next-line @typescript-eslint/no-empty-function
 		stream._read = function () {};
 		stream.push("I am a ");
 		stream.push("readable ");
@@ -474,6 +480,7 @@ test("Resource: clone resource with stream", async (t) => {
 		path: "/my/path/to/resource",
 	});
 	const stream = new Stream.Readable();
+	// eslint-disable-next-line @typescript-eslint/no-empty-function
 	stream._read = function () {};
 	stream.push("Content");
 	stream.push(null);
@@ -531,13 +538,13 @@ test("Resource: clone resource with project removes project", async (t) => {
 
 	const resource = new Resource({
 		path: "/my/path/to/resource",
-		project: myProject,
+		project: myProject as unknown as Project,
 	});
 
 	const clonedResource = await resource.clone();
 	t.pass("Resource cloned");
 
-	const clonedResourceProject = await clonedResource.getProject();
+	const clonedResourceProject = clonedResource.getProject();
 	t.falsy(clonedResourceProject, "Cloned resource should not have a project");
 });
 
@@ -626,10 +633,10 @@ test("Resource: getProject", (t) => {
 	t.plan(1);
 	const resource = new Resource({
 		path: "/my/path/to/resource",
-		project: {getName: () => "Mock Project"},
+		project: {getName: () => "Mock Project"} as Project,
 	});
 	const project = resource.getProject();
-	t.is(project.getName(), "Mock Project");
+	t.is(project!.getName(), "Mock Project");
 });
 
 test("Resource: setProject", (t) => {
@@ -637,18 +644,18 @@ test("Resource: setProject", (t) => {
 	const resource = new Resource({
 		path: "/my/path/to/resource",
 	});
-	const project = {getName: () => "Mock Project"};
+	const project = {getName: () => "Mock Project"} as Project;
 	resource.setProject(project);
-	t.is(resource.getProject().getName(), "Mock Project");
+	t.is(resource.getProject()!.getName(), "Mock Project");
 });
 
 test("Resource: reassign with setProject", (t) => {
 	t.plan(2);
 	const resource = new Resource({
 		path: "/my/path/to/resource",
-		project: {getName: () => "Mock Project"},
+		project: {getName: () => "Mock Project"} as Project,
 	});
-	const project = {getName: () => "New Mock Project"};
+	const project = {getName: () => "New Mock Project"} as Project;
 	const error = t.throws(() => resource.setProject(project));
 	t.is(error.message, "Unable to assign project New Mock Project to resource /my/path/to/resource: " +
 	"Resource is already associated to project Mock Project");
@@ -656,6 +663,7 @@ test("Resource: reassign with setProject", (t) => {
 
 test("Resource: constructor with stream", async (t) => {
 	const stream = new Stream.Readable();
+	// eslint-disable-next-line @typescript-eslint/no-empty-function
 	stream._read = function () {};
 	stream.push("I am a ");
 	stream.push("readable ");
