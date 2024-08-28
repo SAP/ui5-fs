@@ -17,8 +17,6 @@ export interface Filter_Params {
 
 /**
  * A reader that allows dynamic filtering of resources passed through it
- *
- * @alias @ui5/fs/readers/Filter
  */
 class Filter extends AbstractReader {
 	_reader: AbstractReader;

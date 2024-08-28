@@ -4,8 +4,6 @@ import {ResourceInterface} from "./Resource.js";
 
 /**
  * Abstract resource locator implementing the general API for <b>reading</b> resources
- *
- * @alias @ui5/fs/AbstractReader
  */
 class AbstractReader {
 	_name: string | undefined;

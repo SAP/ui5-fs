@@ -4,8 +4,6 @@ import Trace from "./tracing/Trace.js";
 
 /**
  * Resource Locator ReaderCollection
- *
- * @alias @ui5/fs/ReaderCollection
  */
 class ReaderCollection extends AbstractReader {
 	_readers: AbstractReader[];

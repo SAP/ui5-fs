@@ -6,8 +6,6 @@ import {Project} from "@ui5/project/specifications/Project";
 
 /**
  * A {@link @ui5/fs/Resource Resource} with a different path than it's original
- *
- * @alias @ui5/fs/ResourceFacade
  */
 class ResourceFacade implements ResourceInterface {
 	#path;

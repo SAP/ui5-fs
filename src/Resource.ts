@@ -84,8 +84,6 @@ export interface ResourceInterface {
 }
 /**
  * Resource. UI5 Tooling specific representation of a file's content and metadata
- *
- * @alias @ui5/fs/Resource
  */
 class Resource implements ResourceInterface {
 	#project;

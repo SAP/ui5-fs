@@ -29,8 +29,6 @@ export interface Link_Args {
  * // The following resolves with a @ui5/fs/ResourceFacade of the resource
  * // located at "/resources/my-app-name/Component.js" in the sourceReader
  * const resource = await linkedReader.byPath("/app/Component.js");
- *
- * @alias @ui5/fs/readers/Link
  */
 class Link extends AbstractReader {
 	_reader: AbstractReader;

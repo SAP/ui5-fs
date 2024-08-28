@@ -3,8 +3,6 @@ import {ResourceInterface} from "./Resource.js";
 
 /**
  * Abstract resource locator implementing the general API for <b>reading and writing</b> resources
- *
- * @alias @ui5/fs/AbstractReaderWriter
  */
 class AbstractReaderWriter extends AbstractReader {
 	/**

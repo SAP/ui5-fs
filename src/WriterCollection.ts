@@ -6,8 +6,6 @@ import {ResourceInterface} from "./Resource.js";
 
 /**
  * Resource Locator WriterCollection
- *
- * @alias @ui5/fs/WriterCollection
  */
 class WriterCollection extends AbstractReaderWriter {
 	_basePathRegex: string;

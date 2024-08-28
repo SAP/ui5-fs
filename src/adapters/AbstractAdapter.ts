@@ -11,8 +11,6 @@ import {isMigratedResource} from "../utils/tsUtils.js";
 
 /**
  * Abstract Resource Adapter
- *
- * @alias @ui5/fs/adapters/AbstractAdapter
  */
 class AbstractAdapter extends AbstractReaderWriter {
 	_virBasePath: string;

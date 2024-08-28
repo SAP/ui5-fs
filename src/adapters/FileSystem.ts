@@ -18,8 +18,6 @@ const READ_ONLY_MODE = 0o444;
 const ADAPTER_NAME = "FileSystem";
 /**
  * File system resource adapter
- *
- * @alias @ui5/fs/adapters/FileSystem
  */
 class FileSystem extends AbstractAdapter {
 	_fsBasePath: string;

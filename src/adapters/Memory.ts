@@ -10,8 +10,6 @@ const ADAPTER_NAME = "Memory";
 
 /**
  * Virtual resource Adapter
- *
- * @alias @ui5/fs/adapters/Memory
  */
 class Memory extends AbstractAdapter {
 	_virFiles: Record<string, ResourceInterface>;
@@ -39,7 +37,8 @@ class Memory extends AbstractAdapter {
 	 * @param resourceMap Resources cache
 	 * @returns
 	 */
-	async _matchPatterns(patterns: string[], resourceMap: Record<string, ResourceInterface>): Promise<ResourceInterface[]> {
+	async _matchPatterns(patterns: string[],
+		resourceMap: Record<string, ResourceInterface>): Promise<ResourceInterface[]> {
 		const resourcePaths = Object.keys(resourceMap);
 		const matchedPaths = micromatch(resourcePaths, patterns, {
 			dot: true,

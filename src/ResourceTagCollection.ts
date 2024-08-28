@@ -16,8 +16,6 @@ export function isPathTagsInterface(elem: unknown): elem is PathTagsInterface {
 
 /**
  * A ResourceTagCollection
- *
- * @alias @ui5/fs/internal/ResourceTagCollection
  */
 class ResourceTagCollection {
 	_allowedTags: string[];

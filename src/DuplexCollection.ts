@@ -6,8 +6,6 @@ import Trace from "./tracing/Trace.js";
 
 /**
  * Wrapper to keep readers and writers together
- *
- * @alias @ui5/fs/DuplexCollection
  */
 class DuplexCollection extends AbstractReaderWriter {
 	_reader: AbstractReader;
