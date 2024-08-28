@@ -6,6 +6,10 @@ import ResourceFacade from "./ResourceFacade.js";
 interface PathTagsInterface {
 	[key: string]: string | number | boolean | undefined | PathTagsInterface;
 };
+/**
+ *
+ * @param elem
+ */
 export function isPathTagsInterface(elem: unknown): elem is PathTagsInterface {
 	return typeof elem === "object";
 }
@@ -13,8 +17,6 @@ export function isPathTagsInterface(elem: unknown): elem is PathTagsInterface {
 /**
  * A ResourceTagCollection
  *
- * @private
- * @class
  * @alias @ui5/fs/internal/ResourceTagCollection
  */
 class ResourceTagCollection {

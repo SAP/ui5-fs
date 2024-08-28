@@ -12,11 +12,7 @@ import {isMigratedResource} from "../utils/tsUtils.js";
 /**
  * Abstract Resource Adapter
  *
- * @abstract
- * @public
- * @class
  * @alias @ui5/fs/adapters/AbstractAdapter
- * @extends @ui5/fs/AbstractReaderWriter
  */
 class AbstractAdapter extends AbstractReaderWriter {
 	_virBasePath: string;
@@ -28,12 +24,11 @@ class AbstractAdapter extends AbstractReaderWriter {
 	/**
 	 * The constructor
 	 *
-	 * @public
-	 * @param {object} parameters Parameters
-	 * @param {string} parameters.virBasePath
+	 * @param parameters Parameters
+	 * @param parameters.virBasePath
 	 *   Virtual base path. Must be absolute, POSIX-style, and must end with a slash
-	 * @param {string[]} [parameters.excludes] List of glob patterns to exclude
-	 * @param {object} [parameters.project] Experimental, internal parameter. Do not use
+	 * @param [parameters.excludes] List of glob patterns to exclude
+	 * @param [parameters.project] Experimental, internal parameter. Do not use
 	 */
 	constructor({virBasePath, excludes = [], project}:
 		{virBasePath: string; excludes?: string[]; project?: Project}) {
@@ -62,14 +57,12 @@ class AbstractAdapter extends AbstractReaderWriter {
 	/**
 	 * Locates resources by glob.
 	 *
-	 * @abstract
-	 * @private
-	 * @param {string|string[]} virPattern glob pattern as string or an array of
+	 * @param virPattern glob pattern as string or an array of
 	 *         glob patterns for virtual directory structure
-	 * @param {object} [options={}] glob options
-	 * @param {boolean} [options.nodir=true] Do not match directories
-	 * @param {@ui5/fs/tracing.Trace} trace Trace instance
-	 * @returns {Promise<@ui5/fs/Resource[]>} Promise resolving to list of resources
+	 * @param [options] glob options
+	 * @param [options.nodir] Do not match directories
+	 * @param trace Trace instance
+	 * @returns Promise resolving to list of resources
 	 */
 	async _byGlob(virPattern: string | string[], options = {nodir: true}, trace: Trace): Promise<Resource[]> {
 		const excludes = this._excludesNegated;
@@ -113,8 +106,8 @@ class AbstractAdapter extends AbstractReaderWriter {
 	/**
 	 * Validate if virtual path should be excluded
 	 *
-	 * @param {string[]} virPath Virtual Path
-	 * @returns {boolean} True if path is excluded, otherwise false
+	 * @param virPath Virtual Path
+	 * @returns True if path is excluded, otherwise false
 	 */
 	_isPathExcluded(virPath: string[]) {
 		return micromatch(virPath, this._excludes).length > 0;
@@ -125,8 +118,8 @@ class AbstractAdapter extends AbstractReaderWriter {
 	 * This means that it either starts with the virtual base path of the adapter
 	 * or equals the base directory (base path without a trailing slash)
 	 *
-	 * @param {string} virPath Virtual Path
-	 * @returns {boolean} True if path should be handled
+	 * @param virPath Virtual Path
+	 * @returns True if path should be handled
 	 */
 	_isPathHandled(virPath: string) {
 		// Check whether path starts with base path, or equals base directory
@@ -136,9 +129,8 @@ class AbstractAdapter extends AbstractReaderWriter {
 	/**
 	 * Normalizes virtual glob patterns.
 	 *
-	 * @private
-	 * @param {string} virPattern glob pattern for virtual directory structure
-	 * @returns {string[]} A list of normalized glob patterns
+	 * @param virPattern glob pattern for virtual directory structure
+	 * @returns A list of normalized glob patterns
 	 */
 	_normalizePattern(virPattern: string) {
 		const mm = new minimatch.Minimatch(virPattern);

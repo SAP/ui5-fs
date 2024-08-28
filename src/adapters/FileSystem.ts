@@ -19,10 +19,7 @@ const ADAPTER_NAME = "FileSystem";
 /**
  * File system resource adapter
  *
- * @public
- * @class
  * @alias @ui5/fs/adapters/FileSystem
- * @extends @ui5/fs/adapters/AbstractAdapter
  */
 class FileSystem extends AbstractAdapter {
 	_fsBasePath: string;
@@ -32,18 +29,18 @@ class FileSystem extends AbstractAdapter {
 	/**
 	 * The Constructor.
 	 *
-	 * @param {object} parameters Parameters
-	 * @param {string} parameters.virBasePath
+	 * @param parameters Parameters
+	 * @param parameters.virBasePath
 	 *   Virtual base path. Must be absolute, POSIX-style, and must end with a slash
-	 * @param {string} parameters.fsBasePath
+	 * @param parameters.fsBasePath
 	 *   File System base path. Must be absolute and must use platform-specific path segment separators
-	 * @param {string[]} [parameters.excludes] List of glob patterns to exclude
-	 * @param {object} [parameters.useGitignore=false]
+	 * @param [parameters.excludes] List of glob patterns to exclude
+	 * @param [parameters.useGitignore]
 	 *   Whether to apply any excludes defined in an optional .gitignore in the given <code>fsBasePath</code> directory
-	 * @param {@ui5/project/specifications/Project} [parameters.project] Project this adapter belongs to (if any)
+	 * @param [parameters.project] Project this adapter belongs to (if any)
 	 */
 	constructor({virBasePath, project, fsBasePath, excludes, useGitignore = false}:
-		{virBasePath: string; project: Project; fsBasePath: string; excludes: string[]; useGitignore: boolean}
+		{virBasePath: string; project?: Project; fsBasePath: string; excludes?: string[]; useGitignore?: boolean}
 	) {
 		super({virBasePath, project, excludes});
 
@@ -60,12 +57,11 @@ class FileSystem extends AbstractAdapter {
 	/**
 	 * Locate resources by glob.
 	 *
-	 * @private
-	 * @param {Array} patterns Array of glob patterns
-	 * @param {object} [options={}] glob options
-	 * @param {boolean} [options.nodir=true] Do not match directories
-	 * @param {@ui5/fs/tracing.Trace} trace Trace instance
-	 * @returns {Promise<@ui5/fs/Resource[]>} Promise resolving to list of resources
+	 * @param patterns Array of glob patterns
+	 * @param [options] glob options
+	 * @param [options.nodir] Do not match directories
+	 * @param trace Trace instance
+	 * @returns Promise resolving to list of resources
 	 */
 	async _runGlob(patterns: string[], options = {nodir: true}, trace: Trace) {
 		const opt = {
@@ -154,11 +150,11 @@ class FileSystem extends AbstractAdapter {
 	/**
 	 * Locate a resource by path.
 	 *
-	 * @private
-	 * @param {string} virPath Absolute virtual path
-	 * @param {object} options Options
-	 * @param {@ui5/fs/tracing.Trace} trace Trace instance
-	 * @returns {Promise<@ui5/fs/Resource>} Promise resolving to a single resource or null if not found
+	 * @param virPath Absolute virtual path
+	 * @param options Options
+	 * @param options.nodir
+	 * @param trace Trace instance
+	 * @returns Promise resolving to a single resource or null if not found
 	 */
 	async _byPath(virPath: string, options: {nodir: boolean}, trace: Trace) {
 		const relPath = this._resolveVirtualPathToBase(virPath);
@@ -234,22 +230,22 @@ class FileSystem extends AbstractAdapter {
 	/**
 	 * Writes the content of a resource to a path.
 	 *
-	 * @private
-	 * @param {@ui5/fs/Resource} resource Resource to write
-	 * @param {object} [options]
-	 * @param {boolean} [options.readOnly] Whether the resource content shall be written read-only
+	 * @param resource Resource to write
+	 * @param [options]
+	 * @param [options.readOnly] Whether the resource content shall be written read-only
 	 *						Do not use in conjunction with the <code>drain</code> option.
 	 *						The written file will be used as the new source of this resources content.
 	 *						Therefore the written file should not be altered by any means.
 	 *						Activating this option might improve overall memory consumption.
-	 * @param {boolean} [options.drain] Whether the resource content shall be emptied during the write process.
+	 * @param [options.drain] Whether the resource content shall be emptied during the write process.
 	 *						Do not use in conjunction with the <code>readOnly</code> option.
 	 *						Activating this option might improve overall memory consumption.
 	 *						This should be used in cases where this is the last access to the resource.
+	 * @param anyResource
 	 *						E.g. the final write of a resource after all processing is finished.
-	 * @returns {Promise<undefined>} Promise resolving once data has been written
+	 * @returns Promise resolving once data has been written
 	 */
-	async _write(anyResource: LegacyResource | Resource, {drain, readOnly}: {drain: boolean; readOnly: boolean}) {
+	async _write(anyResource: LegacyResource | Resource, {drain, readOnly}: {drain?: boolean; readOnly?: boolean}) {
 		const potentialResourceP = this._migrateResource(anyResource);
 		let resource: Resource;
 		if (potentialResourceP instanceof Promise) {

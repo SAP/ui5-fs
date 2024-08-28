@@ -1,14 +1,11 @@
 import AbstractReader from "./AbstractReader.js";
-import Resource from "./Resource.js";
+import Resource, { ResourceInterface } from "./Resource.js";
 import Trace from "./tracing/Trace.js";
 
 /**
  * Prioritized Resource Locator Collection
  *
- * @public
- * @class
  * @alias @ui5/fs/ReaderCollectionPrioritized
- * @extends @ui5/fs/AbstractReader
  */
 class ReaderCollectionPrioritized extends AbstractReader {
 	_readers: AbstractReader[];
@@ -16,28 +13,28 @@ class ReaderCollectionPrioritized extends AbstractReader {
 	/**
 	 * The constructor.
 	 *
-	 * @param {object} parameters
-	 * @param {string} parameters.name The collection name
-	 * @param {@ui5/fs/AbstractReader[]} [parameters.readers]
+	 * @param parameters
+	 * @param parameters.name The collection name
+	 * @param [parameters.readers]
 	 *   Prioritized list of resource readers (tried in the order provided).
 	 *   If none are provided, the collection will never return any results.
 	 */
-	constructor({readers, name}: {readers: AbstractReader[]; name: string}) {
+	constructor({readers, name}: {readers?: AbstractReader[]; name: string}) {
 		super(name);
 
 		// Remove any undefined (empty) readers from array
-		this._readers = readers.filter(($) => $);
+		this._readers = readers?.filter(($) => $) ?? [];
 	}
 
 	/**
 	 * Locates resources by glob.
 	 *
-	 * @private
-	 * @param {string|string[]} pattern glob pattern as string or an array of
+	 * @param pattern glob pattern as string or an array of
 	 *         glob patterns for virtual directory structure
-	 * @param {object} options glob options
-	 * @param {@ui5/fs/tracing.Trace} trace Trace instance
-	 * @returns {Promise<@ui5/fs/Resource[]>} Promise resolving to list of resources
+	 * @param options glob options
+	 * @param options.nodir
+	 * @param trace Trace instance
+	 * @returns Promise resolving to list of resources
 	 */
 	_byGlob(pattern: string | string[], options: {nodir: boolean}, trace: Trace) {
 		return Promise.all(this._readers.map(function (resourceLocator) {
@@ -67,11 +64,11 @@ class ReaderCollectionPrioritized extends AbstractReader {
 	/**
 	 * Locates resources by path.
 	 *
-	 * @private
-	 * @param {string} virPath Virtual path
-	 * @param {object} options Options
-	 * @param {@ui5/fs/tracing.Trace} trace Trace instance
-	 * @returns {Promise<@ui5/fs/Resource|null>}
+	 * @param virPath Virtual path
+	 * @param options Options
+	 * @param options.nodir
+	 * @param trace Trace instance
+	 * @returns
 	 *   Promise resolving to a single resource or <code>null</code> if no resource is found
 	 */
 	_byPath(virPath: string, options: {nodir: boolean}, trace: Trace) {
@@ -81,7 +78,7 @@ class ReaderCollectionPrioritized extends AbstractReader {
 				return Promise.resolve(null);
 			}
 			return this._readers[i]._byPath(virPath, options, trace)
-				.then((resource: Resource | null): Resource | Promise<Resource | null> => {
+				.then((resource: ResourceInterface | null): ResourceInterface | Promise<ResourceInterface | null> => {
 					if (resource) {
 						resource.pushCollection(this._name!);
 						return resource;

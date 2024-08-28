@@ -2,6 +2,10 @@ import AbstractReader from "./AbstractReader.js";
 import type * as fs from "node:fs";
 import {Buffer} from "node:buffer";
 
+/**
+ *
+ * @param inputPath Path to convert to POSIX
+ */
 function toPosix(inputPath: string) {
 	return inputPath.replace(/\\/g, "/");
 }
@@ -16,10 +20,8 @@ type Readdir_Callback = (err: Error | null, files?: string[]) => void;
 type Mkdir_Callback = (err?: Error | null) => void;
 
 /**
- * @public
- * @module @ui5/fs/fsInterface
  */
-interface File_System {
+interface File_System_Interface {
 	readFile: (fsPath: string, options: Read_File_Options, callback: Read_File_Callback) => void;
 	stat: (fsPath: string, callback: Stat_Callback) => void;
 	readdir: (fsPath: string, callback: Readdir_Callback) => void;
@@ -29,19 +31,16 @@ interface File_System {
 /**
  * Wraps readers to access them through a [Node.js fs]{@link https://nodejs.org/api/fs.html} styled interface.
  *
- * @public
- * @function default
- * @static
- * @param {@ui5/fs/AbstractReader} reader Resource Reader or Collection
+ * @param reader Resource Reader or Collection
  *
- * @returns {object} Object with [Node.js fs]{@link https://nodejs.org/api/fs.html} styled functions
+ * @returns Object with [Node.js fs]{@link https://nodejs.org/api/fs.html} styled functions
  * [<code>readFile</code>]{@link https://nodejs.org/api/fs.html#fs_fs_readfile_path_options_callback},
  * [<code>stat</code>]{@link https://nodejs.org/api/fs.html#fs_fs_stat_path_options_callback},
  * [<code>readdir</code>]{@link https://nodejs.org/api/fs.html#fs_fs_readdir_path_options_callback} and
  * [<code>mkdir</code>]{@link https://nodejs.org/api/fs.html#fs_fs_mkdir_path_options_callback}
  */
 function fsInterface(reader: AbstractReader) {
-	const fileSystem: File_System = {
+	const fileSystem: File_System_Interface = {
 		readFile(fsPath, options, callback) {
 			if (typeof options === "function") {
 				callback = options;

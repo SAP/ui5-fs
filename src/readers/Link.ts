@@ -5,6 +5,8 @@ import {getLogger} from "@ui5/logger";
 const log = getLogger("resources:readers:Link");
 import Trace from "../tracing/Trace.js";
 
+export interface Link_Params {reader: AbstractReader; pathMapping: {linkPath: string; targetPath: string};
+
 /**
  * A reader that allows for rewriting paths segments of all resources passed through it.
  *
@@ -22,32 +24,30 @@ import Trace from "../tracing/Trace.js";
  * // located at "/resources/my-app-name/Component.js" in the sourceReader
  * const resource = await linkedReader.byPath("/app/Component.js");
  *
- * @public
- * @class
  * @alias @ui5/fs/readers/Link
- * @extends @ui5/fs/AbstractReader
  */
 class Link extends AbstractReader {
 	_reader: AbstractReader;
-	_pathMapping: {linkPath: string; targetPath: string};
+
 	/**
 	 * Path mapping for a [Link]{@link @ui5/fs/readers/Link}
 	 *
-	 * @public
-	 * @typedef {object} @ui5/fs/readers/Link/PathMapping
-	 * @property {string} linkPath Path to match and replace in the requested path or pattern
-	 * @property {string} targetPath Path to use as a replacement in the request for the source reader
+	 * linkPath Path to match and replace in the requested path or pattern
+	 *
+	 * targetPath Path to use as a replacement in the request for the source reader
 	 */
+	_pathMapping: {linkPath: string; targetPath: string};
 
 	/**
 	 * Constructor
 	 *
- 	 * @public
-	 * @param {object} parameters Parameters
-	 * @param {@ui5/fs/AbstractReader} parameters.reader The resource reader or collection to wrap
-	 * @param {@ui5/fs/readers/Link/PathMapping} parameters.pathMapping
+	 * @param parameters Parameters
+	 * @param parameters.reader The resource reader or collection to wrap
+	 * @param parameters.pathMapping
+	 * @param parameters.pathMapping.linkPath
+	 * @param parameters.pathMapping.targetPath
 	 */
-	constructor({reader, pathMapping}: {reader: AbstractReader; pathMapping: {linkPath: string; targetPath: string}}) {
+	constructor({reader, pathMapping}: Link_Params) {
 		super();
 		if (!reader) {
 			throw new Error(`Missing parameter "reader"`);
@@ -63,12 +63,12 @@ class Link extends AbstractReader {
 	/**
 	 * Locates resources by glob.
 	 *
-	 * @private
-	 * @param {string|string[]} pattern glob pattern as string or an array of
+	 * @param pattern glob pattern as string or an array of
 	 *         glob patterns for virtual directory structure
-	 * @param {object} options glob options
-	 * @param {@ui5/fs/tracing/Trace} trace Trace instance
-	 * @returns {Promise<@ui5/fs/Resource[]>} Promise resolving to list of resources
+	 * @param options glob options
+	 * @param options.nodir
+	 * @param trace Trace instance
+	 * @returns Promise resolving to list of resources
 	 */
 	async _byGlob(pattern: string | string[], options: {nodir: boolean}, trace: Trace) {
 		if (!(pattern instanceof Array)) {
@@ -104,11 +104,11 @@ class Link extends AbstractReader {
 	/**
 	 * Locates resources by path.
 	 *
-	 * @private
-	 * @param {string} virPath Virtual path
-	 * @param {object} options Options
-	 * @param {@ui5/fs/tracing/Trace} trace Trace instance
-	 * @returns {Promise<@ui5/fs/Resource>} Promise resolving to a single resource
+	 * @param virPath Virtual path
+	 * @param options Options
+	 * @param options.nodir
+	 * @param trace Trace instance
+	 * @returns Promise resolving to a single resource
 	 */
 	async _byPath(virPath: string, options: {nodir: boolean}, trace: Trace) {
 		if (!virPath.startsWith(this._pathMapping.linkPath)) {

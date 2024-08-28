@@ -3,7 +3,7 @@ const log = getLogger("resources:adapters:Memory");
 import micromatch from "micromatch";
 import AbstractAdapter from "./AbstractAdapter.js";
 import {Project} from "@ui5/project/specifications/Project";
-import Resource, {LegacyResource} from "../Resource.js";
+import Resource, {LegacyResource, ResourceInterface} from "../Resource.js";
 import Trace from "../tracing/Trace.js";
 
 const ADAPTER_NAME = "Memory";
@@ -11,10 +11,7 @@ const ADAPTER_NAME = "Memory";
 /**
  * Virtual resource Adapter
  *
- * @public
- * @class
  * @alias @ui5/fs/adapters/Memory
- * @extends @ui5/fs/adapters/AbstractAdapter
  */
 class Memory extends AbstractAdapter {
 	_virFiles: Record<string, Resource>;
@@ -23,12 +20,11 @@ class Memory extends AbstractAdapter {
 	/**
 	 * The constructor.
 	 *
-	 * @public
-	 * @param {object} parameters Parameters
-	 * @param {string} parameters.virBasePath
+	 * @param parameters Parameters
+	 * @param parameters.virBasePath
 	 *   Virtual base path. Must be absolute, POSIX-style, and must end with a slash
-	 * @param {string[]} [parameters.excludes] List of glob patterns to exclude
-	 * @param {@ui5/project/specifications/Project} [parameters.project] Project this adapter belongs to (if any)
+	 * @param [parameters.excludes] List of glob patterns to exclude
+	 * @param [parameters.project] Project this adapter belongs to (if any)
 	 */
 	constructor({virBasePath, project, excludes}: {virBasePath: string; project?: Project; excludes?: string[]}) {
 		super({virBasePath, project, excludes});
@@ -39,12 +35,11 @@ class Memory extends AbstractAdapter {
 	/**
 	 * Matches and returns resources from a given map (either _virFiles or _virDirs).
 	 *
-	 * @private
-	 * @param {string[]} patterns
-	 * @param {object} resourceMap
-	 * @returns {Promise<module:@ui5/fs.Resource[]>}
+	 * @param patterns
+	 * @param resourceMap
+	 * @returns
 	 */
-	async _matchPatterns(patterns: string[], resourceMap: Record<string, Resource>): Promise<Resource[]> {
+	async _matchPatterns(patterns: string[], resourceMap: Record<string, Resource>): Promise<ResourceInterface[]> {
 		const resourcePaths = Object.keys(resourceMap);
 		const matchedPaths = micromatch(resourcePaths, patterns, {
 			dot: true,
@@ -68,12 +63,12 @@ class Memory extends AbstractAdapter {
 	/**
 	 * Locate resources by glob.
 	 *
-	 * @private
-	 * @param {Array} patterns array of glob patterns
-	 * @param {object} [options={}] glob options
-	 * @param {boolean} [options.nodir=true] Do not match directories
-	 * @param {@ui5/fs/tracing.Trace} trace Trace instance
-	 * @returns {Promise<@ui5/fs/Resource[]>} Promise resolving to list of resources
+	 * @param patterns array of glob patterns
+	 * @param [options] glob options
+	 * @param [options.nodir] Do not match directories
+	 * @param _trace
+	 * @param trace Trace instance
+	 * @returns Promise resolving to list of resources
 	 */
 	async _runGlob(patterns: string[], options = {nodir: true}, _trace: Trace) {
 		if (patterns[0] === "" && !options.nodir) { // Match virtual root directory
@@ -106,11 +101,11 @@ class Memory extends AbstractAdapter {
 	/**
 	 * Locates resources by path.
 	 *
-	 * @private
-	 * @param {string} virPath Virtual path
-	 * @param {object} options Options
-	 * @param {@ui5/fs/tracing.Trace} trace Trace instance
-	 * @returns {Promise<@ui5/fs/Resource>} Promise resolving to a single resource
+	 * @param virPath Virtual path
+	 * @param options Options
+	 * @param options.nodir
+	 * @param trace Trace instance
+	 * @returns Promise resolving to a single resource
 	 */
 	async _byPath(virPath: string, options: {nodir: boolean}, trace: Trace) {
 		const relPath = this._resolveVirtualPathToBase(virPath);
@@ -132,9 +127,9 @@ class Memory extends AbstractAdapter {
 	/**
 	 * Writes the content of a resource to a path.
 	 *
-	 * @private
-	 * @param {@ui5/fs/Resource} resource The Resource to write
-	 * @returns {Promise<undefined>} Promise resolving once data has been written
+	 * @param anyResource
+	 * @param resource The Resource to write
+	 * @returns Promise resolving once data has been written
 	 */
 	async _write(anyResource: Resource | LegacyResource) {
 		const migratedResource = this._migrateResource(anyResource);

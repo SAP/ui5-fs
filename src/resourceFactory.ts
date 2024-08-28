@@ -5,10 +5,10 @@ import FsAdapter from "./adapters/FileSystem.js";
 import MemAdapter from "./adapters/Memory.js";
 import ReaderCollection from "./ReaderCollection.js";
 import ReaderCollectionPrioritized from "./ReaderCollectionPrioritized.js";
-import Resource, {Resource_Options} from "./Resource.js";
+import Resource, {Resource_Options, ResourceInterface} from "./Resource.js";
 import WriterCollection from "./WriterCollection.js";
 import Filter, {Filter_Params} from "./readers/Filter.js";
-import Link from "./readers/Link.js";
+import Link, {Link_Params} from "./readers/Link.js";
 import {getLogger} from "@ui5/logger";
 import {Project} from "@ui5/project/specifications/Project";
 import AbstractReader from "./AbstractReader.js";
@@ -18,7 +18,6 @@ const log = getLogger("resources:resourceFactory");
 /**
  * @module @ui5/fs/resourceFactory
  * @description A collection of resource related APIs
- * @public
  */
 
 /**
@@ -27,22 +26,21 @@ const log = getLogger("resources:resourceFactory");
  * If a file system base path is given, file system resource <code>ReaderWriter</code> is returned.
  * In any other case a virtual one.
  *
- * @public
- * @param {object} parameters Parameters
- * @param {string} parameters.virBasePath Virtual base path. Must be absolute, POSIX-style, and must end with a slash
- * @param {string} [parameters.fsBasePath]
+ * @param parameters Parameters
+ * @param parameters.virBasePath Virtual base path. Must be absolute, POSIX-style, and must end with a slash
+ * @param [parameters.fsBasePath]
  *   File System base path.
  *   If this parameter is supplied, a File System adapter will be created instead of a Memory adapter.
  *   The provided path must be absolute and must use platform-specific path segment separators.
- * @param {string[]} [parameters.excludes] List of glob patterns to exclude
- * @param {object} [parameters.useGitignore=false]
+ * @param [parameters.excludes] List of glob patterns to exclude
+ * @param [parameters.useGitignore]
  *   Whether to apply any excludes defined in an optional .gitignore in the base directory.
  *   This parameter only takes effect in conjunction with the <code>fsBasePath</code> parameter.
- * @param {@ui5/project/specifications/Project} [parameters.project] Project this adapter belongs to (if any)
- * @returns {@ui5/fs/adapters/FileSystem|@ui5/fs/adapters/Memory} File System- or Virtual Adapter
+ * @param [parameters.project] Project this adapter belongs to (if any)
+ * @returns File System- or Virtual Adapter
  */
 export function createAdapter({fsBasePath, virBasePath, project, excludes, useGitignore}:
-{fsBasePath: string; virBasePath: string; project: Project; excludes: string[]; useGitignore: boolean}
+{fsBasePath?: string; virBasePath: string; project?: Project; excludes?: string[]; useGitignore?: boolean}
 ) {
 	if (fsBasePath) {
 		return new FsAdapter({fsBasePath, virBasePath, project, excludes, useGitignore});
@@ -54,18 +52,17 @@ export function createAdapter({fsBasePath, virBasePath, project, excludes, useGi
 /**
  * Creates a File System adapter and wraps it in a ReaderCollection
  *
- * @public
- * @param {object} parameters Parameters
- * @param {string} parameters.virBasePath Virtual base path. Must be absolute, POSIX-style, and must end with a slash
- * @param {string} parameters.fsBasePath
+ * @param parameters Parameters
+ * @param parameters.virBasePath Virtual base path. Must be absolute, POSIX-style, and must end with a slash
+ * @param parameters.fsBasePath
  *   File System base path. Must be absolute and must use platform-specific path segment separators
- * @param {object} [parameters.project] Experimental, internal parameter. Do not use
- * @param {string[]} [parameters.excludes] List of glob patterns to exclude
- * @param {string} [parameters.name] Name for the reader collection
- * @returns {@ui5/fs/ReaderCollection} Reader collection wrapping an adapter
+ * @param [parameters.project] Experimental, internal parameter. Do not use
+ * @param [parameters.excludes] List of glob patterns to exclude
+ * @param [parameters.name] Name for the reader collection
+ * @returns Reader collection wrapping an adapter
  */
 export function createReader({fsBasePath, virBasePath, project, excludes = [], name}:
-{fsBasePath: string; virBasePath: string; project: Project; excludes: string[]; name: string}
+{fsBasePath: string; virBasePath: string; project?: Project; excludes?: string[]; name?: string}
 ) {
 	if (!fsBasePath) {
 		// Creating a reader with a memory adapter seems pointless right now
@@ -107,11 +104,10 @@ export function createReader({fsBasePath, virBasePath, project, excludes = [], n
 /**
  * Creates a ReaderCollection
  *
- * @public
- * @param {object} parameters Parameters
- * @param {string} parameters.name The collection name
- * @param {@ui5/fs/AbstractReader[]} parameters.readers List of resource readers (all tried in parallel)
- * @returns {@ui5/fs/ReaderCollection} Reader collection wrapping provided readers
+ * @param parameters Parameters
+ * @param parameters.name The collection name
+ * @param parameters.readers List of resource readers (all tried in parallel)
+ * @returns Reader collection wrapping provided readers
  */
 export function createReaderCollection({name, readers}: {name: string; readers: AbstractReader[]}) {
 	return new ReaderCollection({
@@ -123,12 +119,11 @@ export function createReaderCollection({name, readers}: {name: string; readers: 
 /**
  * Creates a ReaderCollectionPrioritized
  *
- * @public
- * @param {object} parameters
- * @param {string} parameters.name The collection name
- * @param {@ui5/fs/AbstractReader[]} parameters.readers Prioritized list of resource readers
+ * @param parameters
+ * @param parameters.name The collection name
+ * @param parameters.readers Prioritized list of resource readers
  * 																(first is tried first)
- * @returns {@ui5/fs/ReaderCollectionPrioritized} Reader collection wrapping provided readers
+ * @returns Reader collection wrapping provided readers
  */
 export function createReaderCollectionPrioritized({name, readers}: {name: string; readers: AbstractReader[]}) {
 	return new ReaderCollectionPrioritized({
@@ -140,12 +135,11 @@ export function createReaderCollectionPrioritized({name, readers}: {name: string
 /**
  * Creates a WriterCollection
  *
- * @public
- * @param {object} parameters
- * @param {string} parameters.name The collection name
- * @param {object.<string, @ui5/fs/AbstractReaderWriter>} parameters.writerMapping Mapping of virtual base
+ * @param parameters
+ * @param parameters.name The collection name
+ * @param parameters.writerMapping Mapping of virtual base
  * 	paths to writers. Path are matched greedy
- * @returns {@ui5/fs/WriterCollection} Writer collection wrapping provided writers
+ * @returns Writer collection wrapping provided writers
  */
 export function createWriterCollection({name, writerMapping}: {name: string; writerMapping: AbstractReaderWriter[]}) {
 	return new WriterCollection({
@@ -158,11 +152,10 @@ export function createWriterCollection({name, writerMapping}: {name: string; wri
  * Creates a [Resource]{@link @ui5/fs/Resource}.
  * Accepts the same parameters as the [Resource]{@link @ui5/fs/Resource} constructor.
  *
- * @public
- * @param {object} parameters Parameters to be passed to the resource constructor
- * @returns {@ui5/fs/Resource} Resource
+ * @param parameters Parameters to be passed to the resource constructor
+ * @returns Resource
  */
-export function createResource(parameters: Resource_Options) {
+export function createResource(parameters: Resource_Options): ResourceInterface {
 	return new Resource(parameters);
 }
 
@@ -173,17 +166,16 @@ export function createResource(parameters: Resource_Options) {
  * to write modified files into a separate writer, this is usually a Memory adapter. If a file already exists it is
  * fetched from the memory to work on it in further build steps.
  *
- * @public
- * @param {object} parameters
- * @param {@ui5/fs/AbstractReader} parameters.reader Single reader or collection of readers
- * @param {@ui5/fs/AbstractReaderWriter} [parameters.writer] A ReaderWriter instance which is
+ * @param parameters
+ * @param parameters.reader Single reader or collection of readers
+ * @param [parameters.writer] A ReaderWriter instance which is
  *        only used for writing files. If not supplied, a Memory adapter will be created.
- * @param {string} [parameters.name="workspace"] Name of the collection
- * @param {string} [parameters.virBasePath="/"] Virtual base path
- * @returns {@ui5/fs/DuplexCollection} DuplexCollection which wraps the provided resource locators
+ * @param [parameters.name] Name of the collection
+ * @param [parameters.virBasePath] Virtual base path
+ * @returns DuplexCollection which wraps the provided resource locators
  */
 export function createWorkspace({reader, writer, virBasePath = "/", name = "workspace"}:
-{reader: AbstractReader; writer: AbstractReaderWriter; virBasePath: string; name: string}
+{reader: AbstractReader; writer?: AbstractReaderWriter; virBasePath?: string; name?: string}
 ) {
 	if (!writer) {
 		writer = new MemAdapter({
@@ -203,12 +195,11 @@ export function createWorkspace({reader, writer, virBasePath = "/", name = "work
  * The provided callback is called for every resource that is retrieved through the
  * reader and decides whether the resource shall be passed on or dropped.
  *
- * @public
- * @param {object} parameters
- * @param {@ui5/fs/AbstractReader} parameters.reader Single reader or collection of readers
- * @param {@ui5/fs/readers/Filter~callback} parameters.callback
+ * @param parameters
+ * @param parameters.reader Single reader or collection of readers
+ * @param parameters.callback
  * 				Filter function. Will be called for every resource passed through this reader.
- * @returns {@ui5/fs/readers/Filter} Reader instance
+ * @returns Reader instance
  */
 export function createFilterReader(parameters: Filter_Params) {
 	return new Filter(parameters);
@@ -232,13 +223,12 @@ export function createFilterReader(parameters: Filter_Params) {
  * // located at "/resources/my-app-name/Component.js" in the sourceReader
  * const resource = await linkedReader.byPath("/app/Component.js");
  *
- * @public
- * @param {object} parameters
- * @param {@ui5/fs/AbstractReader} parameters.reader Single reader or collection of readers
- * @param {@ui5/fs/readers/Link/PathMapping} parameters.pathMapping
- * @returns {@ui5/fs/readers/Link} Reader instance
+ * @param parameters
+ * @param parameters.reader Single reader or collection of readers
+ * @param parameters.pathMapping
+ * @returns Reader instance
  */
-export function createLinkReader(parameters) {
+export function createLinkReader(parameters: Link_Params) {
 	return new Link(parameters);
 }
 
@@ -249,11 +239,10 @@ export function createLinkReader(parameters) {
  * This simulates "flat" resource access, which is for example common for projects of type
  * "application".
  *
- * @public
- * @param {object} parameters
- * @param {@ui5/fs/AbstractReader} parameters.reader Single reader or collection of readers
- * @param {string} parameters.namespace Project namespace
- * @returns {@ui5/fs/readers/Link} Reader instance
+ * @param parameters
+ * @param parameters.reader Single reader or collection of readers
+ * @param parameters.namespace Project namespace
+ * @returns Reader instance
  */
 export function createFlatReader({reader, namespace}: {reader: AbstractReader; namespace: string}) {
 	return new Link({
@@ -269,9 +258,9 @@ export function createFlatReader({reader, namespace}: {reader: AbstractReader; n
  * Normalizes virtual glob patterns by prefixing them with
  * a given virtual base directory path
  *
- * @param {string} virPattern glob pattern for virtual directory structure
- * @param {string} virBaseDir virtual base directory path to prefix the given patterns with
- * @returns {string[]} A list of normalized glob patterns
+ * @param virPattern glob pattern for virtual directory structure
+ * @param virBaseDir virtual base directory path to prefix the given patterns with
+ * @returns A list of normalized glob patterns
  */
 export function prefixGlobPattern(virPattern: string, virBaseDir: string): string[] {
 	const mm = new minimatch.Minimatch(virPattern);

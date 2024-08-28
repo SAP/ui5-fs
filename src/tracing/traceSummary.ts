@@ -17,6 +17,9 @@ let traceData: null | {
 	timeDiff?: [number, number];
 };
 
+/**
+ *
+ */
 function init() {
 	traceData = {
 		startTime: process.hrtime(),
@@ -28,11 +31,17 @@ function init() {
 	active = true;
 }
 
+/**
+ *
+ */
 function reset() {
 	traceData = null;
 	active = false;
 }
 
+/**
+ *
+ */
 function report() {
 	let report = "";
 
@@ -63,6 +72,9 @@ function report() {
 	log.silly(report);
 }
 
+/**
+ *
+ */
 function someTraceStarted() {
 	if (!log.isLevelEnabled("silly")) {
 		return;
@@ -78,6 +90,9 @@ function someTraceStarted() {
 	}
 }
 
+/**
+ *
+ */
 function someTraceEnded(): Promise<void> {
 	return new Promise(function (resolve) {
 		if (!active) {
@@ -102,6 +117,9 @@ function someTraceEnded(): Promise<void> {
 	});
 }
 
+/**
+ *
+ */
 function pathCall() {
 	if (!active) {
 		return;
@@ -111,6 +129,9 @@ function pathCall() {
 	}
 }
 
+/**
+ *
+ */
 function globCall() {
 	if (!active) {
 		return;
@@ -121,6 +142,10 @@ function globCall() {
 	}
 }
 
+/**
+ *
+ * @param name
+ */
 function collection(name: string) {
 	if (!active) {
 		return;

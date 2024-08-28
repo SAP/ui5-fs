@@ -5,9 +5,6 @@ import {ResourceInterface} from "./Resource.js";
 /**
  * Abstract resource locator implementing the general API for <b>reading</b> resources
  *
- * @abstract
- * @public
- * @class
  * @alias @ui5/fs/AbstractReader
  */
 class AbstractReader {
@@ -15,8 +12,7 @@ class AbstractReader {
 	/**
 	 * The constructor.
 	 *
-	 * @public
-	 * @param {string} name Name of the reader. Typically used for tracing purposes
+	 * @param name Name of the reader. Typically used for tracing purposes
 	 */
 	constructor(name?: string) {
 		if (new.target === AbstractReader) {
@@ -42,14 +38,13 @@ class AbstractReader {
 	 * byGlob("**‏/.library");
 	 * byGlob("/pony/*");
 	 *
-	 * @public
-	 * @param {string|string[]} virPattern glob pattern as string or array of glob patterns for
+	 * @param virPattern glob pattern as string or array of glob patterns for
 	 * 										virtual directory structure
-	 * @param {object} [options] glob options
-	 * @param {boolean} [options.nodir=true] Do not match directories
-	 * @returns {Promise<@ui5/fs/Resource[]>} Promise resolving to list of resources
+	 * @param [options] glob options
+	 * @param [options.nodir] Do not match directories
+	 * @returns Promise resolving to list of resources
 	 */
-	byGlob(virPattern: string, options = {nodir: true}): Promise<ResourceInterface[]> {
+	byGlob(virPattern: string | string[], options = {nodir: true}): Promise<ResourceInterface[]> {
 		const trace = new Trace(virPattern);
 		return this._byGlob(virPattern, options, trace).then(function (result: ResourceInterface[]) {
 			trace.printReport();
@@ -70,13 +65,12 @@ class AbstractReader {
 	/**
 	 * Locates resources by matching a given path.
 	 *
-	 * @public
-	 * @param {string} virPath Virtual path
-	 * @param {object} [options] Options
-	 * @param {boolean} [options.nodir=true] Do not match directories
-	 * @returns {Promise<@ui5/fs/ResourceInterface>} Promise resolving to a single resource
+	 * @param virPath Virtual path
+	 * @param [options] Options
+	 * @param [options.nodir] Do not match directories
+	 * @returns Promise resolving to a single resource
 	 */
-	byPath(virPath: string, options = {nodir: true}): Promise<ResourceInterface | null> {
+	byPath(virPath: string, options = {nodir: true}) {
 		const trace = new Trace(virPath);
 		return this._byPath(virPath, options, trace).then(function (resource) {
 			trace.printReport();
@@ -87,13 +81,12 @@ class AbstractReader {
 	/**
 	 * Locates resources by one or more glob patterns.
 	 *
-	 * @abstract
-	 * @protected
-	 * @param {string|string[]} virPattern glob pattern as string or an array of
+	 * @param virPattern glob pattern as string or an array of
 	 *         glob patterns for virtual directory structure
-	 * @param {object} options glob options
-	 * @param {@ui5/fs/tracing.Trace} trace Trace instance
-	 * @returns {Promise<@ui5/fs/ResourceInterface[]>} Promise resolving to list of resources
+	 * @param _virPattern
+	 * @param _options glob options
+	 * @param _options.nodir
+	 * @param _trace Trace instance
 	 */
 	_byGlob(_virPattern: string | string[],
 		_options: {
@@ -106,12 +99,11 @@ class AbstractReader {
 	/**
 	 * Locate resources by matching a single glob pattern.
 	 *
-	 * @abstract
-	 * @protected
-	 * @param {string|string[]} pattern glob pattern
-	 * @param {object} options glob options
-	 * @param {@ui5/fs/tracing.Trace} trace Trace instance
-	 * @returns {Promise<@ui5/fs/ResourceInterface[]>} Promise resolving to list of resources
+	 * @param pattern glob pattern
+	 * @param _pattern
+	 * @param _options glob options
+	 * @param _options.nodir
+	 * @param _trace Trace instance
 	 */
 	_runGlob(_pattern: string | string[], _options: {nodir: boolean}, _trace: Trace): Promise<ResourceInterface[]> {
 		throw new Error("Function '_runGlob' is not implemented");
@@ -120,14 +112,13 @@ class AbstractReader {
 	/**
 	 * Locates resources by path.
 	 *
-	 * @abstract
-	 * @protected
-	 * @param {string} virPath Virtual path
-	 * @param {object} options Options
-	 * @param {@ui5/fs/tracing.Trace} trace Trace instance
-	 * @returns {Promise<@ui5/fs/ResourceInterface>} Promise resolving to a single resource
+	 * @param virPath Virtual path
+	 * @param _virPath
+	 * @param _options glob options
+	 * @param _options.nodir
+	 * @param _trace Trace instance
 	 */
-	_byPath(_virPath: string, _options: object, _trace: Trace): Promise<ResourceInterface | null> {
+	_byPath(_virPath: string, _options: {nodir: boolean}, _trace: Trace): Promise<ResourceInterface | null> {
 		throw new Error("Function '_byPath' is not implemented");
 	}
 }

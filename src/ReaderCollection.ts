@@ -5,38 +5,35 @@ import Trace from "./tracing/Trace.js";
 /**
  * Resource Locator ReaderCollection
  *
- * @public
- * @class
  * @alias @ui5/fs/ReaderCollection
- * @extends @ui5/fs/AbstractReader
  */
 class ReaderCollection extends AbstractReader {
 	_readers: AbstractReader[];
 	/**
 	 * The constructor.
 	 *
-	 * @param {object} parameters Parameters
-	 * @param {string} parameters.name The collection name
-	 * @param {@ui5/fs/AbstractReader[]} [parameters.readers]
+	 * @param parameters Parameters
+	 * @param parameters.name The collection name
+	 * @param [parameters.readers]
 	 *   List of resource readers (all tried in parallel).
 	 *   If none are provided, the collection will never return any results.
 	 */
-	constructor({name, readers}: {name: string; readers: AbstractReader[]}) {
+	constructor({name, readers}: {name: string; readers?: AbstractReader[]}) {
 		super(name);
 
 		// Remove any undefined (empty) readers from array
-		this._readers = readers.filter(($) => $);
+		this._readers = readers?.filter(($) => $) ?? [];
 	}
 
 	/**
 	 * Locates resources by glob.
 	 *
-	 * @private
-	 * @param {string|string[]} pattern glob pattern as string or an array of
+	 * @param pattern glob pattern as string or an array of
 	 *         glob patterns for virtual directory structure
-	 * @param {object} options glob options
-	 * @param {@ui5/fs/tracing.Trace} trace Trace instance
-	 * @returns {Promise<@ui5/fs/Resource[]>} Promise resolving to list of resources
+	 * @param options glob options
+	 * @param options.nodir
+	 * @param trace Trace instance
+	 * @returns Promise resolving to list of resources
 	 */
 	_byGlob(pattern: string | string[], options: {nodir: boolean}, trace: Trace) {
 		return Promise.all(this._readers.map(function (resourceLocator) {
@@ -50,11 +47,11 @@ class ReaderCollection extends AbstractReader {
 	/**
 	 * Locates resources by path.
 	 *
-	 * @private
-	 * @param {string} virPath Virtual path
-	 * @param {object} options Options
-	 * @param {@ui5/fs/tracing.Trace} trace Trace instance
-	 * @returns {Promise<@ui5/fs/Resource|null>}
+	 * @param virPath Virtual path
+	 * @param options Options
+	 * @param options.nodir
+	 * @param trace Trace instance
+	 * @returns
 	 *   Promise resolving to a single resource or <code>null</code> if no resource is found
 	 */
 	_byPath(virPath: string, options: {nodir: boolean}, trace: Trace) {

@@ -7,10 +7,7 @@ import Trace from "./tracing/Trace.js";
 /**
  * Wrapper to keep readers and writers together
  *
- * @public
- * @class
  * @alias @ui5/fs/DuplexCollection
- * @extends @ui5/fs/AbstractReaderWriter
  */
 class DuplexCollection extends AbstractReaderWriter {
 	_reader: AbstractReader;
@@ -20,13 +17,13 @@ class DuplexCollection extends AbstractReaderWriter {
 	/**
 	 * The Constructor.
 	 *
-	 * @param {object} parameters
-	 * @param {@ui5/fs/AbstractReader} parameters.reader Single reader or collection of readers
-	 * @param {@ui5/fs/AbstractReaderWriter} parameters.writer
+	 * @param parameters
+	 * @param parameters.reader Single reader or collection of readers
+	 * @param parameters.writer
 	 *			A ReaderWriter instance which is only used for writing files
-	 * @param {string} [parameters.name=""] The collection name
+	 * @param [parameters.name] The collection name
 	 */
-	constructor({reader, writer, name = ""}: {reader: AbstractReader; writer: AbstractReaderWriter; name: string}) {
+	constructor({reader, writer, name = ""}: {reader: AbstractReader; writer: AbstractReaderWriter; name?: string}) {
 		super(name);
 
 		if (!reader) {
@@ -51,12 +48,12 @@ class DuplexCollection extends AbstractReaderWriter {
 	/**
 	 * Locates resources by glob.
 	 *
-	 * @private
-	 * @param {string|string[]} virPattern glob pattern as string or an array of
+	 * @param virPattern glob pattern as string or an array of
 	 *         glob patterns for virtual directory structure
-	 * @param {object} options glob options
-	 * @param {@ui5/fs/tracing.Trace} trace Trace instance
-	 * @returns {Promise<@ui5/fs/Resource[]>} Promise resolving with a list of resources
+	 * @param options glob options
+	 * @param options.nodir
+	 * @param trace Trace instance
+	 * @returns Promise resolving with a list of resources
 	 */
 	_byGlob(virPattern: string | string[], options: {nodir: boolean}, trace: Trace) {
 		return this._combo._byGlob(virPattern, options, trace);
@@ -65,11 +62,11 @@ class DuplexCollection extends AbstractReaderWriter {
 	/**
 	 * Locates resources by path.
 	 *
-	 * @private
-	 * @param {string} virPath Virtual path
-	 * @param {object} options Options
-	 * @param {@ui5/fs/tracing.Trace} trace Trace instance
-	 * @returns {Promise<@ui5/fs/Resource|null>}
+	 * @param virPath Virtual path
+	 * @param options Options
+	 * @param options.nodir
+	 * @param trace Trace instance
+	 * @returns
 	 *   Promise resolving to a single resource or <code>null</code> if no resource is found
 	 */
 	_byPath(virPath: string, options: {nodir: boolean}, trace: Trace) {
@@ -79,9 +76,8 @@ class DuplexCollection extends AbstractReaderWriter {
 	/**
 	 * Writes the content of a resource to a path.
 	 *
-	 * @private
-	 * @param {@ui5/fs/Resource} resource The Resource to write
-	 * @returns {Promise<undefined>} Promise resolving once data has been written
+	 * @param resource The Resource to write
+	 * @returns Promise resolving once data has been written
 	 */
 	_write(resource: Resource) {
 		return this._writer.write(resource);

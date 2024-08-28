@@ -18,8 +18,6 @@ enum ALLOWED_SOURCE_METADATA_KEYS {
 /**
  * Function for dynamic creation of content streams
  *
- * @public
- * @callback @ui5/fs/Resource~createStream
  * @returns {stream.Readable} A readable stream of a resources content
  */
 export type Resource_CreateReadableStream = () => stream.Readable;
@@ -87,8 +85,6 @@ export interface ResourceInterface {
 /**
  * Resource. UI5 Tooling specific representation of a file's content and metadata
  *
- * @public
- * @class
  * @alias @ui5/fs/Resource
  */
 class Resource implements ResourceInterface {
@@ -108,23 +104,22 @@ class Resource implements ResourceInterface {
 
 	/**
 	 *
-	 * @public
-	 * @param {object} parameters Parameters
-	 * @param {string} parameters.path Absolute virtual path of the resource
-	 * @param {fs.Stats|object} [parameters.statInfo] File information. Instance of
+	 * @param parameters Parameters
+	 * @param parameters.path Absolute virtual path of the resource
+	 * @param [parameters.statInfo] File information. Instance of
 	 *					[fs.Stats]{@link https://nodejs.org/api/fs.html#fs_class_fs_stats} or similar object
-	 * @param {Buffer} [parameters.buffer] Content of this resources as a Buffer instance
+	 * @param [parameters.buffer] Content of this resources as a Buffer instance
 	 *					(cannot be used in conjunction with parameters string, stream or createStream)
-	 * @param {string} [parameters.string] Content of this resources as a string
+	 * @param [parameters.string] Content of this resources as a string
 	 *					(cannot be used in conjunction with parameters buffer, stream or createStream)
-	 * @param {Stream} [parameters.stream] Readable stream of the content of this resource
+	 * @param [parameters.stream] Readable stream of the content of this resource
 	 *					(cannot be used in conjunction with parameters buffer, string or createStream)
-	 * @param {@ui5/fs/Resource~createStream} [parameters.createStream] Function callback that returns a readable
+	 * @param [parameters.createStream] Function callback that returns a readable
 	 *					stream of the content of this resource (cannot be used in conjunction with parameters buffer,
 	 *					string or stream).
 	 *					In some cases this is the most memory-efficient way to supply resource content
-	 * @param {@ui5/project/specifications/Project} [parameters.project] Project this resource is associated with
-	 * @param {object} [parameters.sourceMetadata] Source metadata for UI5 Tooling internal use.
+	 * @param [parameters.project] Project this resource is associated with
+	 * @param [parameters.sourceMetadata] Source metadata for UI5 Tooling internal use.
 	 * 	Some information may be set by an adapter to store information for later retrieval. Also keeps track of whether
 	 *  a resource content has been modified since it has been read from a source
 	 */
@@ -212,8 +207,7 @@ class Resource implements ResourceInterface {
 	/**
 	 * Gets a buffer with the resource content.
 	 *
-	 * @public
-	 * @returns {Promise<Buffer>} Promise resolving with a buffer of the resource content.
+	 * @returns Promise resolving with a buffer of the resource content.
 	 */
 	async getBuffer(): Promise<Buffer> {
 		if (this.#contentDrained) {
@@ -233,8 +227,7 @@ class Resource implements ResourceInterface {
 	/**
 	 * Sets a Buffer as content.
 	 *
-	 * @public
-	 * @param {Buffer} buffer Buffer instance
+	 * @param buffer Buffer instance
 	 */
 	setBuffer(buffer: Buffer) {
 		this.#sourceMetadata.contentModified = true;
@@ -256,8 +249,7 @@ class Resource implements ResourceInterface {
 	/**
 	 * Gets a string with the resource content.
 	 *
-	 * @public
-	 * @returns {Promise<string>} Promise resolving with the resource content.
+	 * @returns Promise resolving with the resource content.
 	 */
 	getString(): Promise<string> {
 		if (this.#contentDrained) {
@@ -271,8 +263,7 @@ class Resource implements ResourceInterface {
 	/**
 	 * Sets a String as content
 	 *
-	 * @public
-	 * @param {string} string Resource content
+	 * @param string Resource content
 	 */
 	setString(string: string) {
 		this.setBuffer(Buffer.from(string, "utf8"));
@@ -286,8 +277,7 @@ class Resource implements ResourceInterface {
 	 * or [setString]{@link @ui5/fs/Resource#setString}). This
 	 * is to prevent consumers from accessing drained streams.
 	 *
-	 * @public
-	 * @returns {stream.Readable} Readable stream for the resource content.
+	 * @returns Readable stream for the resource content.
 	 */
 	getStream(): stream.Readable {
 		if (this.#contentDrained) {
@@ -321,8 +311,7 @@ class Resource implements ResourceInterface {
 	/**
 	 * Sets a readable stream as content.
 	 *
-	 * @public
-	 * @param {stream.Readable|@ui5/fs/Resource~createStream} stream Readable stream of the resource content or
+	 * @param stream Readable stream of the resource content or
 	 														callback for dynamic creation of a readable stream
 	 */
 	setStream(stream: stream.Readable | Resource_CreateReadableStream) {
@@ -347,8 +336,7 @@ class Resource implements ResourceInterface {
 	/**
 	 * Gets the virtual resources path
 	 *
-	 * @public
-	 * @returns {string} Virtual path of the resource
+	 * @returns Virtual path of the resource
 	 */
 	getPath(): string {
 		return this.#path ?? "";
@@ -357,8 +345,7 @@ class Resource implements ResourceInterface {
 	/**
 	 * Sets the virtual resources path
 	 *
-	 * @public
-	 * @param {string} path Absolute virtual path of the resource
+	 * @param path Absolute virtual path of the resource
 	 */
 	setPath(path: string) {
 		path = posixPath.normalize(path);
@@ -372,8 +359,7 @@ class Resource implements ResourceInterface {
 	/**
 	 * Gets the resource name
 	 *
-	 * @public
-	 * @returns {string} Name of the resource
+	 * @returns Name of the resource
 	 */
 	getName(): string {
 		return this.#name;
@@ -385,8 +371,7 @@ class Resource implements ResourceInterface {
 	 * Also, depending on the used adapter, some fields might be missing which would be present for a
 	 * [fs.Stats]{@link https://nodejs.org/api/fs.html#fs_class_fs_stats} instance.
 	 *
-	 * @public
-	 * @returns {fs.Stats|object} Instance of [fs.Stats]{@link https://nodejs.org/api/fs.html#fs_class_fs_stats}
+	 * @returns Instance of [fs.Stats]{@link https://nodejs.org/api/fs.html#fs_class_fs_stats}
 	 *								or similar object
 	 */
 	getStatInfo(): Partial<Stats> {
@@ -397,7 +382,7 @@ class Resource implements ResourceInterface {
 	 * Size in bytes allocated by the underlying buffer.
 	 *
 	 * @see {TypedArray#byteLength}
-	 * @returns {Promise<number>} size in bytes, <code>0</code> if there is no content yet
+	 * @returns size in bytes, <code>0</code> if there is no content yet
 	 */
 	async getSize(): Promise<number> {
 		// if resource does not have any content it should have 0 bytes
@@ -411,7 +396,7 @@ class Resource implements ResourceInterface {
 	/**
 	 * Adds a resource collection name that was involved in locating this resource.
 	 *
-	 * @param {string} name Resource collection name
+	 * @param name Resource collection name
 	 */
 	pushCollection(name: string) {
 		this.#collections.push(name);
@@ -420,8 +405,7 @@ class Resource implements ResourceInterface {
 	/**
 	 * Returns a clone of the resource. The clones content is independent from that of the original resource
 	 *
-	 * @public
-	 * @returns {Promise<@ui5/fs/Resource>} Promise resolving with the clone
+	 * @returns Promise resolving with the clone
 	 */
 	async clone(): Promise<Resource> {
 		const options = await this.#getCloneOptions();
@@ -456,8 +440,7 @@ class Resource implements ResourceInterface {
 	 * [MiddlewareUtil]{@link module:@ui5/server.middleware.MiddlewareUtil}, which will
 	 * return a Specification Version-compatible Project interface.
 	 *
-	 * @public
-	 * @returns {@ui5/project/specifications/Project|undefined} Project this resource is associated with
+	 * @returns Project this resource is associated with
 	 */
 	getProject(): Project | undefined {
 		return this.#project;
@@ -466,8 +449,7 @@ class Resource implements ResourceInterface {
 	/**
 	 * Assign a project to the resource
 	 *
-	 * @public
-	 * @param {@ui5/project/specifications/Project} project Project this resource is associated with
+	 * @param project Project this resource is associated with
 	 */
 	setProject(project: Project) {
 		if (this.#project) {
@@ -480,8 +462,7 @@ class Resource implements ResourceInterface {
 	/**
 	 * Check whether a project has been assigned to the resource
 	 *
-	 * @public
-	 * @returns {boolean} True if the resource is associated with a project
+	 * @returns True if the resource is associated with a project
 	 */
 	hasProject(): boolean {
 		return !!this.#project;
@@ -490,8 +471,7 @@ class Resource implements ResourceInterface {
 	/**
 	 * Check whether the content of this resource has been changed during its life cycle
 	 *
-	 * @public
-	 * @returns {boolean} True if the resource's content has been changed
+	 * @returns True if the resource's content has been changed
 	 */
 	isModified(): boolean {
 		return this.#isModified;
@@ -500,7 +480,7 @@ class Resource implements ResourceInterface {
 	/**
 	 * Tracing: Get tree for printing out trace
 	 *
-	 * @returns {object} Trace tree
+	 * @returns Trace tree
 	 */
 	getPathTree(): Tree {
 		const tree = Object.create(null) as Tree;
@@ -518,7 +498,7 @@ class Resource implements ResourceInterface {
 	 * Returns source metadata which may contain information specific to the adapter that created the resource
 	 * Typically set by an adapter to store information for later retrieval.
 	 *
-	 * @returns {object}
+	 * @returns
 	 */
 	getSourceMetadata(): Resource_sourceMetadata {
 		return this.#sourceMetadata;
@@ -527,8 +507,7 @@ class Resource implements ResourceInterface {
 	/**
 	 * Returns the content as stream.
 	 *
-	 * @private
-	 * @returns {stream.Readable} Readable stream
+	 * @returns Readable stream
 	 */
 	#getStream(): stream.Readable {
 		if (this.#streamDrained) {
@@ -544,8 +523,7 @@ class Resource implements ResourceInterface {
 	/**
 	 * Converts the buffer into a stream.
 	 *
-	 * @private
-	 * @returns {Promise<Buffer>} Promise resolving with buffer.
+	 * @returns Promise resolving with buffer.
 	 */
 	#getBufferFromStream(): Promise<Buffer> {
 		if (this.#buffering) { // Prevent simultaneous buffering, causing unexpected access to drained stream

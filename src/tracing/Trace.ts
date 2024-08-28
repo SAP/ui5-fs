@@ -8,8 +8,6 @@ import summaryTrace, {CollectionsType} from "./traceSummary.js";
 /**
  * Trace
  *
- * @private
- * @class
  */
 class Trace {
 	_name!: string;

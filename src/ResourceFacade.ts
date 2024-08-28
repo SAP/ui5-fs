@@ -8,8 +8,6 @@ import {Project} from "@ui5/project/specifications/Project";
 /**
  * A {@link @ui5/fs/Resource Resource} with a different path than it's original
  *
- * @public
- * @class
  * @alias @ui5/fs/ResourceFacade
  */
 class ResourceFacade implements ResourceInterface {
@@ -19,9 +17,8 @@ class ResourceFacade implements ResourceInterface {
 
 	/**
 	 *
-	 * @public
-	 * @param {object} parameters Parameters
-	 * @param {string} parameters.path Virtual path of the facade resource
+	 * @param parameters Parameters
+	 * @param parameters.path Virtual path of the facade resource
 	 * @param parameters.resource Resource to conceal
 	 */
 	constructor({path, resource}: {path: string; resource: ResourceInterface}) {
@@ -43,8 +40,7 @@ class ResourceFacade implements ResourceInterface {
 	/**
 	 * Gets the resources path
 	 *
-	 * @public
-	 * @returns {string} (Virtual) path of the resource
+	 * @returns (Virtual) path of the resource
 	 */
 	getPath() {
 		return this.#path;
@@ -53,8 +49,7 @@ class ResourceFacade implements ResourceInterface {
 	/**
 	 * Gets the resource name
 	 *
-	 * @public
-	 * @returns {string} Name of the resource
+	 * @returns Name of the resource
 	 */
 	getName() {
 		return this.#name;
@@ -63,8 +58,8 @@ class ResourceFacade implements ResourceInterface {
 	/**
 	 * Sets the resources path
 	 *
-	 * @public
-	 * @param {string} path (Virtual) path of the resource
+	 * @param _path
+	 * @param path (Virtual) path of the resource
 	 */
 	setPath(_path: string) {
 		throw new Error(`The path of a ResourceFacade can't be changed`);
@@ -74,8 +69,7 @@ class ResourceFacade implements ResourceInterface {
 	 * Returns a clone of the resource. The clones content is independent from that of the original resource.
 	 * A ResourceFacade becomes a Resource
 	 *
-	 * @public
-	 * @returns {Promise<@ui5/fs/Resource>} Promise resolving with the clone
+	 * @returns Promise resolving with the clone
 	 */
 	async clone() {
 		// Cloning resolves the facade
@@ -92,8 +86,7 @@ class ResourceFacade implements ResourceInterface {
 	/**
 	 * Gets a buffer with the resource content.
 	 *
-	 * @public
-	 * @returns {Promise<Buffer>} Promise resolving with a buffer of the resource content.
+	 * @returns Promise resolving with a buffer of the resource content.
 	 */
 	async getBuffer() {
 		return this.#resource.getBuffer();
@@ -102,8 +95,7 @@ class ResourceFacade implements ResourceInterface {
 	/**
 	 * Sets a Buffer as content.
 	 *
-	 * @public
-	 * @param {Buffer} buffer Buffer instance
+	 * @param buffer Buffer instance
 	 */
 	setBuffer(buffer: Buffer) {
 		return this.#resource.setBuffer(buffer);
@@ -112,8 +104,7 @@ class ResourceFacade implements ResourceInterface {
 	/**
 	 * Gets a string with the resource content.
 	 *
-	 * @public
-	 * @returns {Promise<string>} Promise resolving with the resource content.
+	 * @returns Promise resolving with the resource content.
 	 */
 	getString() {
 		return this.#resource.getString();
@@ -122,8 +113,7 @@ class ResourceFacade implements ResourceInterface {
 	/**
 	 * Sets a String as content
 	 *
-	 * @public
-	 * @param {string} string Resource content
+	 * @param string Resource content
 	 */
 	setString(string: string) {
 		return this.#resource.setString(string);
@@ -137,8 +127,7 @@ class ResourceFacade implements ResourceInterface {
 	 * or [setString]{@link @ui5/fs/Resource#setString}). This
 	 * is to prevent consumers from accessing drained streams.
 	 *
-	 * @public
-	 * @returns {stream.Readable} Readable stream for the resource content.
+	 * @returns Readable stream for the resource content.
 	 */
 	getStream() {
 		return this.#resource.getStream();
@@ -147,8 +136,7 @@ class ResourceFacade implements ResourceInterface {
 	/**
 	 * Sets a readable stream as content.
 	 *
-	 * @public
-	 * @param {stream.Readable|@ui5/fs/Resource~createStream} stream Readable stream of the resource content or
+	 * @param stream Readable stream of the resource content or
 															callback for dynamic creation of a readable stream
 	 */
 	setStream(stream: stream.Readable | Resource_CreateReadableStream) {
@@ -161,8 +149,7 @@ class ResourceFacade implements ResourceInterface {
 	 * Also, depending on the used adapter, some fields might be missing which would be present for a
 	 * [fs.Stats]{@link https://nodejs.org/api/fs.html#fs_class_fs_stats} instance.
 	 *
-	 * @public
-	 * @returns {fs.Stats|object} Instance of [fs.Stats]{@link https://nodejs.org/api/fs.html#fs_class_fs_stats}
+	 * @returns Instance of [fs.Stats]{@link https://nodejs.org/api/fs.html#fs_class_fs_stats}
 	 *								or similar object
 	 */
 	getStatInfo() {
@@ -173,7 +160,7 @@ class ResourceFacade implements ResourceInterface {
 	 * Size in bytes allocated by the underlying buffer.
 	 *
 	 * @see {TypedArray#byteLength}
-	 * @returns {Promise<number>} size in bytes, <code>0</code> if there is no content yet
+	 * @returns size in bytes, <code>0</code> if there is no content yet
 	 */
 	getSize() {
 		return this.#resource.getSize();
@@ -182,7 +169,7 @@ class ResourceFacade implements ResourceInterface {
 	/**
 	 * Adds a resource collection name that was involved in locating this resource.
 	 *
-	 * @param {string} name Resource collection name
+	 * @param name Resource collection name
 	 */
 	pushCollection(name: string) {
 		return this.#resource.pushCollection(name);
@@ -191,7 +178,7 @@ class ResourceFacade implements ResourceInterface {
 	/**
 	 * Tracing: Get tree for printing out trace
 	 *
-	 * @returns {object} Trace tree
+	 * @returns Trace tree
 	 */
 	getPathTree() {
 		return this.#resource.getPathTree();
@@ -207,8 +194,7 @@ class ResourceFacade implements ResourceInterface {
 	 * [MiddlewareUtil]{@link module:@ui5/server.middleware.MiddlewareUtil}, which will
 	 * return a Specification Version-compatible Project interface.
 	 *
-	 * @public
-	 * @returns {@ui5/project/specifications/Project} Project this resource is associated with
+	 * @returns Project this resource is associated with
 	 */
 	getProject() {
 		return this.#resource.getProject();
@@ -217,8 +203,7 @@ class ResourceFacade implements ResourceInterface {
 	/**
 	 * Assign a project to the resource
 	 *
-	 * @public
-	 * @param {@ui5/project/specifications/Project} project Project this resource is associated with
+	 * @param project Project this resource is associated with
 	 */
 	setProject(project: Project) {
 		return this.#resource.setProject(project);
@@ -227,8 +212,7 @@ class ResourceFacade implements ResourceInterface {
 	/**
 	 * Check whether a project has been assigned to the resource
 	 *
-	 * @public
-	 * @returns {boolean} True if the resource is associated with a project
+	 * @returns True if the resource is associated with a project
 	 */
 	hasProject() {
 		return this.#resource.hasProject();
@@ -237,8 +221,7 @@ class ResourceFacade implements ResourceInterface {
 	/**
 	 * Check whether the content of this resource has been changed during its life cycle
 	 *
-	 * @public
-	 * @returns {boolean} True if the resource's content has been changed
+	 * @returns True if the resource's content has been changed
 	 */
 	isModified() {
 		return this.#resource.isModified();
@@ -248,7 +231,7 @@ class ResourceFacade implements ResourceInterface {
 	 * Returns source metadata if any where provided during the creation of this resource.
 	 * Typically set by an adapter to store information for later retrieval.
 	 *
-	 * @returns {object|null}
+	 * @returns
 	 */
 	getSourceMetadata() {
 		return this.#resource.getSourceMetadata();
@@ -257,7 +240,7 @@ class ResourceFacade implements ResourceInterface {
 	/**
 	 * Returns the resource concealed by this facade
 	 *
-	 * @returns {@ui5/fs/Resource}
+	 * @returns
 	 */
 	getConcealedResource() {
 		return this.#resource;

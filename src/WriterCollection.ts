@@ -7,10 +7,7 @@ import Resource from "./Resource.js";
 /**
  * Resource Locator WriterCollection
  *
- * @public
- * @class
  * @alias @ui5/fs/WriterCollection
- * @extends @ui5/fs/AbstractReaderWriter
  */
 class WriterCollection extends AbstractReaderWriter {
 	_basePathRegex: string;
@@ -20,9 +17,9 @@ class WriterCollection extends AbstractReaderWriter {
 	/**
 	 * The constructor.
 	 *
-	 * @param {object} parameters Parameters
-	 * @param {string} parameters.name The collection name
-	 * @param {object.<string, @ui5/fs/AbstractReaderWriter>} parameters.writerMapping
+	 * @param parameters Parameters
+	 * @param parameters.name The collection name
+	 * @param parameters.writerMapping
 	 * 	Mapping of virtual base paths to writers. Path are matched greedy
 	 *
 	 * @example
@@ -74,12 +71,12 @@ class WriterCollection extends AbstractReaderWriter {
 	/**
 	 * Locates resources by glob.
 	 *
-	 * @private
-	 * @param {string|string[]} pattern glob pattern as string or an array of
+	 * @param pattern glob pattern as string or an array of
 	 *         glob patterns for virtual directory structure
-	 * @param {object} options glob options
-	 * @param {@ui5/fs/tracing.Trace} trace Trace instance
-	 * @returns {Promise<@ui5/fs/Resource[]>} Promise resolving to list of resources
+	 * @param options glob options
+	 * @param options.nodir
+	 * @param trace Trace instance
+	 * @returns Promise resolving to list of resources
 	 */
 	_byGlob(pattern: string | string[], options: {nodir: boolean}, trace: Trace) {
 		return this._readerCollection._byGlob(pattern, options, trace);
@@ -88,11 +85,11 @@ class WriterCollection extends AbstractReaderWriter {
 	/**
 	 * Locates resources by path.
 	 *
-	 * @private
-	 * @param {string} virPath Virtual path
-	 * @param {object} options Options
-	 * @param {@ui5/fs/tracing.Trace} trace Trace instance
-	 * @returns {Promise<@ui5/fs/Resource>} Promise resolving to a single resource
+	 * @param virPath Virtual path
+	 * @param options Options
+	 * @param options.nodir
+	 * @param trace Trace instance
+	 * @returns Promise resolving to a single resource
 	 */
 	_byPath(virPath: string, options: {nodir: boolean}, trace: Trace) {
 		return this._readerCollection._byPath(virPath, options, trace);
@@ -101,12 +98,13 @@ class WriterCollection extends AbstractReaderWriter {
 	/**
 	 * Writes the content of a resource to a path.
 	 *
-	 * @private
-	 * @param {@ui5/fs/Resource} resource The Resource to write
-	 * @param {object} [options] Write options, see above
-	 * @returns {Promise<undefined>} Promise resolving once data has been written
+	 * @param resource The Resource to write
+	 * @param [options] Write options, see above
+	 * @param [options.drain]
+	 * @param [options.readOnly]
+	 * @returns Promise resolving once data has been written
 	 */
-	_write(resource: Resource, options: object) {
+	_write(resource: Resource, options?: {drain?: boolean; readOnly?: boolean}) {
 		const resourcePath = resource.getPath();
 
 		const basePathMatch = resourcePath.match(this._basePathRegex);
