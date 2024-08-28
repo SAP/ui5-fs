@@ -16,7 +16,8 @@ test("Incomplete AbstractReaderWriter subclass: Abstract functions throw error",
 	const instance = new Dummy();
 
 	t.throws(() => {
-		instance._write();
+		// @ts-expect-error testing invalid value
+		void instance._write();
 	}, {
 		instanceOf: Error,
 		message: "Not implemented",
