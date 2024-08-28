@@ -18,6 +18,7 @@ export default tseslint.config(
 			// Exclude test files
 			"test/tmp/*",
 			"test/fixtures/*",
+			"test/expected/*",
 
 			// Exclude generated code
 			"lib/*",
