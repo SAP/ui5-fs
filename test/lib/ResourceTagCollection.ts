@@ -3,7 +3,7 @@ import sinon from "sinon";
 import Resource from "../../src/Resource.js";
 import ResourceTagCollection from "../../src/ResourceTagCollection.js";
 
-test.afterEach.always((t) => {
+test.afterEach.always(() => {
 	sinon.restore();
 });
 
@@ -282,6 +282,7 @@ test("_validateValue: Invalid value of type object", (t) => {
 		allowedTags: ["abc:MyTag"],
 	});
 	t.throws(() => {
+		// @ts-expect-error testing invalid value
 		tagCollection._validateValue({foo: "bar"});
 	}, {
 		instanceOf: Error,
@@ -294,6 +295,7 @@ test("_validateValue: Invalid value undefined", (t) => {
 		allowedTags: ["abc:MyTag"],
 	});
 	t.throws(() => {
+		// @ts-expect-error testing invalid value
 		tagCollection._validateValue(undefined);
 	}, {
 		instanceOf: Error,
@@ -306,6 +308,7 @@ test("_validateValue: Invalid value null", (t) => {
 		allowedTags: ["abc:MyTag"],
 	});
 	t.throws(() => {
+		// @ts-expect-error testing invalid value
 		tagCollection._validateValue(null);
 	}, {
 		instanceOf: Error,
@@ -318,6 +321,7 @@ test("_getPath: Empty path", (t) => {
 		allowedTags: ["abc:MyTag"],
 	});
 	t.throws(() => {
+		// @ts-expect-error testing invalid value
 		tagCollection._getPath({
 			getPath: () => "",
 		});

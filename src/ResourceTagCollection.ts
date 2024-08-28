@@ -26,7 +26,7 @@ class ResourceTagCollection {
 	_allowedNamespacesRegExp: null | RegExp;
 
 	constructor({allowedTags = [], allowedNamespaces = [], tags}:
-		{allowedTags: string[]; allowedNamespaces: string[]; tags: PathTagsInterface}) {
+		{allowedTags?: string[]; allowedNamespaces?: string[]; tags?: PathTagsInterface}) {
 		this._allowedTags = allowedTags; // Allowed tags are validated during use
 		this._allowedNamespaces = allowedNamespaces;
 
@@ -45,10 +45,10 @@ class ResourceTagCollection {
 			this._allowedNamespacesRegExp = null;
 		}
 
-		this._pathTags = tags || Object.create(null);
+		this._pathTags = tags ?? Object.create(null) as PathTagsInterface;
 	}
 
-	setTag(resourcePath: string, tag: string, value: string | number | boolean = true) {
+	setTag(resourcePath: ResourceInterface | string, tag: string, value: string | number | boolean = true) {
 		resourcePath = this._getPath(resourcePath);
 		this._validateTag(tag);
 		this._validateValue(value);
@@ -63,7 +63,7 @@ class ResourceTagCollection {
 		}
 	}
 
-	clearTag(resourcePath: string, tag: string) {
+	clearTag(resourcePath: ResourceInterface | string, tag: string) {
 		resourcePath = this._getPath(resourcePath);
 		this._validateTag(tag);
 
@@ -73,7 +73,8 @@ class ResourceTagCollection {
 		}
 	}
 
-	getTag(resourcePath: string, tag: string): string | number | boolean | undefined | PathTagsInterface {
+	getTag(resourcePath: ResourceInterface | string,
+		tag: string): string | number | boolean | undefined | PathTagsInterface {
 		resourcePath = this._getPath(resourcePath);
 		this._validateTag(tag);
 
