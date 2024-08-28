@@ -24,7 +24,6 @@ class Filter extends AbstractReader {
 	_reader: AbstractReader;
 	_callback: (resource: ResourceInterface) => boolean;
 
-
 	/**
 	 * Constructor
 	 *

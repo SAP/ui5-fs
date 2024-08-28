@@ -1,5 +1,5 @@
 import AbstractReader from "./AbstractReader.js";
-import Resource, { ResourceInterface } from "./Resource.js";
+import {ResourceInterface} from "./Resource.js";
 import Trace from "./tracing/Trace.js";
 
 /**
