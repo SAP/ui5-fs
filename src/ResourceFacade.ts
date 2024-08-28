@@ -58,8 +58,7 @@ class ResourceFacade implements ResourceInterface {
 	/**
 	 * Sets the resources path
 	 *
-	 * @param _path
-	 * @param path (Virtual) path of the resource
+	 * @param _path (Virtual) path of the resource
 	 */
 	setPath(_path: string) {
 		throw new Error(`The path of a ResourceFacade can't be changed`);

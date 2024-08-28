@@ -8,7 +8,7 @@ interface PathTagsInterface {
 };
 /**
  *
- * @param elem
+ * @param elem Variable to test if it's with a PathTagsInterface
  */
 export function isPathTagsInterface(elem: unknown): elem is PathTagsInterface {
 	return typeof elem === "object";
