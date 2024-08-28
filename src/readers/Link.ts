@@ -5,7 +5,13 @@ import {getLogger} from "@ui5/logger";
 const log = getLogger("resources:readers:Link");
 import Trace from "../tracing/Trace.js";
 
-export interface Link_Params {reader: AbstractReader; pathMapping: {linkPath: string; targetPath: string}};
+export interface Link_Args {
+	reader: AbstractReader;
+	pathMapping: {
+		linkPath: string;
+		targetPath: string;
+	};
+};
 
 /**
  * A reader that allows for rewriting paths segments of all resources passed through it.
@@ -44,10 +50,8 @@ class Link extends AbstractReader {
 	 * @param parameters Parameters
 	 * @param parameters.reader The resource reader or collection to wrap
 	 * @param parameters.pathMapping Path mapping for a [Link]{@link @ui5/fs/readers/Link}
-	 * @param parameters.pathMapping.linkPath Path to match and replace in the requested path or pattern
-	 * @param parameters.pathMapping.targetPath Path to use as a replacement in the request for the source reader
 	 */
-	constructor({reader, pathMapping}: Link_Params) {
+	constructor({reader, pathMapping}: Link_Args) {
 		super();
 		if (!reader) {
 			throw new Error(`Missing parameter "reader"`);

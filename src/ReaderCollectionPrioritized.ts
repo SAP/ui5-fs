@@ -13,7 +13,7 @@ class ReaderCollectionPrioritized extends AbstractReader {
 	/**
 	 * The constructor.
 	 *
-	 * @param parameters
+	 * @param parameters Parameters
 	 * @param parameters.name The collection name
 	 * @param [parameters.readers]
 	 *   Prioritized list of resource readers (tried in the order provided).

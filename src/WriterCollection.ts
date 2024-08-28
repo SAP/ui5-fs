@@ -100,8 +100,16 @@ class WriterCollection extends AbstractReaderWriter {
 	 *
 	 * @param resource The Resource to write
 	 * @param [options] Write options, see above
-	 * @param [options.drain]
-	 * @param [options.readOnly]
+	 * @param [options.drain] Whether the resource content shall be emptied during the write process.
+	 *						Do not use in conjunction with the <code>readOnly</code> option.
+	 *						Activating this option might improve overall memory consumption.
+	 *						This should be used in cases where this is the last access to the resource.
+	 *						E.g. the final write of a resource after all processing is finished.
+	 * @param [options.readOnly] Whether the resource content shall be written read-only
+	 *						Do not use in conjunction with the <code>drain</code> option.
+	 *						The written file will be used as the new source of this resources content.
+	 *						Therefore the written file should not be altered by any means.
+	 *						Activating this option might improve overall memory consumption.
 	 * @returns Promise resolving once data has been written
 	 */
 	_write(resource: Resource, options?: {drain?: boolean; readOnly?: boolean}) {

@@ -32,7 +32,7 @@ class AbstractReaderWriter extends AbstractReader {
 	 * Writes the content of a resource to a path.
 	 *
 	 * @param resource Resource to write
-	 * @param [options]
+	 * @param [options] Write options
 	 * @param [options.readOnly] Whether the resource content shall be written read-only
 	 *						Do not use in conjunction with the <code>drain</code> option.
 	 *						The written file will be used as the new source of this resources content.

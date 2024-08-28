@@ -8,7 +8,7 @@ import ReaderCollectionPrioritized from "./ReaderCollectionPrioritized.js";
 import Resource, {Resource_Options, ResourceInterface} from "./Resource.js";
 import WriterCollection from "./WriterCollection.js";
 import Filter, {Filter_Params} from "./readers/Filter.js";
-import Link, {Link_Params} from "./readers/Link.js";
+import Link, {Link_Args} from "./readers/Link.js";
 import {getLogger} from "@ui5/logger";
 import {Project} from "@ui5/project/specifications/Project";
 import AbstractReader from "./AbstractReader.js";
@@ -119,7 +119,7 @@ export function createReaderCollection({name, readers}: {name: string; readers: 
 /**
  * Creates a ReaderCollectionPrioritized
  *
- * @param parameters
+ * @param parameters Parameters
  * @param parameters.name The collection name
  * @param parameters.readers Prioritized list of resource readers
  * 																(first is tried first)
@@ -135,7 +135,7 @@ export function createReaderCollectionPrioritized({name, readers}: {name: string
 /**
  * Creates a WriterCollection
  *
- * @param parameters
+ * @param parameters Parameters
  * @param parameters.name The collection name
  * @param parameters.writerMapping Mapping of virtual base
  * 	paths to writers. Path are matched greedy
@@ -166,7 +166,7 @@ export function createResource(parameters: Resource_Options): ResourceInterface 
  * to write modified files into a separate writer, this is usually a Memory adapter. If a file already exists it is
  * fetched from the memory to work on it in further build steps.
  *
- * @param parameters
+ * @param parameters Parameters
  * @param parameters.reader Single reader or collection of readers
  * @param [parameters.writer] A ReaderWriter instance which is
  *        only used for writing files. If not supplied, a Memory adapter will be created.
@@ -195,7 +195,7 @@ export function createWorkspace({reader, writer, virBasePath = "/", name = "work
  * The provided callback is called for every resource that is retrieved through the
  * reader and decides whether the resource shall be passed on or dropped.
  *
- * @param parameters
+ * @param parameters Parameters
  * @param parameters.reader Single reader or collection of readers
  * @param parameters.callback
  * 				Filter function. Will be called for every resource passed through this reader.
@@ -223,12 +223,14 @@ export function createFilterReader(parameters: Filter_Params) {
  * // located at "/resources/my-app-name/Component.js" in the sourceReader
  * const resource = await linkedReader.byPath("/app/Component.js");
  *
- * @param parameters
+ * @param parameters Parameters
  * @param parameters.reader Single reader or collection of readers
- * @param parameters.pathMapping
+ * @param parameters.pathMapping Path mapping for a [Link]{@link @ui5/fs/readers/Link}
+ * @param parameters.pathMapping.linkPath Path to match and replace in the requested path or pattern
+ * @param parameters.pathMapping.targetPath Path to use as a replacement in the request for the source reader
  * @returns Reader instance
  */
-export function createLinkReader(parameters: Link_Params) {
+export function createLinkReader(parameters: Link_Args) {
 	return new Link(parameters);
 }
 
@@ -239,7 +241,7 @@ export function createLinkReader(parameters: Link_Params) {
  * This simulates "flat" resource access, which is for example common for projects of type
  * "application".
  *
- * @param parameters
+ * @param parameters Parameters
  * @param parameters.reader Single reader or collection of readers
  * @param parameters.namespace Project namespace
  * @returns Reader instance

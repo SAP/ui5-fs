@@ -2,7 +2,7 @@ import Resource from "../Resource.js";
 
 /**
  *
- * @param testString
+ * @param testString Variable to test if it's a string type
  */
 export function isString(testString: unknown): testString is string {
 	return testString instanceof String || String(testString) === testString;
@@ -10,7 +10,7 @@ export function isString(testString: unknown): testString is string {
 
 /**
  *
- * @param resource
+ * @param resource Variable to test if it's with a Resource type
  */
 export function isMigratedResource(resource: unknown): resource is Resource {
 	// Check if its a fs/Resource v3, function 'hasProject' was

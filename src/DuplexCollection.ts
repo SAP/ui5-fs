@@ -17,7 +17,7 @@ class DuplexCollection extends AbstractReaderWriter {
 	/**
 	 * The Constructor.
 	 *
-	 * @param parameters
+	 * @param parameters Parameters
 	 * @param parameters.reader Single reader or collection of readers
 	 * @param parameters.writer
 	 *			A ReaderWriter instance which is only used for writing files
