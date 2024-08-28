@@ -141,7 +141,8 @@ export function createReaderCollectionPrioritized({name, readers}: {name: string
  * 	paths to writers. Path are matched greedy
  * @returns Writer collection wrapping provided writers
  */
-export function createWriterCollection({name, writerMapping}: {name: string; writerMapping: AbstractReaderWriter[]}) {
+export function createWriterCollection({name, writerMapping}:
+{name: string; writerMapping: Record<string, AbstractReaderWriter>}) {
 	return new WriterCollection({
 		name,
 		writerMapping,

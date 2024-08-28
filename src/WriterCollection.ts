@@ -2,7 +2,7 @@ import AbstractReaderWriter from "./AbstractReaderWriter.js";
 import ReaderCollection from "./ReaderCollection.js";
 import escapeStringRegExp from "escape-string-regexp";
 import Trace from "./tracing/Trace.js";
-import Resource from "./Resource.js";
+import {ResourceInterface} from "./Resource.js";
 
 /**
  * Resource Locator WriterCollection
@@ -112,7 +112,7 @@ class WriterCollection extends AbstractReaderWriter {
 	 *						Activating this option might improve overall memory consumption.
 	 * @returns Promise resolving once data has been written
 	 */
-	_write(resource: Resource, options?: {drain?: boolean; readOnly?: boolean}) {
+	_write(resource: ResourceInterface, options?: {drain?: boolean; readOnly?: boolean}) {
 		const resourcePath = resource.getPath();
 
 		const basePathMatch = resourcePath.match(this._basePathRegex);

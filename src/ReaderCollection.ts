@@ -1,5 +1,5 @@
 import AbstractReader from "./AbstractReader.js";
-import Resource from "./Resource.js";
+import {ResourceInterface} from "./Resource.js";
 import Trace from "./tracing/Trace.js";
 
 /**
@@ -13,12 +13,12 @@ class ReaderCollection extends AbstractReader {
 	 * The constructor.
 	 *
 	 * @param parameters Parameters
-	 * @param parameters.name The collection name
+	 * @param [parameters.name] The collection name
 	 * @param [parameters.readers]
 	 *   List of resource readers (all tried in parallel).
 	 *   If none are provided, the collection will never return any results.
 	 */
-	constructor({name, readers}: {name: string; readers?: AbstractReader[]}) {
+	constructor({name, readers}: {name?: string; readers?: AbstractReader[]}) {
 		super(name);
 
 		// Remove any undefined (empty) readers from array
@@ -40,7 +40,7 @@ class ReaderCollection extends AbstractReader {
 			return resourceLocator._byGlob(pattern, options, trace);
 		})).then((result) => {
 			trace.collection(this._name!);
-			return Array.prototype.concat.apply([], result) as Resource[]; // Flatten array
+			return Array.prototype.concat.apply([], result) as ResourceInterface[]; // Flatten array
 		});
 	}
 

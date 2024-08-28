@@ -2,25 +2,35 @@ import test from "ava";
 import sinon from "sinon";
 import {readFile} from "node:fs/promises";
 
+// const test = anyTest as TestFn<{
+// 	// buildLogger: BuildLogger;
+// 	// logStub: sinon.SinonStub;
+// 	// logHandler: sinon.SinonStub;
+// 	// metadataHandler: sinon.SinonStub;
+// 	// statusHandler: sinon.SinonStub;
+// }>;
+
 import {createAdapter, createFilterReader,
 	createFlatReader, createLinkReader, createResource} from "../../src/resourceFactory.js";
+import {Project} from "@ui5/project/specifications/Project";
 
-test.afterEach.always((_t) => {
+test.afterEach.always(() => {
 	sinon.restore();
 });
 
-function getFileContent(path) {
+function getFileContent(path: string) {
 	return readFile(path, "utf8");
 }
 
-async function fileEqual(t, actual, expected) {
+async function fileEqual(t, actual: string, expected: string) {
 	const actualContent = await getFileContent(actual);
 	const expectedContent = await getFileContent(expected);
 	t.is(actualContent, expectedContent);
 }
 
 ["FileSystem", "Memory"].forEach((adapter) => {
-	async function getAdapter(config) {
+	async function getAdapter(config:
+	{fsBasePath?: string; virBasePath: string; project?: Project; excludes?: string[]; useGitignore?: boolean}) {
 		if (adapter === "Memory") {
 			const fsAdapter = createAdapter(config);
 			const fsResources = await fsAdapter.byGlob("**/*");
@@ -51,11 +61,11 @@ async function fileEqual(t, actual, expected) {
 		});
 
 		// Get resource from one readerWriter
-		const resource = await source.byPath("/app/index.html");
+		const resource = await source!.byPath("/app/index.html");
 
 		// Write resource content to another readerWriter
-		resource.setPath("/dest/index_readableStreamTest.html");
-		await dest.write(resource);
+		resource!.setPath("/dest/index_readableStreamTest.html");
+		await dest!.write(resource);
 
 		t.notThrows(async () => {
 			if (adapter === "FileSystem") {
@@ -64,8 +74,8 @@ async function fileEqual(t, actual, expected) {
 					"./test/tmp/readerWriters/application.a/simple-read-write/index_readableStreamTest.html",
 					"./test/fixtures/application.a/webapp/index.html");
 			} else {
-				const destResource = await dest.byPath("/dest/index_readableStreamTest.html");
-				t.deepEqual(await destResource.getString(), await resource.getString());
+				const destResource = await dest!.byPath("/dest/index_readableStreamTest.html");
+				t.deepEqual(await destResource!.getString(), await resource!.getString());
 			}
 		});
 	});
@@ -81,23 +91,23 @@ async function fileEqual(t, actual, expected) {
 			string: "MyInitialContent",
 		});
 
-		await dest.write(resource);
+		await dest!.write(resource);
 
 		resource.setString("MyNewContent");
 
-		const resource1 = await dest.byPath("/dest/writer/content/test.js");
+		const resource1 = await dest!.byPath("/dest/writer/content/test.js");
 
 		t.is(await resource.getString(), "MyNewContent");
-		t.is(await resource1.getString(), "MyInitialContent");
+		t.is(await resource1!.getString(), "MyInitialContent");
 
 		t.is(await resource.getString(), "MyNewContent");
-		t.is(await resource1.getString(), "MyInitialContent");
+		t.is(await resource1!.getString(), "MyInitialContent");
 
-		await dest.write(resource);
+		await dest!.write(resource);
 
-		const resource2 = await dest.byPath("/dest/writer/content/test.js");
+		const resource2 = await dest!.byPath("/dest/writer/content/test.js");
 		t.is(await resource.getString(), "MyNewContent");
-		t.is(await resource2.getString(), "MyNewContent");
+		t.is(await resource2!.getString(), "MyNewContent");
 	});
 
 	test(adapter + ": Create resource, write and change path", async (t) => {
@@ -111,34 +121,34 @@ async function fileEqual(t, actual, expected) {
 			string: "MyInitialContent",
 		});
 
-		await dest.write(resource);
+		await dest!.write(resource);
 
 		resource.setPath("/dest/writer/path/test2.js");
 
-		const resourceOldPath = await dest.byPath("/dest/writer/path/test.js");
-		const resourceNewPath = await dest.byPath("/dest/writer/path/test2.js");
+		const resourceOldPath = await dest!.byPath("/dest/writer/path/test.js");
+		const resourceNewPath = await dest!.byPath("/dest/writer/path/test2.js");
 
-		t.is(await resource.getPath(), "/dest/writer/path/test2.js");
+		t.is(resource.getPath(), "/dest/writer/path/test2.js");
 		t.truthy(resourceOldPath);
-		t.is(await resourceOldPath.getString(), await resource.getString());
-		t.is(await resourceOldPath.getPath(), "/dest/writer/path/test.js");
-		t.not(resourceNewPath);
+		t.is(await resourceOldPath!.getString(), await resource.getString());
+		t.is(resourceOldPath!.getPath(), "/dest/writer/path/test.js");
+		t.not(resourceNewPath, undefined);
 
-		await dest.write(resource);
+		await dest!.write(resource);
 
-		const resourceOldPath1 = await dest.byPath("/dest/writer/path/test.js");
-		const resourceNewPath1 = await dest.byPath("/dest/writer/path/test2.js");
+		const resourceOldPath1 = await dest!.byPath("/dest/writer/path/test.js");
+		const resourceNewPath1 = await dest!.byPath("/dest/writer/path/test2.js");
 
-		t.is(await resource.getPath(), "/dest/writer/path/test2.js");
+		t.is(resource.getPath(), "/dest/writer/path/test2.js");
 		t.truthy(resourceNewPath1);
-		t.is(await resourceNewPath1.getString(), await resource.getString());
-		t.is(await resourceNewPath1.getPath(), "/dest/writer/path/test2.js");
-		t.not(resourceOldPath1);
+		t.is(await resourceNewPath1!.getString(), await resource.getString());
+		t.is(resourceNewPath1!.getPath(), "/dest/writer/path/test2.js");
+		t.not(resourceOldPath1, undefined);
 	});
 
 	test(adapter +
 	": Create a resource with a path different from the path configured in the adapter", async (t) => {
-		t.pass(2);
+		t.pass("2");
 		const dest = await getAdapter({
 			fsBasePath: "./test/tmp/writer/",
 			virBasePath: "/dest2/writer/",
@@ -149,7 +159,7 @@ async function fileEqual(t, actual, expected) {
 			string: "MyContent",
 		});
 
-		const error = await t.throwsAsync(dest.write(resource));
+		const error = await t.throwsAsync(dest!.write(resource));
 		t.is(error.message,
 			"Failed to write resource with virtual path '/dest2/tmp/test.js': Path must start with the " +
 			"configured virtual base path of the adapter. Base path: '/dest2/writer/'",
@@ -158,7 +168,7 @@ async function fileEqual(t, actual, expected) {
 
 	test(adapter +
 	": Create a resource with a path above the path configured in the adapter", async (t) => {
-		t.pass(2);
+		t.pass("2");
 		const dest = await getAdapter({
 			fsBasePath: "./test/tmp/writer/",
 			virBasePath: "/dest2/writer/",
@@ -178,7 +188,7 @@ async function fileEqual(t, actual, expected) {
 
 	test(adapter +
 	": Create a resource with a path resolving outside the path configured in the adapter", async (t) => {
-		t.pass(2);
+		t.pass("2");
 		const dest = await getAdapter({
 			fsBasePath: "./test/tmp/writer/",
 			virBasePath: "/dest/writer/",
@@ -228,7 +238,7 @@ async function fileEqual(t, actual, expected) {
 			virBasePath: "/resources/app/",
 		});
 		const transformedSource = createFlatReader({
-			reader: source,
+			reader: source!,
 			namespace: "app",
 		});
 
@@ -243,7 +253,7 @@ async function fileEqual(t, actual, expected) {
 			virBasePath: "/resources/app/",
 		});
 		const transformedSource = createLinkReader({
-			reader: source,
+			reader: source!,
 			pathMapping: {
 				linkPath: "/wow/this/is/a/beautiful/path/just/wow/",
 				targetPath: "/resources/",

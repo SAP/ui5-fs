@@ -12,7 +12,7 @@ import {PassThrough} from "node:stream";
 import AbstractAdapter from "./AbstractAdapter.js";
 import type {Project} from "@ui5/project/specifications/Project";
 import Trace from "../tracing/Trace.js";
-import Resource, {LegacyResource, Resource_Options} from "../Resource.js";
+import {LegacyResource, Resource_Options, ResourceInterface} from "../Resource.js";
 
 const READ_ONLY_MODE = 0o444;
 const ADAPTER_NAME = "FileSystem";
@@ -73,7 +73,7 @@ class FileSystem extends AbstractAdapter {
 		};
 		trace.globCall();
 
-		const promises: Promise<Resource | null>[] = [];
+		const promises: Promise<ResourceInterface | null>[] = [];
 		if (!opt.onlyFiles && patterns.includes("")) { // Match physical root directory
 			promises.push(new Promise((resolve, reject) => {
 				fs.stat(this._fsBasePath, (err, stat) => {
@@ -144,7 +144,7 @@ class FileSystem extends AbstractAdapter {
 		const results = await Promise.all(promises);
 
 		// Flatten results
-		return Array.prototype.concat.apply([], results).filter(($) => $) as Resource[];
+		return Array.prototype.concat.apply([], results).filter(($) => $) as ResourceInterface[];
 	}
 
 	/**
@@ -244,9 +244,10 @@ class FileSystem extends AbstractAdapter {
 	 *						E.g. the final write of a resource after all processing is finished.
 	 * @returns Promise resolving once data has been written
 	 */
-	async _write(anyResource: LegacyResource | Resource, {drain, readOnly}: {drain?: boolean; readOnly?: boolean}) {
+	async _write(anyResource: LegacyResource | ResourceInterface,
+		{drain, readOnly}: {drain?: boolean; readOnly?: boolean}) {
 		const potentialResourceP = this._migrateResource(anyResource);
-		let resource: Resource;
+		let resource: ResourceInterface;
 		if (potentialResourceP instanceof Promise) {
 			// Only await if the migrate function returned a promise
 			// Otherwise await would automatically create a Promise, causing unwanted overhead

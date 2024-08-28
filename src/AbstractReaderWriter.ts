@@ -1,5 +1,5 @@
 import AbstractReader from "./AbstractReader.js";
-import Resource from "./Resource.js";
+import {ResourceInterface} from "./Resource.js";
 
 /**
  * Abstract resource locator implementing the general API for <b>reading and writing</b> resources
@@ -45,7 +45,7 @@ class AbstractReaderWriter extends AbstractReader {
 	 *						E.g. the final write of a resource after all processing is finished.
 	 * @returns Promise resolving once data has been written
 	 */
-	write(resource: Resource, options = {drain: false, readOnly: false}): Promise<void> {
+	write(resource: ResourceInterface, options = {drain: false, readOnly: false}): Promise<void> {
 		return this._write(resource, options);
 	}
 
@@ -65,7 +65,7 @@ class AbstractReaderWriter extends AbstractReader {
 	 *						Therefore the written file should not be altered by any means.
 	 *						Activating this option might improve overall memory consumption.
 	 */
-	_write(_resource: Resource, _options?: {drain?: boolean; readOnly?: boolean}): Promise<void> {
+	_write(_resource: ResourceInterface, _options?: {drain?: boolean; readOnly?: boolean}): Promise<void> {
 		throw new Error("Not implemented");
 	}
 }

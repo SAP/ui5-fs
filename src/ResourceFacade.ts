@@ -1,8 +1,7 @@
 import posixPath from "node:path/posix";
-import {ResourceInterface} from "./Resource.js";
 import {Buffer} from "node:buffer";
 import stream from "node:stream";
-import {Resource_CreateReadableStream} from "./Resource.js";
+import {Resource_CreateReadableStream, ResourceInterface} from "./Resource.js";
 import {Project} from "@ui5/project/specifications/Project";
 
 /**

@@ -3,7 +3,7 @@ const log = getLogger("resources:adapters:Memory");
 import micromatch from "micromatch";
 import AbstractAdapter from "./AbstractAdapter.js";
 import {Project} from "@ui5/project/specifications/Project";
-import Resource, {LegacyResource, ResourceInterface} from "../Resource.js";
+import {LegacyResource, ResourceInterface} from "../Resource.js";
 import Trace from "../tracing/Trace.js";
 
 const ADAPTER_NAME = "Memory";
@@ -14,8 +14,8 @@ const ADAPTER_NAME = "Memory";
  * @alias @ui5/fs/adapters/Memory
  */
 class Memory extends AbstractAdapter {
-	_virFiles: Record<string, Resource>;
-	_virDirs: Record<string, Resource>;
+	_virFiles: Record<string, ResourceInterface>;
+	_virDirs: Record<string, ResourceInterface>;
 
 	/**
 	 * The constructor.
@@ -28,8 +28,8 @@ class Memory extends AbstractAdapter {
 	 */
 	constructor({virBasePath, project, excludes}: {virBasePath: string; project?: Project; excludes?: string[]}) {
 		super({virBasePath, project, excludes});
-		this._virFiles = Object.create(null) as Record<string, Resource>; // map full of files
-		this._virDirs = Object.create(null) as Record<string, Resource>; // map full of directories
+		this._virFiles = Object.create(null) as Record<string, ResourceInterface>; // map full of files
+		this._virDirs = Object.create(null) as Record<string, ResourceInterface>; // map full of directories
 	}
 
 	/**
@@ -39,20 +39,20 @@ class Memory extends AbstractAdapter {
 	 * @param resourceMap Resources cache
 	 * @returns
 	 */
-	async _matchPatterns(patterns: string[], resourceMap: Record<string, Resource>): Promise<ResourceInterface[]> {
+	async _matchPatterns(patterns: string[], resourceMap: Record<string, ResourceInterface>): Promise<ResourceInterface[]> {
 		const resourcePaths = Object.keys(resourceMap);
 		const matchedPaths = micromatch(resourcePaths, patterns, {
 			dot: true,
 		});
 		return await Promise.all(matchedPaths.map((virPath) => {
-			const resource: Resource = resourceMap[virPath];
+			const resource: ResourceInterface = resourceMap[virPath];
 			if (resource) {
 				return this._cloneResource(resource);
 			}
 		}).filter(($) => !!$));
 	}
 
-	async _cloneResource(resource: Resource): Promise<Resource> {
+	async _cloneResource(resource: ResourceInterface): Promise<ResourceInterface> {
 		const clonedResource = await resource.clone();
 		if (this._project) {
 			clonedResource.setProject(this._project);
@@ -114,7 +114,7 @@ class Memory extends AbstractAdapter {
 
 		trace.pathCall();
 
-		const resource: Resource = this._virFiles[relPath];
+		const resource: ResourceInterface = this._virFiles[relPath];
 
 		if (!resource || (options.nodir && resource.getStatInfo().isDirectory?.())) {
 			return null;
@@ -129,9 +129,9 @@ class Memory extends AbstractAdapter {
 	 * @param anyResource The Resource to write
 	 * @returns Promise resolving once data has been written
 	 */
-	async _write(anyResource: Resource | LegacyResource) {
+	async _write(anyResource: ResourceInterface | LegacyResource) {
 		const migratedResource = this._migrateResource(anyResource);
-		let resource: Resource;
+		let resource: ResourceInterface;
 		if (migratedResource instanceof Promise) {
 			// Only await if the migrate function returned a promise
 			// Otherwise await would automatically create a Promise, causing unwanted overhead

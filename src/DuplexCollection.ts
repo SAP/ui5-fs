@@ -1,7 +1,7 @@
 import AbstractReader from "./AbstractReader.js";
 import AbstractReaderWriter from "./AbstractReaderWriter.js";
 import ReaderCollectionPrioritized from "./ReaderCollectionPrioritized.js";
-import Resource from "./Resource.js";
+import {ResourceInterface} from "./Resource.js";
 import Trace from "./tracing/Trace.js";
 
 /**
@@ -79,7 +79,7 @@ class DuplexCollection extends AbstractReaderWriter {
 	 * @param resource The Resource to write
 	 * @returns Promise resolving once data has been written
 	 */
-	_write(resource: Resource) {
+	_write(resource: ResourceInterface) {
 		return this._writer.write(resource);
 	}
 }

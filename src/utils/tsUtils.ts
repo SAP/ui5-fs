@@ -1,4 +1,4 @@
-import Resource from "../Resource.js";
+import Resource, {ResourceInterface} from "../Resource.js";
 
 /**
  *
@@ -12,7 +12,7 @@ export function isString(testString: unknown): testString is string {
  *
  * @param resource Variable to test if it's with a Resource type
  */
-export function isMigratedResource(resource: unknown): resource is Resource {
+export function isMigratedResource(resource: unknown): resource is Resource | ResourceInterface {
 	// Check if its a fs/Resource v3, function 'hasProject' was
 	// introduced with v3 therefore take it as the indicator
 	return !!resource && typeof resource === "object" && ("hasProject" in resource);

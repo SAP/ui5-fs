@@ -4,7 +4,7 @@ const log = getLogger("resources:adapters:AbstractAdapter");
 import {minimatch} from "minimatch";
 import micromatch from "micromatch";
 import AbstractReaderWriter from "../AbstractReaderWriter.js";
-import Resource, {Resource_Options, LegacyResource} from "../Resource.js";
+import Resource, {Resource_Options, LegacyResource, ResourceInterface} from "../Resource.js";
 import type {Project} from "@ui5/project/specifications/Project";
 import Trace from "../tracing/Trace.js";
 import {isMigratedResource} from "../utils/tsUtils.js";
@@ -64,7 +64,7 @@ class AbstractAdapter extends AbstractReaderWriter {
 	 * @param trace Trace instance
 	 * @returns Promise resolving to list of resources
 	 */
-	async _byGlob(virPattern: string | string[], options = {nodir: true}, trace: Trace): Promise<Resource[]> {
+	async _byGlob(virPattern: string | string[], options = {nodir: true}, trace: Trace): Promise<ResourceInterface[]> {
 		const excludes = this._excludesNegated;
 
 		if (!(virPattern instanceof Array)) {
@@ -199,14 +199,14 @@ class AbstractAdapter extends AbstractReaderWriter {
 		return resultGlobs;
 	}
 
-	_createResource(parameters: Resource_Options) {
+	_createResource(parameters: Resource_Options): ResourceInterface {
 		if (this._project) {
 			parameters.project = this._project;
 		}
 		return new Resource(parameters);
 	}
 
-	_migrateResource(resource: LegacyResource | Resource) {
+	_migrateResource(resource: LegacyResource | ResourceInterface): Promise<ResourceInterface> | ResourceInterface {
 		// This function only returns a promise if a migration is necessary.
 		// Since this is rarely the case, we therefore reduce the amount of
 		// created Promises by making this differentiation
@@ -219,7 +219,7 @@ class AbstractAdapter extends AbstractReaderWriter {
 		return this._createFromLegacyResource(resource);
 	}
 
-	async _createFromLegacyResource(resource: LegacyResource) {
+	async _createFromLegacyResource(resource: LegacyResource): Promise<ResourceInterface> {
 		const options = {
 			path: resource._path,
 			statInfo: resource._statInfo,
@@ -236,7 +236,7 @@ class AbstractAdapter extends AbstractReaderWriter {
 		return new Resource(options);
 	}
 
-	_assignProjectToResource(resource: Resource) {
+	_assignProjectToResource(resource: ResourceInterface) {
 		if (this._project) {
 			// Assign project to resource if necessary
 			if (resource.hasProject()) {

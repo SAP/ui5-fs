@@ -1,6 +1,6 @@
 const tagNamespaceRegExp = /^[a-z][a-z0-9]+$/; // part before the colon
 const tagNameRegExp = /^[A-Z][A-Za-z0-9]+$/; // part after the colon
-import Resource from "./Resource.js";
+import {ResourceInterface} from "./Resource.js";
 import ResourceFacade from "./ResourceFacade.js";
 
 interface PathTagsInterface {
@@ -94,7 +94,7 @@ class ResourceTagCollection {
 		return false;
 	}
 
-	_getPath(resourcePath: ResourceFacade | Resource | string): string {
+	_getPath(resourcePath: ResourceInterface | string): string {
 		if (typeof resourcePath !== "string") {
 			if (resourcePath instanceof ResourceFacade) {
 				resourcePath = resourcePath.getConcealedResource().getPath();
