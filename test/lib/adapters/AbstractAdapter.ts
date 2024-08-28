@@ -2,12 +2,13 @@ import test from "ava";
 import AbstractAdapter from "../../../src/adapters/AbstractAdapter.js";
 import {createResource} from "../../../src/resourceFactory.js";
 import {LegacyResource} from "../../../src/Resource.js";
+import {Project} from "@ui5/project/specifications/Project";
 
 class MyAbstractAdapter extends AbstractAdapter { }
 
 test("Missing paramter: virBasePath", (t) => {
 	t.throws(() => {
-		new MyAbstractAdapter({});
+		new MyAbstractAdapter({} as {virBasePath: string; excludes?: string[]; project?: Project});
 	}, {
 		message: "Unable to create adapter: Missing parameter 'virBasePath'",
 	}, "Threw with expected error message");
@@ -54,7 +55,7 @@ test("_assignProjectToResource: Resource is already assigned to another project 
 		project: {
 			getName: () => "test.lib",
 			getVersion: () => "2.0.0",
-		},
+		} as Project,
 	});
 
 	const writer = new MyAbstractAdapter({
@@ -62,7 +63,7 @@ test("_assignProjectToResource: Resource is already assigned to another project 
 		project: {
 			getName: () => "test.lib1",
 			getVersion: () => "2.0.0",
-		},
+		} as Project,
 	});
 
 	const error = t.throws(() => writer._assignProjectToResource(resource));
@@ -76,7 +77,7 @@ test("_isPathHandled", (t) => {
 		project: {
 			getName: () => "test.lib1",
 			getVersion: () => "2.0.0",
-		},
+		} as Project,
 	});
 
 	t.true(writer._isPathHandled("/dest2/writer/test.js"), "Returned expected result");
@@ -92,7 +93,7 @@ test("_resolveVirtualPathToBase (read mode)", (t) => {
 		project: {
 			getName: () => "test.lib1",
 			getVersion: () => "2.0.0",
-		},
+		} as Project,
 	});
 
 	t.is(writer._resolveVirtualPathToBase("/dest2/writer/test.js"), "test.js", "Returned expected path");
@@ -108,7 +109,7 @@ test("_resolveVirtualPathToBase (read mode): Path does not starting with path co
 		project: {
 			getName: () => "test.lib1",
 			getVersion: () => "2.0.0",
-		},
+		} as Project,
 	});
 
 	t.is(writer._resolveVirtualPathToBase("/dest2/tmp/test.js"), null, "Returned null");
@@ -123,7 +124,7 @@ test("_resolveVirtualPathToBase (read mode): Path Must be absolute", (t) => {
 		project: {
 			getName: () => "test.lib1",
 			getVersion: () => "2.0.0",
-		},
+		} as Project,
 	});
 
 	t.throws(() => writer._resolveVirtualPathToBase("./dest2/write"), {
@@ -138,7 +139,7 @@ test("_resolveVirtualPathToBase (write mode)", (t) => {
 		project: {
 			getName: () => "test.lib1",
 			getVersion: () => "2.0.0",
-		},
+		} as Project,
 	});
 
 	t.is(writer._resolveVirtualPathToBase("/dest2/writer/test.js", true), "test.js", "Returned expected path");
@@ -155,7 +156,7 @@ test("_resolveVirtualPathToBase (write mode): Path does not starting with path c
 		project: {
 			getName: () => "test.lib1",
 			getVersion: () => "2.0.0",
-		},
+		} as Project,
 	});
 
 	t.throws(() => writer._resolveVirtualPathToBase("/dest2/tmp/test.js", true), {
@@ -189,7 +190,7 @@ test("_resolveVirtualPathToBase (write mode): Path Must be absolute", (t) => {
 		project: {
 			getName: () => "test.lib1",
 			getVersion: () => "2.0.0",
-		},
+		} as Project,
 	});
 
 	t.throws(() => writer._resolveVirtualPathToBase("./dest2/write", true), {
@@ -198,44 +199,44 @@ test("_resolveVirtualPathToBase (write mode): Path Must be absolute", (t) => {
 	}, "Threw with expected error message");
 });
 
-test("_normalizePattern", async (t) => {
+test("_normalizePattern", (t) => {
 	const writer = new MyAbstractAdapter({
 		virBasePath: "/path/",
 		project: {
 			getName: () => "test.lib1",
 			getVersion: () => "2.0.0",
-		},
+		} as Project,
 	});
 
-	t.deepEqual(await writer._normalizePattern("/*/{src,test}/**"), [
+	t.deepEqual(writer._normalizePattern("/*/{src,test}/**"), [
 		"src/**",
 		"test/**",
 	], "Returned expected patterns");
 });
 
-test("_normalizePattern: Match base directory", async (t) => {
+test("_normalizePattern: Match base directory", (t) => {
 	const writer = new MyAbstractAdapter({
 		virBasePath: "/path/",
 		project: {
 			getName: () => "test.lib1",
 			getVersion: () => "2.0.0",
-		},
+		} as Project,
 	});
 
-	t.deepEqual(await writer._normalizePattern("/*"), [""],
+	t.deepEqual(writer._normalizePattern("/*"), [""],
 		"Returned an empty pattern since the input pattern matches the base directory only");
 });
 
-test("_normalizePattern: Match sub-directory", async (t) => {
+test("_normalizePattern: Match sub-directory", (t) => {
 	const writer = new MyAbstractAdapter({
 		virBasePath: "/path/",
 		project: {
 			getName: () => "test.lib1",
 			getVersion: () => "2.0.0",
-		},
+		} as Project,
 	});
 
-	t.deepEqual(await writer._normalizePattern("/path/*"), ["*"],
+	t.deepEqual(writer._normalizePattern("/path/*"), ["*"],
 		"Returned expected patterns");
 });
 
@@ -245,7 +246,7 @@ test("_normalizePattern: Match all", (t) => {
 		project: {
 			getName: () => "test.lib1",
 			getVersion: () => "2.0.0",
-		},
+		} as Project,
 	});
 
 	t.deepEqual(writer._normalizePattern("/**/*"), ["**/*"],
@@ -258,7 +259,7 @@ test("_normalizePattern: Relative path segment above virtual root directory", (t
 		project: {
 			getName: () => "test.lib1",
 			getVersion: () => "2.0.0",
-		},
+		} as Project,
 	});
 
 	t.deepEqual(writer._normalizePattern("/path/../../*"), [],
@@ -271,7 +272,7 @@ test("_normalizePattern: Relative path segment resolving to base directory", (t)
 		project: {
 			getName: () => "test.lib1",
 			getVersion: () => "2.0.0",
-		},
+		} as Project,
 	});
 
 	t.deepEqual(writer._normalizePattern("/*/../*"), [""],
@@ -284,7 +285,7 @@ test("_normalizePattern: Relative path segment", (t) => {
 		project: {
 			getName: () => "test.lib1",
 			getVersion: () => "2.0.0",
-		},
+		} as Project,
 	});
 
 	t.deepEqual(writer._normalizePattern("/path/../*"), [""],
@@ -297,7 +298,7 @@ test("_normalizePattern: Relative path segment within base directory, matching a
 		project: {
 			getName: () => "test.lib1",
 			getVersion: () => "2.0.0",
-		},
+		} as Project,
 	});
 
 	t.deepEqual(writer._normalizePattern("/path/path2/../**/*"), ["**/*"],
