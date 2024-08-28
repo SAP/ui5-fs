@@ -10,25 +10,28 @@ test("AbstractReader: constructor throws an error", (t) => {
 	});
 });
 
-test("Incomplete AbstractReader subclass: Abstract functions throw error", (t) => {
+test("Incomplete AbstractReader subclass: Abstract functions throw error", async (t) => {
 	class Dummy extends AbstractReader {}
 
 	const instance = new Dummy();
-	t.throws(async () => {
+	await t.throwsAsync(async () => {
+		// @ts-expect-error testing invalid value
 		await instance._byGlob();
 	}, {
 		instanceOf: Error,
 		message: "Function '_byGlob' is not implemented",
 	});
 
-	t.throws(async () => {
+	await t.throwsAsync(async () => {
+		// @ts-expect-error testing invalid value
 		await instance._runGlob();
 	}, {
 		instanceOf: Error,
 		message: "Function '_runGlob' is not implemented",
 	});
 
-	t.throws(async () => {
+	await t.throwsAsync(async () => {
+		// @ts-expect-error testing invalid value
 		await instance._byPath();
 	}, {
 		instanceOf: Error,
