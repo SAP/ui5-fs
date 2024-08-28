@@ -152,7 +152,7 @@ class FileSystem extends AbstractAdapter {
 	 *
 	 * @param virPath Absolute virtual path
 	 * @param options Options
-	 * @param options.nodir
+	 * @param options.nodir Do not match directories
 	 * @param trace Trace instance
 	 * @returns Promise resolving to a single resource or null if not found
 	 */
@@ -230,8 +230,8 @@ class FileSystem extends AbstractAdapter {
 	/**
 	 * Writes the content of a resource to a path.
 	 *
-	 * @param resource Resource to write
-	 * @param [options]
+	 * @param anyResource Resource to write
+	 * @param [options] Writer options
 	 * @param [options.readOnly] Whether the resource content shall be written read-only
 	 *						Do not use in conjunction with the <code>drain</code> option.
 	 *						The written file will be used as the new source of this resources content.
@@ -241,7 +241,6 @@ class FileSystem extends AbstractAdapter {
 	 *						Do not use in conjunction with the <code>readOnly</code> option.
 	 *						Activating this option might improve overall memory consumption.
 	 *						This should be used in cases where this is the last access to the resource.
-	 * @param anyResource
 	 *						E.g. the final write of a resource after all processing is finished.
 	 * @returns Promise resolving once data has been written
 	 */

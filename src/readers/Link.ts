@@ -43,9 +43,9 @@ class Link extends AbstractReader {
 	 *
 	 * @param parameters Parameters
 	 * @param parameters.reader The resource reader or collection to wrap
-	 * @param parameters.pathMapping
-	 * @param parameters.pathMapping.linkPath
-	 * @param parameters.pathMapping.targetPath
+	 * @param parameters.pathMapping Path mapping for a [Link]{@link @ui5/fs/readers/Link}
+	 * @param parameters.pathMapping.linkPath Path to match and replace in the requested path or pattern
+	 * @param parameters.pathMapping.targetPath Path to use as a replacement in the request for the source reader
 	 */
 	constructor({reader, pathMapping}: Link_Params) {
 		super();
@@ -66,7 +66,7 @@ class Link extends AbstractReader {
 	 * @param pattern glob pattern as string or an array of
 	 *         glob patterns for virtual directory structure
 	 * @param options glob options
-	 * @param options.nodir
+	 * @param options.nodir Do not match directories
 	 * @param trace Trace instance
 	 * @returns Promise resolving to list of resources
 	 */
@@ -106,7 +106,7 @@ class Link extends AbstractReader {
 	 *
 	 * @param virPath Virtual path
 	 * @param options Options
-	 * @param options.nodir
+	 * @param options.nodir Do not match directories
 	 * @param trace Trace instance
 	 * @returns Promise resolving to a single resource
 	 */

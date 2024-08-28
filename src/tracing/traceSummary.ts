@@ -144,7 +144,7 @@ function globCall() {
 
 /**
  *
- * @param name
+ * @param name TraceData collection name
  */
 function collection(name: string) {
 	if (!active) {

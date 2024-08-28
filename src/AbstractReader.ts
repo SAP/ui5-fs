@@ -81,11 +81,10 @@ class AbstractReader {
 	/**
 	 * Locates resources by one or more glob patterns.
 	 *
-	 * @param virPattern glob pattern as string or an array of
+	 * @param _virPattern glob pattern as string or an array of
 	 *         glob patterns for virtual directory structure
-	 * @param _virPattern
 	 * @param _options glob options
-	 * @param _options.nodir
+	 * @param _options.nodir Do not match directories
 	 * @param _trace Trace instance
 	 */
 	_byGlob(_virPattern: string | string[],
@@ -99,10 +98,9 @@ class AbstractReader {
 	/**
 	 * Locate resources by matching a single glob pattern.
 	 *
-	 * @param pattern glob pattern
-	 * @param _pattern
+	 * @param _pattern glob pattern
 	 * @param _options glob options
-	 * @param _options.nodir
+	 * @param _options.nodir Do not match directories
 	 * @param _trace Trace instance
 	 */
 	_runGlob(_pattern: string | string[], _options: {nodir: boolean}, _trace: Trace): Promise<ResourceInterface[]> {
@@ -112,10 +110,9 @@ class AbstractReader {
 	/**
 	 * Locates resources by path.
 	 *
-	 * @param virPath Virtual path
-	 * @param _virPath
+	 * @param _virPath Virtual path
 	 * @param _options glob options
-	 * @param _options.nodir
+	 * @param _options.nodir Do not match directories
 	 * @param _trace Trace instance
 	 */
 	_byPath(_virPath: string, _options: {nodir: boolean}, _trace: Trace): Promise<ResourceInterface | null> {

@@ -74,7 +74,7 @@ class WriterCollection extends AbstractReaderWriter {
 	 * @param pattern glob pattern as string or an array of
 	 *         glob patterns for virtual directory structure
 	 * @param options glob options
-	 * @param options.nodir
+	 * @param options.nodir Do not match directories
 	 * @param trace Trace instance
 	 * @returns Promise resolving to list of resources
 	 */
@@ -87,7 +87,7 @@ class WriterCollection extends AbstractReaderWriter {
 	 *
 	 * @param virPath Virtual path
 	 * @param options Options
-	 * @param options.nodir
+	 * @param options.nodir Do not match directories
 	 * @param trace Trace instance
 	 * @returns Promise resolving to a single resource
 	 */

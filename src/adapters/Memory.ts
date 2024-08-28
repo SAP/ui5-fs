@@ -35,8 +35,8 @@ class Memory extends AbstractAdapter {
 	/**
 	 * Matches and returns resources from a given map (either _virFiles or _virDirs).
 	 *
-	 * @param patterns
-	 * @param resourceMap
+	 * @param patterns glob patterns
+	 * @param resourceMap Resources cache
 	 * @returns
 	 */
 	async _matchPatterns(patterns: string[], resourceMap: Record<string, Resource>): Promise<ResourceInterface[]> {
@@ -66,8 +66,7 @@ class Memory extends AbstractAdapter {
 	 * @param patterns array of glob patterns
 	 * @param [options] glob options
 	 * @param [options.nodir] Do not match directories
-	 * @param _trace
-	 * @param trace Trace instance
+	 * @param _trace Trace instance
 	 * @returns Promise resolving to list of resources
 	 */
 	async _runGlob(patterns: string[], options = {nodir: true}, _trace: Trace) {
@@ -103,7 +102,7 @@ class Memory extends AbstractAdapter {
 	 *
 	 * @param virPath Virtual path
 	 * @param options Options
-	 * @param options.nodir
+	 * @param options.nodir Do not match directories
 	 * @param trace Trace instance
 	 * @returns Promise resolving to a single resource
 	 */
@@ -127,8 +126,7 @@ class Memory extends AbstractAdapter {
 	/**
 	 * Writes the content of a resource to a path.
 	 *
-	 * @param anyResource
-	 * @param resource The Resource to write
+	 * @param anyResource The Resource to write
 	 * @returns Promise resolving once data has been written
 	 */
 	async _write(anyResource: Resource | LegacyResource) {
