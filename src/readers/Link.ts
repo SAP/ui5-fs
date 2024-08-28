@@ -5,7 +5,7 @@ import {getLogger} from "@ui5/logger";
 const log = getLogger("resources:readers:Link");
 import Trace from "../tracing/Trace.js";
 
-export interface Link_Params {reader: AbstractReader; pathMapping: {linkPath: string; targetPath: string};
+export interface Link_Params {reader: AbstractReader; pathMapping: {linkPath: string; targetPath: string}};
 
 /**
  * A reader that allows for rewriting paths segments of all resources passed through it.
