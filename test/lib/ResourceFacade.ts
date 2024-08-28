@@ -1,9 +1,9 @@
 import test from "ava";
 import sinon from "sinon";
-import Resource from "../../src/Resource.js";
+import Resource, {ResourceInterface} from "../../src/Resource.js";
 import ResourceFacade from "../../src/ResourceFacade.js";
 
-test.afterEach.always((t) => {
+test.afterEach.always(() => {
 	sinon.restore();
 });
 
@@ -23,6 +23,7 @@ test("Create instance", (t) => {
 
 test("Create instance: Missing parameters", (t) => {
 	t.throws(() => {
+		// @ts-expect-error testing missing arguments
 		new ResourceFacade({
 			path: "/my/path",
 		});
@@ -32,6 +33,7 @@ test("Create instance: Missing parameters", (t) => {
 	});
 	t.throws(() => {
 		new ResourceFacade({
+			// @ts-expect-error testing missing arguments
 			resource: {},
 		});
 	}, {
@@ -72,7 +74,7 @@ test("ResourceFacade #setPath", (t) => {
 });
 
 test("ResourceFacade provides same public functions as Resource", (t) => {
-	const resource = new Resource({
+	const resource: ResourceInterface = new Resource({
 		path: "/my/path/to/resource",
 		string: "my content",
 	});
@@ -82,15 +84,17 @@ test("ResourceFacade provides same public functions as Resource", (t) => {
 	});
 
 	const methods = Object.getOwnPropertyNames(Resource.prototype)
-		.filter((p) => (!p.startsWith("_") && typeof resource[p] === "function"));
+		.filter((p) => (!p.startsWith("_") && typeof resource[p as keyof typeof resource] === "function"));
 
 	methods.forEach((method) => {
-		t.truthy(resourceFacade[method], `resourceFacade provides function #${method}`);
+		t.truthy(method in resourceFacade, `resourceFacade provides function #${method}`);
 		if (["constructor", "getPath", "getName", "setPath", "clone"].includes(method)) {
 			// special functions with separate tests
 			return;
 		}
+		// @ts-expect-error Stubbing the resource
 		const stub = sinon.stub(resource, method);
+		// @ts-expect-error Checking stubbed resource
 		resourceFacade[method]("argument");
 		t.is(stub.callCount, 1, `Resource#${method} stub got called once by resourceFacade#${method}`);
 		stub.restore();
