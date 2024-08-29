@@ -1,6 +1,6 @@
 import test from "ava";
 import sinon from "sinon";
-import Resource, {ResourceInterface} from "../../src/Resource.js";
+import Resource, {type ResourceInterface} from "../../src/Resource.js";
 import ResourceFacade from "../../src/ResourceFacade.js";
 
 test.afterEach.always(() => {

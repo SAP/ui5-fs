@@ -12,7 +12,7 @@ import {readFile} from "node:fs/promises";
 
 import {createAdapter, createFilterReader,
 	createFlatReader, createLinkReader, createResource} from "../../src/resourceFactory.js";
-import {Project} from "@ui5/project/specifications/Project";
+import {type Project} from "@ui5/project/specifications/Project";
 
 test.afterEach.always(() => {
 	sinon.restore();

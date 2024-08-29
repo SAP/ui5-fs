@@ -1,9 +1,9 @@
 import test from "ava";
-import {Stream, Transform, Readable} from "node:stream";
+import {Stream, Transform, type Readable} from "node:stream";
 import {promises as fs, createReadStream} from "node:fs";
 import path from "node:path";
 import Resource from "../../src/Resource.js";
-import {Project} from "@ui5/project/specifications/Project";
+import {type Project} from "@ui5/project/specifications/Project";
 
 function createBasicResource() {
 	const fsPath = path.join("test", "fixtures", "application.a", "webapp", "index.html");

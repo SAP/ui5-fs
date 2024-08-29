@@ -1,8 +1,8 @@
 import test from "ava";
 import AbstractAdapter from "../../../src/adapters/AbstractAdapter.js";
 import {createResource} from "../../../src/resourceFactory.js";
-import {LegacyResource} from "../../../src/Resource.js";
-import {Project} from "@ui5/project/specifications/Project";
+import {type LegacyResource} from "../../../src/Resource.js";
+import {type Project} from "@ui5/project/specifications/Project";
 
 class MyAbstractAdapter extends AbstractAdapter { }
 

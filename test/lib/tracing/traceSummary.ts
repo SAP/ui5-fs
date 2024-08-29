@@ -1,6 +1,6 @@
-import anyTest, {TestFn, ExecutionContext} from "ava";
-import sinon, {SinonStub} from "sinon";
-import esmock, {MockFunction} from "esmock";
+import anyTest, {type TestFn, type ExecutionContext} from "ava";
+import sinon, {type SinonStub} from "sinon";
+import esmock, {type MockFunction} from "esmock";
 
 interface avaContext {
 	loggerStub: {
