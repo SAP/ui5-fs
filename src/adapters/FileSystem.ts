@@ -7,12 +7,12 @@ const copyFile = promisify(fs.copyFile);
 const chmod = promisify(fs.chmod);
 const mkdir = promisify(fs.mkdir);
 const stat = promisify(fs.stat);
-import {globby, GlobbyFilterFunction, isGitIgnored} from "globby";
+import {globby, type GlobbyFilterFunction, isGitIgnored} from "globby";
 import {PassThrough} from "node:stream";
 import AbstractAdapter from "./AbstractAdapter.js";
 import type {Project} from "@ui5/project/specifications/Project";
-import Trace from "../tracing/Trace.js";
-import {LegacyResource, Resource_Options, ResourceInterface} from "../Resource.js";
+import type Trace from "../tracing/Trace.js";
+import {type LegacyResource, type Resource_Options, type ResourceInterface} from "../Resource.js";
 import {isError} from "../utils/tsUtils.js";
 
 const READ_ONLY_MODE = 0o444;

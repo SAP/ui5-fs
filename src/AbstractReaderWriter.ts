@@ -1,5 +1,5 @@
 import AbstractReader from "./AbstractReader.js";
-import {ResourceInterface} from "./Resource.js";
+import {type ResourceInterface} from "./Resource.js";
 
 /**
  * Abstract resource locator implementing the general API for <b>reading and writing</b> resources

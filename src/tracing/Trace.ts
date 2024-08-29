@@ -3,7 +3,7 @@ const log = getLogger("resources:tracing:Trace");
 const logGlobs = getLogger("resources:tracing:Trace:globs");
 const logPaths = getLogger("resources:tracing:Trace:paths");
 import prettyHrtime from "pretty-hrtime";
-import summaryTrace, {CollectionsType} from "./traceSummary.js";
+import summaryTrace, {type CollectionsType} from "./traceSummary.js";
 
 /**
  * Trace

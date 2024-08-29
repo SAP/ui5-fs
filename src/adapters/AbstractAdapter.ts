@@ -4,9 +4,9 @@ const log = getLogger("resources:adapters:AbstractAdapter");
 import {minimatch} from "minimatch";
 import micromatch from "micromatch";
 import AbstractReaderWriter from "../AbstractReaderWriter.js";
-import Resource, {Resource_Options, LegacyResource, ResourceInterface} from "../Resource.js";
+import Resource, {type Resource_Options, type LegacyResource, type ResourceInterface} from "../Resource.js";
 import type {Project} from "@ui5/project/specifications/Project";
-import Trace from "../tracing/Trace.js";
+import type Trace from "../tracing/Trace.js";
 import {isMigratedResource} from "../utils/tsUtils.js";
 
 /**

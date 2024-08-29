@@ -1,8 +1,8 @@
-import AbstractReader from "./AbstractReader.js";
+import type AbstractReader from "./AbstractReader.js";
 import AbstractReaderWriter from "./AbstractReaderWriter.js";
 import ReaderCollectionPrioritized from "./ReaderCollectionPrioritized.js";
-import {ResourceInterface} from "./Resource.js";
-import Trace from "./tracing/Trace.js";
+import {type ResourceInterface} from "./Resource.js";
+import type Trace from "./tracing/Trace.js";
 
 /**
  * Wrapper to keep readers and writers together

@@ -2,9 +2,9 @@ import {getLogger} from "@ui5/logger";
 const log = getLogger("resources:adapters:Memory");
 import micromatch from "micromatch";
 import AbstractAdapter from "./AbstractAdapter.js";
-import {Project} from "@ui5/project/specifications/Project";
-import {LegacyResource, ResourceInterface} from "../Resource.js";
-import Trace from "../tracing/Trace.js";
+import {type Project} from "@ui5/project/specifications/Project";
+import {type LegacyResource, type ResourceInterface} from "../Resource.js";
+import type Trace from "../tracing/Trace.js";
 
 const ADAPTER_NAME = "Memory";
 

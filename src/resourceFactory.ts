@@ -5,14 +5,14 @@ import FsAdapter from "./adapters/FileSystem.js";
 import MemAdapter from "./adapters/Memory.js";
 import ReaderCollection from "./ReaderCollection.js";
 import ReaderCollectionPrioritized from "./ReaderCollectionPrioritized.js";
-import Resource, {Resource_Options, ResourceInterface} from "./Resource.js";
+import Resource, {type Resource_Options, type ResourceInterface} from "./Resource.js";
 import WriterCollection from "./WriterCollection.js";
-import Filter, {Filter_Params} from "./readers/Filter.js";
-import Link, {Link_Args} from "./readers/Link.js";
+import Filter, {type Filter_Params} from "./readers/Filter.js";
+import Link, {type Link_Args} from "./readers/Link.js";
 import {getLogger} from "@ui5/logger";
-import {Project} from "@ui5/project/specifications/Project";
-import AbstractReader from "./AbstractReader.js";
-import AbstractReaderWriter from "./AbstractReaderWriter.js";
+import {type Project} from "@ui5/project/specifications/Project";
+import type AbstractReader from "./AbstractReader.js";
+import type AbstractReaderWriter from "./AbstractReaderWriter.js";
 const log = getLogger("resources:resourceFactory");
 
 /**

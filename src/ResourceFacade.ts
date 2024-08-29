@@ -1,8 +1,8 @@
 import posixPath from "node:path/posix";
-import {Buffer} from "node:buffer";
-import stream from "node:stream";
-import {Resource_CreateReadableStream, ResourceInterface} from "./Resource.js";
-import {Project} from "@ui5/project/specifications/Project";
+import {type Buffer} from "node:buffer";
+import type stream from "node:stream";
+import {type Resource_CreateReadableStream, type ResourceInterface} from "./Resource.js";
+import {type Project} from "@ui5/project/specifications/Project";
 
 /**
  * A {@link @ui5/fs/Resource Resource} with a different path than it's original

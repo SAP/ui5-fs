@@ -1,8 +1,8 @@
 import AbstractReaderWriter from "./AbstractReaderWriter.js";
 import ReaderCollection from "./ReaderCollection.js";
 import escapeStringRegExp from "escape-string-regexp";
-import Trace from "./tracing/Trace.js";
-import {ResourceInterface} from "./Resource.js";
+import type Trace from "./tracing/Trace.js";
+import {type ResourceInterface} from "./Resource.js";
 
 /**
  * Resource Locator WriterCollection

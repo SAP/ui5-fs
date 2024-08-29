@@ -1,6 +1,6 @@
 import randomInt from "random-int";
 import Trace from "./tracing/Trace.js";
-import {ResourceInterface} from "./Resource.js";
+import {type ResourceInterface} from "./Resource.js";
 
 /**
  * Abstract resource locator implementing the general API for <b>reading</b> resources

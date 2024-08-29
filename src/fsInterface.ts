@@ -1,6 +1,6 @@
-import AbstractReader from "./AbstractReader.js";
+import type AbstractReader from "./AbstractReader.js";
 import type * as fs from "node:fs";
-import {Buffer} from "node:buffer";
+import {type Buffer} from "node:buffer";
 
 /**
  *

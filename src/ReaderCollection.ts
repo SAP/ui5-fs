@@ -1,6 +1,6 @@
 import AbstractReader from "./AbstractReader.js";
-import {ResourceInterface} from "./Resource.js";
-import Trace from "./tracing/Trace.js";
+import {type ResourceInterface} from "./Resource.js";
+import type Trace from "./tracing/Trace.js";
 
 /**
  * Resource Locator ReaderCollection

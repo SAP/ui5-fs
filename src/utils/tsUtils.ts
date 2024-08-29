@@ -1,4 +1,5 @@
-import Resource, {ResourceInterface} from "../Resource.js";
+import {type ResourceInterface} from "../Resource.js";
+import type Resource from "../Resource.js";
 
 /**
  *

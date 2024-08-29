@@ -3,7 +3,7 @@ import ResourceFacade from "../ResourceFacade.js";
 import {prefixGlobPattern} from "../resourceFactory.js";
 import {getLogger} from "@ui5/logger";
 const log = getLogger("resources:readers:Link");
-import Trace from "../tracing/Trace.js";
+import type Trace from "../tracing/Trace.js";
 
 export interface Link_Args {
 	reader: AbstractReader;
