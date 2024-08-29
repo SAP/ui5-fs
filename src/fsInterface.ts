@@ -54,7 +54,8 @@ function fsInterface(reader: AbstractReader) {
 				nodir: false,
 			}).then(function (resource) {
 				if (!resource) {
-					const error = new Error(`ENOENT: no such file or directory, open '${fsPath}'`);
+					const error: NodeJS.ErrnoException =
+						new Error(`ENOENT: no such file or directory, open '${fsPath}'`);
 					error.code = "ENOENT"; // "File or directory does not exist"
 					callback(error);
 					return;
@@ -64,7 +65,7 @@ function fsInterface(reader: AbstractReader) {
 					let res;
 
 					if (options?.encoding) {
-						res = buffer.toString(options.encoding);
+						res = buffer.toString(options.encoding as BufferEncoding);
 					} else {
 						res = buffer;
 					}
@@ -79,7 +80,8 @@ function fsInterface(reader: AbstractReader) {
 				nodir: false,
 			}).then(function (resource) {
 				if (!resource) {
-					const error = new Error(`ENOENT: no such file or directory, stat '${fsPath}'`);
+					const error: NodeJS.ErrnoException =
+						new Error(`ENOENT: no such file or directory, stat '${fsPath}'`);
 					error.code = "ENOENT"; // "File or directory does not exist"
 					callback(error);
 				} else {

@@ -141,11 +141,11 @@ class Memory extends AbstractAdapter {
 		this._assignProjectToResource(resource);
 		const relPath = this._resolveVirtualPathToBase(resource.getPath(), true);
 		log.silly(`Writing to virtual path ${resource.getPath()}`);
-		this._virFiles[relPath] = await resource.clone();
+		this._virFiles[relPath!] = await resource.clone();
 
 		// Add virtual directories for all path segments of the written resource
 		// TODO: Add tests for all this
-		const pathSegments = relPath.split("/");
+		const pathSegments = relPath!.split("/");
 		pathSegments.pop(); // Remove last segment representing the resource itself
 
 		pathSegments.forEach((segment, i) => {

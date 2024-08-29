@@ -17,3 +17,11 @@ export function isMigratedResource(resource: unknown): resource is Resource | Re
 	// introduced with v3 therefore take it as the indicator
 	return !!resource && typeof resource === "object" && ("hasProject" in resource);
 }
+
+/**
+ *
+ * @param error Error to test
+ */
+export function isError(error: unknown): error is NodeJS.ErrnoException {
+	return error instanceof Error;
+}

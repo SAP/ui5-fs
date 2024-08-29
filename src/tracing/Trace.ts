@@ -14,7 +14,7 @@ class Trace {
 	_startTime!: [number, number];
 	_globCalls!: number;
 	_pathCalls!: number;
-	_collections!: CollectionsType<object>;
+	_collections!: CollectionsType;
 
 	constructor(name: string) {
 		if (!log.isLevelEnabled("silly")) {
@@ -24,7 +24,7 @@ class Trace {
 		this._startTime = process.hrtime();
 		this._globCalls = 0;
 		this._pathCalls = 0;
-		this._collections = Object.create(null) as CollectionsType<object>;
+		this._collections = Object.create(null) as CollectionsType;
 		summaryTrace.traceStarted();
 	}
 

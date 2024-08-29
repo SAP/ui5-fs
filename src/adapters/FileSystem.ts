@@ -13,9 +13,11 @@ import AbstractAdapter from "./AbstractAdapter.js";
 import type {Project} from "@ui5/project/specifications/Project";
 import Trace from "../tracing/Trace.js";
 import {LegacyResource, Resource_Options, ResourceInterface} from "../Resource.js";
+import {isError} from "../utils/tsUtils.js";
 
 const READ_ONLY_MODE = 0o444;
 const ADAPTER_NAME = "FileSystem";
+
 /**
  * File system resource adapter
  */
@@ -217,7 +219,7 @@ class FileSystem extends AbstractAdapter {
 
 			return this._createResource(resourceOptions);
 		} catch (err) {
-			if (err.code === "ENOENT") { // "File or directory does not exist"
+			if (isError(err) && err.code === "ENOENT") { // "File or directory does not exist"
 				return null;
 			} else {
 				throw err;

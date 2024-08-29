@@ -22,7 +22,7 @@ enum ALLOWED_SOURCE_METADATA_KEYS {
  */
 export type Resource_CreateReadableStream = () => stream.Readable;
 
-interface Resource_sourceMetadata {
+export interface Resource_sourceMetadata {
 	[ALLOWED_SOURCE_METADATA_KEYS.ADAPTER]?: string;
 	[ALLOWED_SOURCE_METADATA_KEYS.FS_PATH]?: string;
 	[ALLOWED_SOURCE_METADATA_KEYS.CONTENT_MODIFIED]?: boolean;
@@ -46,7 +46,7 @@ export interface Resource_Options {
 	};
 };
 
-interface Tree {[x: string]: object | Tree};
+export interface Tree {[x: string]: object | Tree};
 
 export interface LegacyResource {
 	_path: string;

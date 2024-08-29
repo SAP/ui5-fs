@@ -6,13 +6,13 @@ let timeoutId: NodeJS.Timeout;
 let active = false;
 let tracesRunning = 0;
 
-export type CollectionsType<T> = T & Record<string, T>;
+export type CollectionsType = Record<string, Record<string, number>>;
 
 let traceData: null | {
 	startTime: [number, number];
 	pathCalls: number;
 	globCalls: number;
-	collections: CollectionsType<object>;
+	collections: CollectionsType;
 	traceCalls: number;
 	timeDiff?: [number, number];
 };
@@ -147,7 +147,7 @@ function globCall() {
  * @param name TraceData collection name
  */
 function collection(name: string) {
-	if (!active) {
+	if (!active || !traceData) {
 		return;
 	}
 	const collection = traceData.collections[name];
