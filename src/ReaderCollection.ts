@@ -54,7 +54,6 @@ class ReaderCollection extends AbstractReader {
 	 */
 	_byPath(virPath: string, options: {nodir: boolean}, trace: Trace) {
 		const resourceLocatorCount = this._readers.length;
-		let resolveCount = 0;
 
 		if (resourceLocatorCount === 0) {
 			// Short-circuit if there are no readers (Promise.race does not settle for empty arrays)
@@ -65,16 +64,13 @@ class ReaderCollection extends AbstractReader {
 		// Using Promise.race to deliver files that can be found as fast as possible
 		return Promise.race(this._readers.map((resourceLocator) => {
 			return resourceLocator._byPath(virPath, options, trace).then((resource) => {
-				return new Promise((resolve) => {
-					trace.collection(this._name!);
-					resolveCount++;
-					if (resource) {
-						resource.pushCollection(this._name!);
-						resolve(resource);
-					} else if (resolveCount === resourceLocatorCount) {
-						resolve(null);
-					}
-				});
+				trace.collection(this._name!);
+				if (resource) {
+					resource.pushCollection(this._name!);
+					return resource;
+				} else {
+					return null;
+				}
 			});
 		}));
 	}
