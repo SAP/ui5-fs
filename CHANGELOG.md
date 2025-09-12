@@ -2,10 +2,16 @@
 All notable changes to this project will be documented in this file.  
 This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-A list of unreleased changes can be found [here](https://github.com/SAP/ui5-fs/compare/v3.0.5...HEAD).
+A list of unreleased changes can be found [here](https://github.com/SAP/ui5-fs/compare/v3.0.6...HEAD).
+
+<a name="v3.0.6"></a>
+## [v3.0.6] - 2025-09-12
+### Bug Fixes
+- Rename project to UI5 CLI [`d03f25f`](https://github.com/SAP/ui5-fs/commit/d03f25f80aba273b2c8c80ed8d33fdfdebb03002)
+
 
 <a name="v3.0.5"></a>
-## [v3.0.5] - 2023-10-09
+## [v3.0.5] - 2023-10-11
 
 <a name="v3.0.4"></a>
 ## [v3.0.4] - 2023-05-23
@@ -179,6 +185,7 @@ Adapters "AbstractAdapter", "FileSystem" and "Memory" used to be accessible via 
 ## v0.0.1 - 2018-06-06
 ### Bug Fixes
 - **AbstractAdapter:** Fix normalization of globstar [`6d484e8`](https://github.com/SAP/ui5-fs/commit/6d484e847b62aa0829641f25a76dcc89b0840d44)
+[v3.0.6]: https://github.com/SAP/ui5-fs/compare/v3.0.5...v3.0.6
 [v3.0.5]: https://github.com/SAP/ui5-fs/compare/v3.0.4...v3.0.5
 [v3.0.4]: https://github.com/SAP/ui5-fs/compare/v3.0.3...v3.0.4
 [v3.0.3]: https://github.com/SAP/ui5-fs/compare/v3.0.2...v3.0.3
