@@ -148,6 +148,30 @@ test("Write", async (t) => {
 	t.is(generalWriter._write.getCall(0).args[1], "options 3", "Correct write options for / writer");
 });
 
+test("Write: Throws for resource with unmatched path", async (t) => {
+	const myWriter = {
+		_write: sinon.stub()
+	};
+	const writerCollection = new WriterCollection({
+		name: "myCollection",
+		writerMapping: {
+			"/my/app/": myWriter,
+			"/other/": myWriter
+		}
+	});
+
+	const resource = new Resource({
+		path: "/unmatched/resource.js",
+		string: "content"
+	});
+
+	await t.throwsAsync(writerCollection.write(resource), {
+		message: "Failed to find a writer for resource with path /unmatched/resource.js " +
+			"in WriterCollection myCollection. " +
+			"Base paths handled by this collection are: /my/app/, /other/"
+	});
+});
+
 test("byGlob", async (t) => {
 	const myPathWriter = {
 		_byGlob: sinon.stub().resolves([])
