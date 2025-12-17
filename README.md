@@ -9,6 +9,8 @@
 [![npm Package Version](https://badge.fury.io/js/%40ui5%2Ffs.svg)](https://www.npmjs.com/package/@ui5/fs)
 [![Coverage Status](https://coveralls.io/repos/github/SAP/ui5-fs/badge.svg)](https://coveralls.io/github/SAP/ui5-fs)
 
+> ⚠️ UI5 CLI v3 has been deprecated! We highly recommend migrating to [**the latest version**](https://ui5.github.io/cli/stable/).
+
 ## Documentation
 UI5 FS documentation can be found here: [ui5.github.io/cli](https://ui5.github.io/cli/v3/pages/FileSystem/)
 
