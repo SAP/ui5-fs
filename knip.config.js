@@ -17,8 +17,7 @@ const config = {
 
 	ignoreDependencies: [
 		"@istanbuljs/esm-loader-hook",
-		"docdash",
-		"jsdoc",
+		"docdash"
 	],
 };
 
