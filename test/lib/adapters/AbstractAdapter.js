@@ -1,4 +1,5 @@
 import test from "ava";
+import sinon from "sinon";
 import AbstractAdapter from "../../../lib/adapters/AbstractAdapter.js";
 import {createResource} from "../../../lib/resourceFactory.js";
 
@@ -301,4 +302,31 @@ test("_normalizePattern: Relative path segment within base directory, matching a
 
 	t.deepEqual(writer._normalizePattern("/path/path2/../**/*"), ["**/*"],
 		"Returned expected patterns");
+});
+
+test("_byGlob: Returns empty array when pattern does not match base path", async (t) => {
+	const adapter = new MyAbstractAdapter({
+		virBasePath: "/test-resources/"
+	});
+	// Mock _runGlob to track if it gets called
+	adapter._runGlob = sinon.stub().resolves([]);
+
+	// Pattern targeting /resources/ should return empty for /test-resources/ adapter
+	const result = await adapter._byGlob(["/resources/**/*.js", "!**/*.support.js"]);
+
+	t.deepEqual(result, [], "Returns empty array");
+	t.is(adapter._runGlob.callCount, 0, "_runGlob should not be called");
+});
+
+test("_byGlob: Handles negation-only patterns after normalization", async (t) => {
+	const adapter = new MyAbstractAdapter({
+		virBasePath: "/test-resources/"
+	});
+	adapter._runGlob = sinon.stub().resolves([]);
+
+	// Only negation patterns - should return empty because there's no positive pattern to match files
+	const result = await adapter._byGlob(["!**/excluded.js"]);
+
+	t.deepEqual(result, [], "Returns empty array for negation-only patterns");
+	t.is(adapter._runGlob.callCount, 0, "_runGlob should not be called for negation-only");
 });

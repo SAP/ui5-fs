@@ -404,3 +404,33 @@ test("glob with multiple patterns with static exclude", async (t) => {
 // 	t.deepEqual(matches.length, 23, "Resources should match");
 // });
 
+// Tests for globby v16 negation-only pattern fix
+test("glob with pattern not matching virtual base path", async (t) => {
+	// This tests the fix for globby v16 negation-only pattern issue
+	// Pattern targets /resources/ but we query from a different base path context
+	const fsAdapter = new FsAdapter({
+		virBasePath: "/test-resources/",
+		fsBasePath: "./test/fixtures/glob"
+	});
+	const resources = await fsAdapter.byGlob([
+		"/resources/**/*.js",
+		"!**/*.support.js"
+	]);
+
+	t.deepEqual(resources, [], "Returns empty array when pattern doesn't match base path");
+});
+
+test("glob with only negation patterns", async (t) => {
+	// Negation-only patterns should not match any files
+	// (In globby v16+, this would otherwise match all files due to auto-prepend of **/*)
+	const fsAdapter = new FsAdapter({
+		virBasePath: "/test-resources/",
+		fsBasePath: "./test/fixtures/glob"
+	});
+	const resources = await fsAdapter.byGlob([
+		"!**/*.json"
+	]);
+
+	t.deepEqual(resources, [], "Returns empty array for negation-only patterns");
+});
+
