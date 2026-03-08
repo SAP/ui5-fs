@@ -135,7 +135,7 @@
 		"random-int": "^3.1.0"
 	},
 	"devDependencies": {
-		"@eslint/js": "^9.8.0",
+		"@eslint/js": "^10.0.1",
 		"@istanbuljs/esm-loader-hook": "^0.3.0",
 		"ava": "^6.4.1",
 		"chokidar-cli": "^3.0.0",
