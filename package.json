@@ -124,7 +124,7 @@
 	"dependencies": {
 		"@ui5/logger": "^4.0.2",
 		"escape-string-regexp": "^5.0.0",
-		"globby": "^16.2.3",
+		"globby": "^16.2.4",
 		"graceful-fs": "^4.2.11",
 		"micromatch": "^4.0.8",
 		"minimatch": "^10.2.6",
