@@ -33,3 +33,5 @@ updates:
     # eslint@10 requires node ^20.19.0 || ^22.13.0 || >=24
     - dependency-name: "eslint"
       update-types: ["version-update:semver-major"]
+    - dependency-name: "@eslint/js"
+      update-types: ["version-update:semver-major"]
