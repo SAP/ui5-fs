@@ -2,10 +2,20 @@
 All notable changes to this project will be documented in this file.  
 This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-A list of unreleased changes can be found [here](https://github.com/SAP/ui5-fs/compare/v4.0.6...HEAD).
+A list of unreleased changes can be found [here](https://github.com/SAP/ui5-fs/compare/v4.0.7...HEAD).
+
+<a name="v4.0.7"></a>
+## [v4.0.7] - 2026-11-04
+### Bug Fixes
+- Contain Link reads within the mapped target subtree [`95ee486`](https://github.com/SAP/ui5-fs/commit/95ee486392d3361d67e1d860d63d7c99d154a5f1)
+
+### Dependency Updates
+- Bump minimatch from 10.2.6 to 11.0.3 ([#727](https://github.com/SAP/ui5-fs/issues/727)) [`f525742`](https://github.com/SAP/ui5-fs/commit/f52574238b6658c62679ba6fd7e566e6401cedec)
+- Bump uuid and nyc ([#704](https://github.com/SAP/ui5-fs/issues/704)) [`7de1165`](https://github.com/SAP/ui5-fs/commit/7de1165e1598e1ee60790ee01279fc4948f2c0a9)
+
 
 <a name="v4.0.6"></a>
-## [v4.0.6] - 2026-05-26
+## [v4.0.6] - 2026-05-27
 ### Bug Fixes
 - Use structuredClone for Resource.statInfo deep copy [`6fddce0`](https://github.com/SAP/ui5-fs/commit/6fddce083a5cb6c07ec8538f31ed74420b06e7d3)
 
@@ -233,6 +243,7 @@ Adapters "AbstractAdapter", "FileSystem" and "Memory" used to be accessible via 
 ## v0.0.1 - 2018-06-06
 ### Bug Fixes
 - **AbstractAdapter:** Fix normalization of globstar [`6d484e8`](https://github.com/SAP/ui5-fs/commit/6d484e847b62aa0829641f25a76dcc89b0840d44)
+[v4.0.7]: https://github.com/SAP/ui5-fs/compare/v4.0.6...v4.0.7
 [v4.0.6]: https://github.com/SAP/ui5-fs/compare/v4.0.5...v4.0.6
 [v4.0.5]: https://github.com/SAP/ui5-fs/compare/v4.0.4...v4.0.5
 [v4.0.4]: https://github.com/SAP/ui5-fs/compare/v4.0.3...v4.0.4
