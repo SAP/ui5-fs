@@ -127,7 +127,7 @@
 		"globby": "^16.2.4",
 		"graceful-fs": "^4.2.12",
 		"micromatch": "^4.0.8",
-		"minimatch": "^11.0.8",
+		"minimatch": "^11.0.9",
 		"pretty-hrtime": "^1.0.3",
 		"random-int": "^3.1.0"
 	},
@@ -142,7 +142,7 @@
 		"eslint": "^9.39.5",
 		"eslint-config-google": "^0.14.0",
 		"eslint-plugin-ava": "^15.1.0",
-		"eslint-plugin-jsdoc": "^65.4.7",
+		"eslint-plugin-jsdoc": "^65.4.10",
 		"esmock": "^2.8.0",
 		"globals": "^17.14.0",
 		"jsdoc": "^4.0.5",
